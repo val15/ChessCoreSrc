@@ -1,0 +1,360 @@
+﻿@model  ChessCore.Models.DetailsViewModel
+@*<p>@Model.DateTimeNow </p>*@
+
+
+<script src="~/js/html2canvas.min.js">
+</script>
+<script type="text/javascript">
+
+  var initialSeconde = @Model.InitialDuration;
+  //alert(initialSeconde);
+  var isComputerTurn = @Model.GetIsComputerTurn();
+
+  //pour les timers des joeurs
+
+  var blackTimeLabel = document.getElementById("blackTimeLabel");
+  var whiteTimeLabel = document.getElementById("whiteTimeLabel");
+  var totalSecondsWhite =@Model.WhiteTimeInSecond;
+  var totalSecondsBlack = @Model.BlackTimeInSecond;
+  //alert(@Model.WhiteTimeInSecond);
+  //alert(totalSecondsWhite);
+  var currentColor = '@Model.CurrentTurn';
+
+  printTimes();
+  var oldTime =new Date();
+
+  var newTime = null;
+
+
+
+  function printTimes() {
+
+
+
+    var mn = pad(parseInt((initialSeconde-totalSecondsWhite) / 60));
+    var s = pad((initialSeconde-totalSecondsWhite) % 60);
+    whiteTimeLabel.innerHTML = mn + " : " + s;
+    mn = pad(parseInt((initialSeconde-totalSecondsBlack) / 60));
+    s = pad((initialSeconde-totalSecondsBlack) % 60);
+
+    blackTimeLabel.innerHTML = mn + " : " + s;
+
+
+  }
+
+
+  function pad(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } else {
+      return valString;
+    }
+  }
+
+
+
+  $(function () {
+    setInterval(BindPartialView, 1000);
+    setInterval(timerCount, 50);
+  });
+
+
+  function timerCount()
+  {
+
+    var endDate = new Date();
+    //  alert(endDate);
+    var seconds = (endDate.getTime() - oldTime.getTime()) / 1000;
+    // alert(seconds);
+    if (seconds >= 1) {
+      oldTime = new Date()
+
+      if (currentColor == "W") {
+        ++totalSecondsWhite;
+      }
+      else {
+        ++totalSecondsBlack;
+      }
+
+
+
+      printTimes();
+    }
+
+  }
+
+
+  function BindPartialView()
+  {
+    var objDiv = document.getElementById("history_div");
+    objDiv.scrollTop = objDiv.scrollHeight;
+
+
+    var data = { whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack};
+    if (isComputerTurn == "1")
+    {
+      //alert(isComputerTurn);
+      isComputerTurn = "0";
+      $.ajax({
+      type: "POST",
+      url: "/Home/DetailsTimer",
+        data: data,
+        contentType: 'application/x-www-form-urlencoded',
+      dataType: "html",
+      success: function(response) {
+        $('#dvPartial').html(response);
+        },
+      failure: function(response) {
+          alert(response.responseText);
+        },
+      error: function(response) {
+          alert(response.responseText);
+        }
+      });
+    }
+
+  }
+
+  function DivClicked(index)
+  {
+    document.getElementById(index).style.backgroundColor = 'yellow';
+    document.getElementById(index);
+   
+    var data = { objId: index, whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack, selectedLevel: -1 };
+    $.ajax({
+      type: "POST",
+      url: "/Home/Details",
+      data: data,
+      contentType: 'application/x-www-form-urlencoded',
+      dataType: "html",
+      success: function (response) {
+        $('#dvPartial').html(response);
+      },
+      failure: function (response) {
+        alert(response.responseText);
+      },
+      error: function (response) {
+        alert(response.responseText);
+      }
+    });
+  };
+
+  function Print() {
+
+
+      //html2canvas(document.body).then(function (canvas) {
+      //  document.body.appendChild(canvas);
+      //});
+    html2canvas(document.body, { background: '#fff' }).then(function (canvas) {
+
+      //document.body.appendChild(canvas);
+
+      // Get base64URL
+      var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
+
+
+     // alert(base64URL);
+      // AJAX request
+      $.ajax({
+        url: '/Home/SavePrintScreen',
+        type: 'post',
+        data: { image: base64URL },
+        success: function (data)
+        {
+
+          window.location.href = '@Url.Action("SaveBoard", "Home")';
+          //window.location.href = '@Url.Action("Index", "Home")';
+          console.log('Upload successfully');
+        }
+      });
+    });
+
+
+
+  }
+
+
+</script>
+
+
+
+
+
+
+
+
+<h5 class="d-inline-block inline">
+
+  <span class="informationFont">Current turn :</span>
+  @if (@Model.CurrentTurn == "W")
+  {
+    <span class="whiteFont">White</span>
+  }
+  else
+  {
+    <span class="blackFont">Black</span>
+  }
+  <span class="informationFont">Computer color :</span>
+  @if (@Model.ComputerColor == "W")
+  {
+    <span class="whiteFont">White</span>
+  }
+  else
+  {
+    <span class="blackFont">Black</span>
+  }
+  &emsp;
+  <label id="whiteTimeLabel" class="whiteFont"></label>
+  &ensp;
+  <label id="blackTimeLabel" class="blackFont"></label>
+
+
+  <button class="fa fa-camera" onclick="Print();">
+      print
+  </button>
+</h5>
+
+
+<br />
+
+
+
+@*<a href="@Url.Action("Home", "SaveHistory")" />*@
+@* @Html.ActionLink("print", "SaveHistory")*@
+@* <i class="fa fa-save"></i>*@
+<hr />
+
+
+@*<button onclick="RunEngine()">run engine</button>*@
+<div class="d-flex">
+
+  <div class="d-inline-block">
+
+    <div id="history_div" style="width: 150px; height: 700px; overflow-y: scroll;">
+      @if (Model.MovingList != null)
+      {
+        @Model.MovingList.Count
+        foreach (var line in Model.MovingList)
+        {
+          @line
+          <br />
+        }
+      }
+    </div>
+    @*<button onclick="SavehistoryClicked()">download</button>*@
+    <a href="@Url.Action("SaveHistory", "Home")">
+      <button type="button" >
+          @*<i class="bi bi-camera"></i>*@
+          save
+      </button>
+    </a>
+
+
+    @*  @Html.ActionLink("save historique", "SaveHistory")*@
+  </div>
+
+  @*on ajoute une espace pour la version inverser*@
+  @if (Model.RevertWrapperClass == "revertWrapper")
+  {
+    <div class="d-inline-block" style="width: 100px;">
+    </div>
+  }
+
+
+  <div class="d-inline-block" style="width: 500px;">
+
+    <div class="wrapper @Model.RevertWrapperClass">
+      <div class="top">
+
+        <div class="wrapper-inner">
+          <div align="left">
+            <label class="@Model.RevertWrapperClass">@Model.BlackScore </label>
+          </div>
+
+          <div align="right">
+            @if (Model.HuntingBoardWhiteImageList != null)
+            {
+              foreach (var imageSrc in Model.HuntingBoardWhiteImageList)
+              {
+                <img src=@imageSrc width="25" height="25"
+                     class="@Model.RevertWrapperClass" />
+
+              }
+            }
+
+          </div>
+          @*<div class="box-inner @Model.RevertWrapperClass">A</div>
+            <div class="box-inner @Model.RevertWrapperClass">B</div>
+            <div class="box-inner @Model.RevertWrapperClass">C</div>
+            <div class="box-inner @Model.RevertWrapperClass">D</div>
+            <div class="box-inner @Model.RevertWrapperClass">E</div>
+            <div class="box-inner @Model.RevertWrapperClass">F</div>
+            <div class="box-inner @Model.RevertWrapperClass">G</div>
+            <div class="box-inner @Model.RevertWrapperClass">H</div>*@
+        </div>
+      </div>
+      @for (int i = 0; i < 8; i++)
+      {
+        for (int j = 0; j < 8; j++)
+        {
+          <div id="@Model.GetPawn(j + (8 * i)).Index"
+               class="box"
+               onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
+            @* <p>@Model.GetPawn(j + (8 * i)).Index</p>*@
+
+
+            @if (@Model.GetPawn(j + (8 * i)).ImageIsExist)
+            {
+              <img src=@Model.GetPawn(j + (8 * i)).PawnImageSrc width="50" height="50"
+                   class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+            }
+            else
+            {
+              <img src="" width="5" height="5"
+                   class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+            }
+            @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
+
+
+          </div>
+        }
+      }
+
+      <div class="bottom">
+
+        <div class="wrapper-inner">
+          <div align="left">
+            <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
+          </div>
+
+          <div align="right">
+            @if (Model.HuntingBoardBlackImageList != null)
+            {
+              foreach (var imageSrc in Model.HuntingBoardBlackImageList)
+              {
+                <img src=@imageSrc width="25" height="25"
+                     class="@Model.RevertWrapperClass" />
+
+              }
+            }
+          </div>
+          @*<div class="box-inner @Model.RevertWrapperClass">A</div>
+            <div class="box-inner @Model.RevertWrapperClass">B</div>
+            <div class="box-inner @Model.RevertWrapperClass">C</div>
+            <div class="box-inner @Model.RevertWrapperClass">D</div>
+            <div class="box-inner @Model.RevertWrapperClass">E</div>
+            <div class="box-inner @Model.RevertWrapperClass">F</div>
+            <div class="box-inner @Model.RevertWrapperClass">G</div>
+            <div class="box-inner @Model.RevertWrapperClass">H</div>*@
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+<br />
+

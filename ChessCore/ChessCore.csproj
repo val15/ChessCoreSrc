@@ -1,0 +1,93 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Images\OriginalsImage\BishopBlack.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\BishopWhite.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\KingBlack.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\KingWhite.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\KnightBlack.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\KnightWhite.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\QueenBlack.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\QueenWhite.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\RookBlack.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\RookWhite.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\SimplePawnBlack.png" />
+    <Content Remove="wwwroot\Images\OriginalsImage\SimplePawnWhite.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Images\OriginalsImage\BishopBlack.png" />
+    <None Include="wwwroot\Images\OriginalsImage\BishopWhite.png" />
+    <None Include="wwwroot\Images\OriginalsImage\KingBlack.png" />
+    <None Include="wwwroot\Images\OriginalsImage\KingWhite.png" />
+    <None Include="wwwroot\Images\OriginalsImage\KnightBlack.png" />
+    <None Include="wwwroot\Images\OriginalsImage\KnightWhite.png" />
+    <None Include="wwwroot\Images\OriginalsImage\QueenBlack.png" />
+    <None Include="wwwroot\Images\OriginalsImage\QueenWhite.png" />
+    <None Include="wwwroot\Images\OriginalsImage\RookBlack.png" />
+    <None Include="wwwroot\Images\OriginalsImage\RookWhite.png" />
+    <None Include="wwwroot\Images\OriginalsImage\SimplePawnBlack.png" />
+    <None Include="wwwroot\Images\OriginalsImage\SimplePawnWhite.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Histories\ToStay.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\BishopBlack.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\BishopWhite.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\ico.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\KingBlack.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\KingWhite.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\KnightBlack.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\KnightWhite.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\QueenBlack.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\QueenWhite.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\RookBlack.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\RookWhite.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\SimplePawnBlack.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Images\SimplePawnWhite.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\lib\bootstrap\dist\css\bootstrap.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\ToDownloadedFiles\ToStay.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\UploadedFiles\ToStay.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
