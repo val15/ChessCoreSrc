@@ -176,16 +176,7 @@
 
 
 </script>
-
-
-
-
-
-
-
-
 <h5 class="d-inline-block inline">
-
   <span class="informationFont">Current turn :</span>
   @if (@Model.CurrentTurn == "W")
   {
@@ -208,11 +199,10 @@
   <label id="whiteTimeLabel" class="whiteFont"></label>
   &ensp;
   <label id="blackTimeLabel" class="blackFont"></label>
-
-
   <button class="fa fa-camera" onclick="Print();">
       print
   </button>
+   <b style='color:red;'>@Model.GetMemoryUsed() </b>
 </h5>
 
 

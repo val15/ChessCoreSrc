@@ -533,35 +533,7 @@ namespace ChessCore.Tools
                     maxWeithList.AddRange(maxBestNodListLevel2);
                 }
 
-                /* var maxWeithIntList = new List<int>();
-                 maxWeithIntList.Add(maxWeithLevel4);
-                 maxWeithIntList.Add(maxWeithLevel3);
-                 maxWeithIntList.Add(maxWeithLevel2);
-
-                 var maxW = maxWeithIntList.Max();
-
-                 if (maxW == maxWeithLevel4 )
-                 {
-                   Debug.WriteLine("--Best in Level4--");
-                   maxWeithList = maxBestNodListLevel4;
-                 }
-                 else
-                 {
-                   if(maxW == maxWeithLevel3)
-                   {
-                     Debug.WriteLine("--Best in Level3--");
-                     maxWeithList = maxBestNodListLevel3;
-                   }
-                   else
-                   {
-                     if (maxW == maxWeithLevel2)
-                     {
-                       Debug.WriteLine("--Best in Level2--");
-                       maxWeithList = maxBestNodListLevel2;
-                     }
-                   }
-                 }
-                */
+            
 
                 //T53 pour tous L3 dans L4, on modifie le poids dans L3
                 //foreach (var node in maxBestNodListLevel3)
@@ -856,8 +828,18 @@ namespace ChessCore.Tools
 
         public void Dispose()
         {
+            Debug.WriteLine("Memory used before collection:       {0:N0}",
+                     GC.GetTotalMemory(false));
+            Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));
+            Debug.WriteLine("Collect");
+          
             GC.Collect();
-            //throw new NotImplementedException();
+            Debug.WriteLine("Memory used before collection:       {0:N0}",
+                  GC.GetTotalMemory(false));
+            Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));
+
         }
 
         public static int[] SimplePawnFirstBlackTab64 = {

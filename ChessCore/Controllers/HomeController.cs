@@ -22,72 +22,93 @@ namespace ChessCore.Controllers
         //MOVEMENT DU CPU
         public ActionResult DetailsTimer(int whiteTimeInSecond, int blackTimeInSecond)
         {
-
-            //pour le timer,
-            //il faut prendre l'intervale en seconde et l'ajouter à 
-            //computer timer
-            var startRefelectionTime = DateTime.Now;
-
-            //Méthode nonothread
-            // var engine = new Engine(MainUtils.DeepLevel, MainUtils.CPUColor, false, null);
-            //  var bestNodeChess2 = engine.Search(MainUtils.VM.MainBord, MainUtils.TurnNumber.ToString(), -1, -1);
-            //méthode multithreading
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            try
             {
-                var bestNode = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(MainUtils.CPUColor, MainUtils.VM.MainBord, true, null);
-                var fromIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.Location);//int
-                var toIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.BestChildPosition);
-                //determination si attaque pour remplir le cimetiere
-                //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
-                //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
-                if (fromIndex == toIndex)
-                    return View("Losing");
+                //GC.Collect();
+                //pour le timer,
+                //il faut prendre l'intervale en seconde et l'ajouter à 
+                //computer timer
+                var startRefelectionTime = DateTime.Now;
+
+                //Méthode nonothread
+                // var engine = new Engine(MainUtils.DeepLevel, MainUtils.CPUColor, false, null);
+                //  var bestNodeChess2 = engine.Search(MainUtils.VM.MainBord, MainUtils.TurnNumber.ToString(), -1, -1);
+                //méthode multithreading
+                using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+                {
+
+                    var bestNode = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(MainUtils.CPUColor, MainUtils.VM.MainBord, true, null);
+                    var fromIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.Location);//int
+                    var toIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.BestChildPosition);
+
+                    //determination si attaque pour remplir le cimetiere
+                    //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
+                    //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
+                    if (fromIndex == toIndex)
+                        return View("Losing");
 
 
-                MainUtils.VM.MainBord.Move(fromIndex, toIndex, 0);
-                MainUtils.TurnNumber++;
-                MainUtils.VM.Refresh(MainUtils.VM.MainBord);
-                MainUtils.FromGridIndex = -1;
-                var dateTimeNow = DateTime.Now;
-                var interval = (int)(dateTimeNow - startRefelectionTime).TotalSeconds;
-                if (Utils.ComputerColor == "W")
-                    whiteTimeInSecond = interval;
-                else
-                    blackTimeInSecond = interval;
-                var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, whiteTimeInSecond, blackTimeInSecond, MainUtils.FromGridIndex, null, fromIndex, toIndex);
-                //dans le cas de loaded
-                /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
-                 vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
-                 vmEngine.MovingList = MainUtils.MovingList;*/
+                    MainUtils.VM.MainBord.Move(fromIndex, toIndex, 0);
+                    MainUtils.TurnNumber++;
+                    MainUtils.VM.Refresh(MainUtils.VM.MainBord);
+                    MainUtils.FromGridIndex = -1;
+                    var dateTimeNow = DateTime.Now;
+                    var interval = (int)(dateTimeNow - startRefelectionTime).TotalSeconds;
+                    if (Utils.ComputerColor == "W")
+                        whiteTimeInSecond = interval;
+                    else
+                        blackTimeInSecond = interval;
+                    var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, whiteTimeInSecond, blackTimeInSecond, MainUtils.FromGridIndex, null, fromIndex, toIndex);
+                    //dans le cas de loaded
+                    /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
+                     vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
+                     vmEngine.MovingList = MainUtils.MovingList;*/
 
-                vmEngine.DateTimeNow = dateTimeNow;
-                vmEngine.FromGridIndex = MainUtils.FromGridIndex;
-                // return View(MainUtils.VM);
+                    vmEngine.DateTimeNow = dateTimeNow;
+                    vmEngine.FromGridIndex = MainUtils.FromGridIndex;
+                    // return View(MainUtils.VM);
 
 
-                if (MainUtils.CurrentTurnColor == "B")
-                    MainUtils.CurrentTurnColor = "W";
-                else
-                    MainUtils.CurrentTurnColor = "B";
-                vmEngine.CurrentTurn = MainUtils.CurrentTurnColor;
-                vmEngine.ComputerColor = MainUtils.CPUColor;
+                    if (MainUtils.CurrentTurnColor == "B")
+                        MainUtils.CurrentTurnColor = "W";
+                    else
+                        MainUtils.CurrentTurnColor = "B";
+                    vmEngine.CurrentTurn = MainUtils.CurrentTurnColor;
+                    vmEngine.ComputerColor = MainUtils.CPUColor;
 
-                vmEngine.InitialDuration = MainUtils.InitialDuration;
-                MainUtils.MovingList = vmEngine.MovingList;
-                if (MainUtils.CPUColor == "B")
-                    vmEngine.RevertWrapperClass = "revertWrapper";
+                    vmEngine.InitialDuration = MainUtils.InitialDuration;
+                    MainUtils.MovingList = vmEngine.MovingList;
+                    if (MainUtils.CPUColor == "B")
+                        vmEngine.RevertWrapperClass = "revertWrapper";
 
-                if (vmEngine.MainBord.WhiteScore < vmEngine.MainBord.BlackScore)
-                    vmEngine.BlackScore = $"+{(vmEngine.MainBord.BlackScore - vmEngine.MainBord.WhiteScore).ToString()}";
-                else if (vmEngine.MainBord.BlackScore < vmEngine.MainBord.WhiteScore)
-                    vmEngine.WhiteScore = $"+{(vmEngine.MainBord.WhiteScore - vmEngine.MainBord.BlackScore).ToString()}";
-                else
-                    vmEngine.BlackScore = vmEngine.WhiteScore = "";
+                    if (vmEngine.MainBord.WhiteScore < vmEngine.MainBord.BlackScore)
+                        vmEngine.BlackScore = $"+{(vmEngine.MainBord.BlackScore - vmEngine.MainBord.WhiteScore).ToString()}";
+                    else if (vmEngine.MainBord.BlackScore < vmEngine.MainBord.WhiteScore)
+                        vmEngine.WhiteScore = $"+{(vmEngine.MainBord.WhiteScore - vmEngine.MainBord.BlackScore).ToString()}";
+                    else
+                        vmEngine.BlackScore = vmEngine.WhiteScore = "";
 
-                MainUtils.CaseList = vmEngine.MainBord.GetCases().ToList();
-                // System.GC.Collect();
-                return PartialView("Details", vmEngine);
+                    MainUtils.CaseList = vmEngine.MainBord.GetCases().ToList();
+                    // System.GC.Collect();
+                    //                GC.Collect();
+
+
+
+                    return PartialView("Details", vmEngine);
+                }
+
+                }
+            catch (Exception)
+            {
+
+                throw;
             }
+            finally
+            {
+                GC.Collect();
+            }
+           
+            
             // }
             // return PartialView("Details");
         }
@@ -309,7 +330,8 @@ namespace ChessCore.Controllers
                     initialVm.WhiteScore = $"+{(initialVm.MainBord.WhiteScore - initialVm.MainBord.BlackScore).ToString()}";
                 else
                     initialVm.BlackScore = initialVm.WhiteScore = "";
-                // System.GC.Collect();
+                //  GC.Collect();
+   
                 return PartialView("Details", initialVm);
             }
             // NorthwindEntities entities = new NorthwindEntities();
@@ -362,6 +384,8 @@ namespace ChessCore.Controllers
                         vmOld.BlackScore = vmOld.WhiteScore = "";
                     // return View(MainUtils.VM);
                     MainUtils.CaseList = vmOld.MainBord.GetCases().ToList();
+                    // GC.Collect();
+
                     return PartialView("Details", vmOld);
 
                 }
@@ -408,7 +432,7 @@ namespace ChessCore.Controllers
             // return View(MainUtils.VM);
 
             MainUtils.CaseList = vm.MainBord.GetCases().ToList();
-            //   System.GC.Collect();
+            //            GC.Collect();
             return PartialView("Details", vm);
         }
 

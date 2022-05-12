@@ -473,7 +473,10 @@ namespace ChessCore.Tools
                 }
 
                 //  / BishopBlack.png
-                var imageSrc = $"~/Images/{pawnName}{caseColor}.png";
+
+              //  var imageSrc = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", $"{pawnName}{caseColor}.png");
+
+                var imageSrc = $"../../Images/{pawnName}{caseColor}.png";
 
                 if (HuntingBoardWhiteImageList == null)
                     HuntingBoardWhiteImageList = new List<string>();

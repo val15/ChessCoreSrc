@@ -4,6 +4,7 @@ namespace ChessCore.Models
 {
     public class DetailsViewModel
     {
+        
         public DateTime DateTimeNow { get; set; }
 
         public int InitialDuration { get; set; }
@@ -34,7 +35,10 @@ namespace ChessCore.Models
         public List<string> MovingList { get; set; }
 
 
-
+        public string? GetMemoryUsed()
+        {
+            return MainUtils.SizeSuffix(GC.GetTotalMemory(false));
+        }
         public string GetIsComputerTurn()
         {
             if (String.IsNullOrEmpty(CurrentTurn))

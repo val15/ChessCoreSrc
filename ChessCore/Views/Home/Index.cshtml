@@ -34,31 +34,16 @@
 </script>
 <div>
   <div>
-
-   @* @using (Html.BeginForm("UploadFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-      <div>
-        @Html.TextBox("file", "", new { type = "file", accept = ".Chess.zip", required="true" })
-        <input type="submit" value="Upload" />
-        @ViewBag.Message
-      </div>
-    }*@
-
     <form asp-controller="Home" asp-action="UploadFile" method="post"
       enctype="multipart/form-data">  
-      
     <input type="file" name="file" accept = ".Chess.zip"/>  
     <button type="submit">Upload File</button>  
 </form>
-   
-    <br />
     @if (Model.IsFormLoander)
     {
       <h6>Apercus : </h6>
       <div class="d-flex">
-
         <div class="d-inline-block">
-
           <div id="history_div" style="width: 150px; height: 700px; overflow-y: scroll;">
             @if (Model.MovingList != null)
             {
