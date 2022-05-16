@@ -9,6 +9,7 @@ namespace ChessCore.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -24,6 +25,14 @@ namespace ChessCore.Controllers
         {
             try
             {
+                MainUtils.CpuCount++;
+             //   var t_ = "cpu";
+
+                //si CpuCount est supperier à 1, on ne prend pas en compt car le cpu est
+                // deja en cour de refelextion
+                if (MainUtils.CpuCount > 1)
+                    return null;
+
                 //GC.Collect();
                 //pour le timer,
                 //il faut prendre l'intervale en seconde et l'ajouter à 
@@ -92,8 +101,8 @@ namespace ChessCore.Controllers
                     // System.GC.Collect();
                     //                GC.Collect();
 
-
-
+                    //on remet MainUtils.CpuCount à 0 per permetre le reflection du CPU au prochain tour
+                    MainUtils.CpuCount = 0;
                     return PartialView("Details", vmEngine);
                 }
 
@@ -345,8 +354,11 @@ namespace ChessCore.Controllers
 
             }
             //DEPLACEMENT
-            else
+            else //if (MainUtils.CurrentTurnColor != MainUtils.CPUColor)
             {
+                
+                
+                   
                 isMove = true;
                 MainUtils.ToGridIndex = objId;
 
