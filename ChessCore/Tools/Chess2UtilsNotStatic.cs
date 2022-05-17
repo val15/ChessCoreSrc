@@ -522,7 +522,7 @@ namespace ChessCore.Tools
 
                 if (isNeedL3L2)
                 {
-                    //Pour T49 on ajoute L3 si max L3 est suppérieur à maw L4
+                    //Pour T49 on ajoute L3 si max L3 est suppérieur à max L4
                     if (maxWeithLevel3 > maxWeithLevel4)
                     {
                         maxWeithList.AddRange(maxBestNodListLevel3);
@@ -533,9 +533,10 @@ namespace ChessCore.Tools
                     maxWeithList.AddRange(maxBestNodListLevel2);
                 }
 
-            
+
 
                 //T53 pour tous L3 dans L4, on modifie le poids dans L3
+                //T92 on ne modifie que les L3 dans L4 et pas les L2
                 //foreach (var node in maxBestNodListLevel3)
                 for (int i = 0; i < maxWeithList.Count; i++)
                 {
@@ -546,7 +547,7 @@ namespace ChessCore.Tools
                      {
                        var t_ = 54;
                      }*/
-                    var nodeInL4 = bestNodListLevel4.FirstOrDefault(x => x.Location == node.Location && x.BestChildPosition == node.BestChildPosition);
+                    var nodeInL4 = bestNodListLevel4.FirstOrDefault(x => x.Location == node.Location && x.BestChildPosition == node.BestChildPosition && node.Level == 3);
                     if (nodeInL4 != null)
                     {
 
@@ -560,6 +561,7 @@ namespace ChessCore.Tools
                             // -4  e7 => e6
                             // Debug.WriteLine("To l4");
                             // Console.WriteLine("To l4");
+                            //Quand best node est aussi présent dans L2 et L3, on ne l'enleve pas
                             node.Weight = nodeInL4.Weight;
                         }
                         //node.Weight = nodeInL4.Weight;
@@ -636,7 +638,7 @@ namespace ChessCore.Tools
                     if (!line.Contains("|"))
                         continue;
                     var datas = line.Split(';');
-                    var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                    var newPawn = new Pawn(datas[0], datas[1],  datas[2] );
                     //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
                     newPawn.IsFirstMove = true;
                     newPawn.IsFirstMoveKing = true;
@@ -829,17 +831,16 @@ namespace ChessCore.Tools
         public void Dispose()
         {
             Debug.WriteLine("Memory used before collection:       {0:N0}",
-                     GC.GetTotalMemory(false));
+         GC.GetTotalMemory(false));
             Console.WriteLine("Memory used before collection:       {0:N0}",
                     GC.GetTotalMemory(false));
             Debug.WriteLine("Collect");
-          
+
             GC.Collect();
             Debug.WriteLine("Memory used before collection:       {0:N0}",
                   GC.GetTotalMemory(false));
             Console.WriteLine("Memory used before collection:       {0:N0}",
                     GC.GetTotalMemory(false));
-
         }
 
         public static int[] SimplePawnFirstBlackTab64 = {
