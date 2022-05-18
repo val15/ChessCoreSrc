@@ -1,0 +1,13 @@
+King;e8;Black;False;True;True;True
+Rook;a8;Black;False;False;False;False
+Rook;h8;Black;False;False;False;False
+Bishop;c8;Black;False;False;False;False
+Bishop;f8;Black;False;False;False;False
+Knight;a6;Black;False;False;False;False
+Knight;g8;Black;False;False;False;False
+SimplePawn;a7;Black;True;False;False;False
+SimplePawn;b4;Black;False;False;False;False
+SimplePawn;c5;Black;False;False;False;False
+SimplePawn;d6;Black;False;False;False;False
+SimplePawn;e5;Black;False;False;False;False
+SimplePawn;h3;Black;False;False;False;False

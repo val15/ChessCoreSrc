@@ -4,6 +4,78 @@ namespace ChessCore.Tools
 {
     public static class Chess2Utils
     {
+
+        public static List<Pawn> LoadFromDirectorie(string dirLocation)
+        {
+            try
+            {
+                var pawnListWhite = new List<Pawn>();
+                var pawnListBlack = new List<Pawn>();
+
+                var whiteFileLocation = dirLocation + "/WHITEList.txt";
+                var blackFileLocation = dirLocation + "/BlackList.txt";
+
+
+
+
+
+
+                var readText = File.ReadAllText(whiteFileLocation);
+
+                using (StringReader sr = new StringReader(readText))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        //Debug.WriteLine(line);
+
+                        var datas = line.Split(';');
+                        var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                        //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                        newPawn.IsFirstMove = bool.Parse(datas[3]);
+                        newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                        newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                        newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                        pawnListWhite.Add(newPawn);
+
+                    }
+                }
+
+                readText = File.ReadAllText(blackFileLocation);
+
+                using (StringReader sr = new StringReader(readText))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        //Debug.WriteLine(line);
+
+                        var datas = line.Split(';');
+                        var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                        //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                        newPawn.IsFirstMove = bool.Parse(datas[3]);
+                        newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                        newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                        newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                        pawnListBlack.Add(newPawn);
+
+                    }
+                }
+
+
+
+                var pawnList= new List<Pawn>();
+                pawnList.AddRange(pawnListWhite);
+                pawnList.AddRange(pawnListBlack);
+
+                return pawnList;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
+            }
+        }
         public static List<Node> EmuleAllIndexInParallelForEach(Board boarChess2, List<int> computerPawnsIndex, int level, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
             // var cpuColor = ComputerColore[0].ToString();

@@ -1,0 +1,5 @@
+SimplePawnBlack
+BishopWhite
+KnightWhite
+SimplePawnWhite
+QueenBlack

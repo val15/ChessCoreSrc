@@ -1,0 +1,8 @@
+King;e6;Black;False;True;True;True
+Rook;d8;Black;False;False;False;False
+Rook;f5;Black;False;False;False;False
+SimplePawn;a2;Black;True;False;False;False
+SimplePawn;b6;Black;True;False;False;False
+SimplePawn;c5;Black;True;False;False;False
+SimplePawn;f7;Black;True;False;False;False
+SimplePawn;h7;Black;True;False;False;False

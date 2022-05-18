@@ -1,0 +1,5 @@
+King;f1;White;False;True;True;True
+Rook;g3;White;False;False;False;False
+Bishop;a2;White;False;False;False;False
+SimplePawn;f2;White;True;False;False;False
+SimplePawn;g4;White;True;False;False;False

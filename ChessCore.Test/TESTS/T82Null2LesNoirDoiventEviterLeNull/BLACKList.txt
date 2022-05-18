@@ -1,0 +1,2 @@
+King;f7;Black;False;False;True;True
+Queen;f1;Black;False;False;False;False

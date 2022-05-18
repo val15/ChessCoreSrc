@@ -1,0 +1,3 @@
+King;f2;White;False;False;False;True
+Rook;a1;White;False;False;False;False
+Knight;e2;White;False;False;False;False

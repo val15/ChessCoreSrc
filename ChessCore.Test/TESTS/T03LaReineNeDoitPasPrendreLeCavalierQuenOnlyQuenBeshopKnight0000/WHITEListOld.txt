@@ -1,0 +1,2 @@
+Knight;g5;White;False;False;False;False
+Bishop;c1;White;False;False;False;False

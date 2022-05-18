@@ -1,0 +1,5 @@
+King;h8;Black;False;True;True;True
+Bishop;d4;Black;False;False;False;False
+SimplePawn;a5;Black;True;False;False;False
+SimplePawn;g6;Black;True;False;False;False
+SimplePawn;h4;Black;True;False;False;False
