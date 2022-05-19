@@ -5,7 +5,7 @@ namespace ChessCore.Tools
     public class Chess2UtilsNotStatic : IDisposable
     {
         //Pour T90
-        public List<NodeChess2>? Level4BlackList { get; set; }
+        public List<NodeChess2> Level4BlackList { get; set; }
 
         public List<Node> EmuleAllIndexInParallelForEach(Board boarChess2, List<int> computerPawnsIndex, int level, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
@@ -21,96 +21,100 @@ namespace ChessCore.Tools
                 Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
 
-                var engine = new EngineMultiThreading(level, cpuColor, IsReprise, Utils.IsMenaced(pawnIndex, boarChess2, cpuColor), SpecifiBoardList);
-
-
-                // var firstInLastMove = GetTreeLastAction();
-
-
-
-                var bestNodeChess2 = engine.SearchThreadForOnce(boarChess2, "5", pawnIndex, level);
-                //Pour T90 et T91
-                if (level == 4 && engine.Level4BlackList != null)
+                using (var engine = new EngineMultiThreading(level, cpuColor, IsReprise, Utils.IsMenaced(pawnIndex, boarChess2, cpuColor), SpecifiBoardList))
                 {
-                    if (Level4BlackList == null)
-                        Level4BlackList = new List<NodeChess2>();
-                    Level4BlackList.AddRange(engine.Level4BlackList);
-                    // var t_minNodeList = engine.Level4MinList;
-                }
+                    // var firstInLastMove = GetTreeLastAction();
 
-                if (bestNodeChess2 != null)
-                {
-                    var node = new Node();
-                    node.Location = Chess2Utils.GetLocationFromIndex(bestNodeChess2.FromIndex);
-                    node.BestChildPosition = Chess2Utils.GetLocationFromIndex(bestNodeChess2.ToIndex);
-                    //DOTO
-                    //// node.AssociatePawn = GetPawn(node.Location);
-                    //Seulment pour les test
-                    node.AsssociateNodeChess2 = bestNodeChess2;
 
-                    //Pour T49
-                    // si la destination contien un pion adverse, 
-                    //le poid est plus la valeure du pion adverse
-                    var destinationColor = boarChess2.GetPawnColorNameInIndex(bestNodeChess2.ToIndex);
 
-                    if (destinationColor == opinionColor)
+                    var bestNodeChess2 = engine.SearchThreadForOnce(boarChess2, "5", pawnIndex, level);
+                    //Pour T90 et T91
+                    if (level == 4 && engine.Level4BlackList != null)
                     {
-                        bestNodeChess2.Weight += 1;
-                        // bestNodeChess2.Weight += boarChess2.GetValue(boarChess2.GetCaseInIndex(bestNodeChess2.ToIndex));
+                        if (Level4BlackList == null)
+                            Level4BlackList = new List<NodeChess2>();
+                        Level4BlackList.AddRange(engine.Level4BlackList);
+                        // var t_minNodeList = engine.Level4MinList;
                     }
-                    node.Weight = bestNodeChess2.Weight;
-                    if (level < 4)
+
+                    if (bestNodeChess2 != null)
                     {
-                        //var toMenacedWeight = 0;
-                        node.IsMenaced = Utils.IsMenaced(bestNodeChess2.ToIndex, boarChess2, cpuColor);
-                        //pour T65
-                        //pur bestNodListLevel2 on enleve des point aux menacées 
-                        // bestNodList.Where(w => w.IsMenaced).ToList().ForEach(x => x.Weight -= x.AssociatePawn.Value);
-                        //if(bestNodeChess2.ToIndex == 16)
-                        // {
-                        //   var t_ = 00;
-                        // }
-                        if (node.IsMenaced)
+                        var node = new Node();
+                        node.Location = Chess2Utils.GetLocationFromIndex(bestNodeChess2.FromIndex);
+                        node.BestChildPosition = Chess2Utils.GetLocationFromIndex(bestNodeChess2.ToIndex);
+                        //DOTO
+                        //// node.AssociatePawn = GetPawn(node.Location);
+                        //Seulment pour les test
+                        node.AsssociateNodeChess2 = bestNodeChess2;
+
+                        //Pour T49
+                        // si la destination contien un pion adverse, 
+                        //le poid est plus la valeure du pion adverse
+                        var destinationColor = boarChess2.GetPawnColorNameInIndex(bestNodeChess2.ToIndex);
+
+                        if (destinationColor == opinionColor)
                         {
+                            bestNodeChess2.Weight += 1;
+                            // bestNodeChess2.Weight += boarChess2.GetValue(boarChess2.GetCaseInIndex(bestNodeChess2.ToIndex));
+                        }
+                        node.Weight = bestNodeChess2.Weight;
+                        if (level < 4)
+                        {
+                            //var toMenacedWeight = 0;
+                            node.IsMenaced = Utils.IsMenaced(bestNodeChess2.ToIndex, boarChess2, cpuColor);
+                            //pour T65
+                            //pur bestNodListLevel2 on enleve des point aux menacées 
+                            // bestNodList.Where(w => w.IsMenaced).ToList().ForEach(x => x.Weight -= x.AssociatePawn.Value);
+                            //if(bestNodeChess2.ToIndex == 16)
+                            // {
+                            //   var t_ = 00;
+                            // }
+                            if (node.IsMenaced)
+                            {
 
-                            //var t_ddv = bestNodeChess2.GetValue();
+                                //var t_ddv = bestNodeChess2.GetValue();
 
-                            node.Weight -= bestNodeChess2.GetValue();
-                            bestNodeChess2.Weight = node.Weight;
-                            // var t_dd = node.Weight;
+                                node.Weight -= bestNodeChess2.GetValue();
+                                bestNodeChess2.Weight = node.Weight;
+                                // var t_dd = node.Weight;
+                            }
+
                         }
 
+
+                        //Pour T80 et T81
+                        var kingIsMenaced = Utils.ComputerKingIsMenaced(node.AsssociateNodeChess2.Board);
+
+                        if (!kingIsMenaced)
+                        {
+
+                            //Pour T88 si il y a -999 au niveau 3 on l'enleve
+                            //seulment pour le level 3
+                            //on réemule les best de niveau 3
+                            /* if(level == 3)
+                             {
+                               var recheckNode = GetOneNodeLevel2Node(boarChess2, Chess2Utils.GetIndexFromLocation(node.Location), Chess2Utils.GetIndexFromLocation(node.BestChildPosition), Utils.ComputerColor, IsReprise, SpecifiBoardList);
+                               if (recheckNode.Weight == -999)
+                               {
+                                 node.Weight = -999;
+                               }
+                             }*/
+
+                            // }*/
+
+                            Debug.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                            Console.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                            bestNodList.Add(node);
+                        }
+
+
+
                     }
-
-
-                    //Pour T80 et T81
-                    var kingIsMenaced = Utils.ComputerKingIsMenaced(node.AsssociateNodeChess2.Board);
-
-                    if (!kingIsMenaced)
-                    {
-
-                        //Pour T88 si il y a -999 au niveau 3 on l'enleve
-                        //seulment pour le level 3
-                        //on réemule les best de niveau 3
-                        /* if(level == 3)
-                         {
-                           var recheckNode = GetOneNodeLevel2Node(boarChess2, Chess2Utils.GetIndexFromLocation(node.Location), Chess2Utils.GetIndexFromLocation(node.BestChildPosition), Utils.ComputerColor, IsReprise, SpecifiBoardList);
-                           if (recheckNode.Weight == -999)
-                           {
-                             node.Weight = -999;
-                           }
-                         }*/
-
-                        // }*/
-
-                        Debug.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
-                        Console.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
-                        bestNodList.Add(node);
-                    }
-
-
-
                 }
+
+
+
+
 
             });
 
@@ -507,7 +511,6 @@ namespace ChessCore.Tools
 
                 var maxWeithList = new List<Node>();
                 maxWeithList.AddRange(maxBestNodListLevel4);
-                ////Pour T
 
                 //Pour T32 et T33 si maxL4 == maxL2 et positive on ne prend plus L3 et L2
                 if (maxBestNodListLevel4.Count == 1 && maxBestNodListLevel2.Count == 1)
@@ -638,7 +641,7 @@ namespace ChessCore.Tools
                     if (!line.Contains("|"))
                         continue;
                     var datas = line.Split(';');
-                    var newPawn = new Pawn(datas[0], datas[1],  datas[2] );
+                    var newPawn = new  Pawn(datas[0], datas[1],  datas[2]);
                     //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
                     newPawn.IsFirstMove = true;
                     newPawn.IsFirstMoveKing = true;

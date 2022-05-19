@@ -1,6 +1,8 @@
-﻿namespace ChessCore.Tools
+﻿using System.Diagnostics;
+
+namespace ChessCore.Tools
 {
-    public class EngineMultiThreading
+    public class EngineMultiThreading : IDisposable
     {
 
         public List<NodeChess2> level1NodeList { get; set; }
@@ -324,6 +326,7 @@
             if (level == 0)
             {
                 var node = new NodeChess2(null, board, level, color, -1, -1, ComputerColore, DeepLevel);
+
                 node.Weight = 0;
                 //LastNodes.Add(node);
                 parentNode = node;
@@ -365,6 +368,10 @@
 
                 //Ajout des neuds
                 var newNode = new NodeChess2(parentNode, copyAndMovingBord, level, color, index, movedIndex, ComputerColore, DeepLevel);
+                if (newNode.Weight == 999999)
+                {
+                    var t_ = "ds";
+                }
                 parentNode.ChildList.Add(newNode);
 
 
@@ -662,6 +669,8 @@
 
 
 
+
+
                     if (level == 1)
                     {
 
@@ -815,56 +824,10 @@
                 else//MIN
                 {
 
-
                     var minWeight = parent.ChildList.Min(x => x.Weight);
                     parent.Weight = minWeight;
 
-                    //if(level == 2)
-                    // {
-                    //   var minWeight = parent.ChildList.Min(x => x.Weight);
-                    //   parent.Weight = minWeight;
-                    // }
 
-
-                    //if (level == 4)
-                    //{
-                    //  /*//Pour T78, inversion
-                    //  if (FromIndexIsNenaced)
-                    //  {
-                    //    var minWeight = parent.ChildList.Max(x => x.Weight);
-                    //    parent.Weight = minWeight;
-                    //  }
-                    //  else
-                    //  {*/
-                    //    var minWeight = parent.ChildList.Min(x => x.Weight);
-                    //    parent.Weight = minWeight;
-                    //  //}
-                    //}
-
-
-
-
-
-
-
-                    //if (minWeight == -3)
-                    //{
-                    //  //  parent.Board.PrintInDebug();
-                    //  var t_ = parent;
-                    //}
-
-
-
-
-
-
-
-
-
-
-
-
-                    // }
 
                 }
 
@@ -943,6 +906,21 @@
 
         }
 
+        public void Dispose()
+        {
+            Debug.WriteLine("Memory used before collection:       {0:N0}",
+       GC.GetTotalMemory(false));
+            Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));
+            Debug.WriteLine("Collect");
+
+            GC.Collect();
+            Debug.WriteLine("Memory used before collection:       {0:N0}",
+                  GC.GetTotalMemory(false));
+            Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));
+
+        }
     }
 
 }

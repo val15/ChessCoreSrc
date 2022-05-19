@@ -6960,6 +6960,31 @@ namespace ChessCore.Test
 
         }
 
+        /*tsiry;19-05-2022*/
+        [TestMethod]
+        public void MTT93ALaReineNoirDoitSeMettreEnG3()
+        {
+
+            var computerColore = "Black";
+            var testName = "T93ALaReineNoirDoitSeMettreEnG3";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
+                //Assert.AreEqual(nodeResult.Location, "g4");
+                Assert.AreEqual(nodeResult.BestChildPosition, "g3");
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+        }
 
         [TestMethod]
         public void MTT33bLePionBlancDoitPrendreLeCavalier()
