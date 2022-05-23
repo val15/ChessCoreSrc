@@ -59,7 +59,151 @@
             return 0;
         }
 
+        public bool TargetIndexIsMenaced(Board board, string curentColor, string opinionColor, int targetIndex)
+        {
 
+            var opinionListIndex = new List<int>();
+
+
+            for (int i = 0; i < board.GetCases().Count(); i++)
+            {
+                var caseBoard = board.GetCases()[i];
+                if (caseBoard.Contains($"|{opinionColor}"))
+                    opinionListIndex.Add(i);
+            }
+
+
+            foreach (var index in opinionListIndex)
+            {
+                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
+                foreach (var movedIndex in possiblesMoves)
+                {
+                    if (movedIndex == targetIndex)
+                    {
+
+                        return true;
+
+
+                    }
+
+                }
+            }
+
+
+            /* var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+             foreach (var movedIndex in possiblesMoves)
+             {
+             }*/
+            return false;
+        }
+        public bool KingIsMenaced(Board board, string curentColor, string opinionColor)
+        {
+            var kingIndex = -1;
+            for (int i = 0; i < board.GetCases().Count(); i++)
+            {
+                var caseBoard = board.GetCases()[i];
+                if (caseBoard.Contains($"K|{curentColor}"))
+                    kingIndex = i;
+            }
+
+            return TargetIndexIsMenaced(board, curentColor, opinionColor, kingIndex);
+
+        }
+
+        public bool GetKingIsInChess(Board board, string curentColor, string opinionColor)
+        {
+            var kingIndex = -1;
+            for (int i = 0; i < board.GetCases().Count(); i++)
+            {
+                var caseBoard = board.GetCases()[i];
+                if (caseBoard.Contains($"K|{curentColor}"))
+                    kingIndex = i;
+            }
+
+            var possiblesMovesOfKing = board.GetPossibleMoves(kingIndex, 1).Select(x => x.Index);
+            if (possiblesMovesOfKing.Count() == 0)
+            {
+                return true;
+            }
+
+            var isMenacedCount = 0;
+
+            //si tous les indexs sont menacés, c'est echec et mat
+            foreach (var indexPossiblesMovesOfKing in possiblesMovesOfKing)
+            {
+                if (TargetIndexIsMenaced(board, curentColor, opinionColor, indexPossiblesMovesOfKing))
+                    isMenacedCount++;
+
+            }
+            if (isMenacedCount == possiblesMovesOfKing.Count())
+                return true;
+            return false;
+
+
+        }
+
+
+        public bool GetIsInChess( string opinionColor)
+        {
+            if (KingIsMenaced(Board, Color, opinionColor))
+            {
+                return GetKingIsInChess(Board, Color, opinionColor);
+            }
+            return false;
+        }
+
+        public bool GetIsLocationIsProtected(int locationIndex,string currentColor,string opinionColor)
+        {
+            if (!TargetIndexIsMenaced(Board, Color, opinionColor, locationIndex))
+                return false;
+
+            //On creer une copy du board
+            var copyBoard = Utils.CloneBoad(Board);
+            var currentCase = copyBoard.GetCases()[locationIndex];
+            if (!currentCase.Contains("|"))
+                return false;
+
+            //on change la couleur 
+            currentCase =currentCase.Replace($"|{currentColor}", $"|{opinionColor}");
+            copyBoard.GetCases()[locationIndex]= currentCase;
+            //si apres changement de couleur, la position est menacer
+            //=> c'est que la position est protégée
+            if (TargetIndexIsMenaced(copyBoard, $"{opinionColor}", $"{currentColor}", locationIndex))
+                return true;
+
+            return false;
+        }
+
+
+        public int GetProtectedNumber()
+        {
+            var opinionColor = "W";
+            if (Color == "W")
+                opinionColor = "B";
+             var protectedNumber = 0;
+            var alierIndexList = new List<int>();
+            var protectedList = new List<int>();
+            ///Board.GetCases().Where(x => x.Contains($"|{Color}"));
+            var i = 0;
+            foreach (var currentCase in Board.GetCases())
+            {
+                if (currentCase.Contains($"|{Color}"))
+                    alierIndexList.Add(i);
+                i++;
+            }
+            foreach (var index in alierIndexList)
+            {
+                
+                if (GetIsLocationIsProtected(index, Color, opinionColor))
+                {
+                    protectedNumber++;
+                    protectedList.Add(index);
+                }
+                    
+            }
+            var t_ = protectedList;
+            return protectedNumber;
+        }
         public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
         {
             FromIndex = formIndex;
@@ -143,9 +287,24 @@
 
 
 
-
-
-
+                /* if (TargetIndexIsMenaced(board, color, computeurColor, ToIndex))
+                     Weight -= GetValue()-1;*/
+                //Is protected
+              
+              /*  var alierIndexList = new List<int>();
+                ///Board.GetCases().Where(x => x.Contains($"|{Color}"));
+                var i = 0;
+                foreach (var currentCase in Board.GetCases())
+                {
+                    if (currentCase.Contains($"|{Color}"))
+                        alierIndexList.Add(i);
+                    i++;
+                }
+                foreach (var index in alierIndexList)
+                {
+                    if (GetIsLocationIsProtected(index, color, computeurColor))
+                        Weight++;
+                }*/
 
 
 

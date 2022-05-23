@@ -33,7 +33,6 @@ namespace ChessCore.Controllers
                 if (MainUtils.CpuCount > 1)
                     return null;
 
-                //GC.Collect();
                 //pour le timer,
                 //il faut prendre l'intervale en seconde et l'ajouter à 
                 //computer timer
@@ -114,7 +113,7 @@ namespace ChessCore.Controllers
             }
             finally
             {
-                GC.Collect();
+              ////  GC.Collect();
             }
            
             
@@ -292,7 +291,7 @@ namespace ChessCore.Controllers
         [HttpPost]
         public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, string selectedDurationType, int selectedLevel)
         {
-            GC.Collect();
+          ////  GC.Collect();
             //var t_ = selectionLevel;
             if (selectedLevel != -1)
                 MainUtils.DeepLevel = selectedLevel;
@@ -339,7 +338,6 @@ namespace ChessCore.Controllers
                     initialVm.WhiteScore = $"+{(initialVm.MainBord.WhiteScore - initialVm.MainBord.BlackScore).ToString()}";
                 else
                     initialVm.BlackScore = initialVm.WhiteScore = "";
-                //  GC.Collect();
    
                 return PartialView("Details", initialVm);
             }
@@ -396,7 +394,6 @@ namespace ChessCore.Controllers
                         vmOld.BlackScore = vmOld.WhiteScore = "";
                     // return View(MainUtils.VM);
                     MainUtils.CaseList = vmOld.MainBord.GetCases().ToList();
-                    // GC.Collect();
 
                     return PartialView("Details", vmOld);
 

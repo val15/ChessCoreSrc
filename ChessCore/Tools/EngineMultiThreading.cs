@@ -910,15 +910,15 @@ namespace ChessCore.Tools
         {
             Debug.WriteLine("Memory used before collection:       {0:N0}",
        GC.GetTotalMemory(false));
-            Console.WriteLine("Memory used before collection:       {0:N0}",
-                    GC.GetTotalMemory(false));
+          /*  Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));*/
             Debug.WriteLine("Collect");
 
             GC.Collect();
             Debug.WriteLine("Memory used before collection:       {0:N0}",
                   GC.GetTotalMemory(false));
-            Console.WriteLine("Memory used before collection:       {0:N0}",
-                    GC.GetTotalMemory(false));
+          /*  Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));*/
 
         }
     }

@@ -366,6 +366,15 @@ namespace ChessCore.Tools
                 {
                     if (bestNodListLevel4.Count > 0)
                     {
+                        //pour T94, on ajoute le nombre des pions protégers dans Weight
+                        //on cherche ne nombre de protege
+                        foreach (var node in bestNodListLevel4)
+                        {
+                            var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
+                            //Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition} protectedNumber = {protectedNumber}");
+                            node.Weight += protectedNumber;
+                        }
+
                         maxWeithLevel4 = bestNodListLevel4.Max(x => x.Weight);
                         maxBestNodListLevel4 = bestNodListLevel4.Where(x => x.Weight == maxWeithLevel4).ToList();
                     }
@@ -391,7 +400,7 @@ namespace ChessCore.Tools
 
                 if (bestNodListLevel4.Count > 0)
                 {
-                    // var t_3 = bestNodListLevel4.Count;
+                   
                     var inChessNumber = bestNodListLevel4.Where(x => x.Weight == -999).ToList().Count;
                     var half = bestNodListLevel4.Count / 2;
                     if (inChessNumber >= half)
@@ -529,6 +538,9 @@ namespace ChessCore.Tools
                     if (maxWeithLevel3 > maxWeithLevel4)
                     {
                         maxWeithList.AddRange(maxBestNodListLevel3);
+
+                     
+                      
                     }
 
 
@@ -594,6 +606,9 @@ namespace ChessCore.Tools
                     {
                         nodeResult.AsssociateNodeChess2.RandomEquivalentList.Add(node2.AsssociateNodeChess2);
                     }
+
+
+                  
                     //rondom
                     var rand = new Random();
                     nodeResult = maxWeithList.ToList()[rand.Next(maxWeithList.Count())];
@@ -835,15 +850,15 @@ namespace ChessCore.Tools
         {
             Debug.WriteLine("Memory used before collection:       {0:N0}",
          GC.GetTotalMemory(false));
-            Console.WriteLine("Memory used before collection:       {0:N0}",
-                    GC.GetTotalMemory(false));
+           /* Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));*/
             Debug.WriteLine("Collect");
 
             GC.Collect();
             Debug.WriteLine("Memory used before collection:       {0:N0}",
                   GC.GetTotalMemory(false));
-            Console.WriteLine("Memory used before collection:       {0:N0}",
-                    GC.GetTotalMemory(false));
+         /*   Console.WriteLine("Memory used before collection:       {0:N0}",
+                    GC.GetTotalMemory(false));*/
         }
 
         public static int[] SimplePawnFirstBlackTab64 = {

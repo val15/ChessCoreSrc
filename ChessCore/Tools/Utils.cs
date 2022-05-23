@@ -433,7 +433,12 @@
         }
 
         public static string OpinionColor { get; set; } = "W";
-
+        /*tsiry;20-05-2022
+         * */
+        public static Board CloneBoad(Board originalBord)
+        {
+            return new Board(originalBord);
+        }
         // public static string ComputerColor { get; set; }
         public static Board CloneAndMove(Board originalBord, int initialIndex, int destinationIndex, int level)
         {
