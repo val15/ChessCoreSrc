@@ -405,8 +405,8 @@ namespace ChessCore.Tools
                 var maxBestNodListLevel3 = new List<Node>();
                 var maxBestNodListLevel2 = new List<Node>();
                 var bestNodListLevel4 = GetBestNodeListFromLevel(boarChess, 4, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-                var maxWeithLevel4 = -1111;
-                var maxWeithLevel3 = -1111;
+                var maxWeithLevel4 = -1111.0;
+                var maxWeithLevel3 = -1111.0;
                 if (bestNodListLevel4 != null)
                 {
                     if (bestNodListLevel4.Count > 0)
@@ -518,7 +518,7 @@ namespace ChessCore.Tools
                     {
                         bestNodListLevel2.RemoveAll(x => x.Location == toDeleteNode.Location && x.BestChildPosition == toDeleteNode.BestChildPosition);
                     }
-                    var maxWeithLevel2 = -1111;
+                    var maxWeithLevel2 = -1111.0;
 
                     if (bestNodListLevel2.Count > 0)
                     {

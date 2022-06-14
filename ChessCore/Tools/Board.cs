@@ -39,6 +39,10 @@ namespace ChessCore.Tools
         {
             return _cases;
         }
+        public void SetCases(int index, string containt)
+        {
+            _cases[index] = containt;
+        }
         public string GetPawnShortNameInIndex(int index)
         {
             var currentCase = _cases[index];
@@ -877,12 +881,12 @@ namespace ChessCore.Tools
                     if (isContent == -1)
                     {
                         //Pour T71
-                        if (pawnName != "K")
+                        //if (pawnName != "K")
                             //results.Add(destinationIndex);
                             results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
-                        else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
+                       // else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                        //    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);

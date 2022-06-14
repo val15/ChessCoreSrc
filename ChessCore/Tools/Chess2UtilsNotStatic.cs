@@ -310,6 +310,11 @@ namespace ChessCore.Tools
         {
             try
             {
+                Debug.WriteLine("L2 InChess--------------------");
+                //Console.WriteLine("L4--------------------");
+                var L2InChessList = GetBestNodeListFromLevel(boarChess, 2, colore[0].ToString(), IsReprise, SpecifiBoardList);
+                L2InChessList = L2InChessList.Where(x => x.Weight <= -990).ToList();
+              
                 //Pour les BestsPosition
                 // GC.Collect();
                 Utils.ComputerColor = colore[0].ToString();
@@ -342,13 +347,28 @@ namespace ChessCore.Tools
 
 
 
-
+                   //  var t_blsd = GetBestNodeListFromLevel(boarChess, 2, "B", IsReprise, SpecifiBoardList);
                 Debug.WriteLine("L4--------------------");
                 Console.WriteLine("L4--------------------");
                 var maxBestNodListLevel4 = new List<Node>();
                 var maxBestNodListLevel3 = new List<Node>();
                 var maxBestNodListLevel2 = new List<Node>();
                 var bestNodListLevel4 = GetBestNodeListFromLevel(boarChess, 4, Utils.ComputerColor, IsReprise, SpecifiBoardList);
+
+                // pour T95B on modifie le pour des L2InChessList dans bestNodListLevel4
+                Debug.WriteLine($"bestNodListLevel4 after edit for in chess in L2");
+                foreach (var node in L2InChessList)
+                {
+                    bestNodListLevel4.Where(c => c.Location == node.Location && c.BestChildPosition == node.BestChildPosition).Select(c => { c.Weight = node.Weight; return c; }).ToList();
+
+                }
+                foreach (var node in bestNodListLevel4)
+                {
+                    Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                    Console.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                }
+
+           
                 //Level4MinList.AddRange(Level4MinList);
                 //var t_level4MinList = Level4MinList.Distinct();
                 Debug.WriteLine("Level4BlackList--------");
@@ -360,20 +380,14 @@ namespace ChessCore.Tools
 
                 }
 
-                var maxWeithLevel4 = -1111;
-                var maxWeithLevel3 = -1111;
+                
+                var maxWeithLevel4 = -1111.0;
+                var maxWeithLevel3 = -1111.0;
                 if (bestNodListLevel4 != null)
                 {
                     if (bestNodListLevel4.Count > 0)
                     {
-                        //pour T94, on ajoute le nombre des pions protégers dans Weight
-                        //on cherche ne nombre de protege
-                        foreach (var node in bestNodListLevel4)
-                        {
-                            var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
-                            //Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition} protectedNumber = {protectedNumber}");
-                            node.Weight += protectedNumber;
-                        }
+                       
 
                         maxWeithLevel4 = bestNodListLevel4.Max(x => x.Weight);
                         maxBestNodListLevel4 = bestNodListLevel4.Where(x => x.Weight == maxWeithLevel4).ToList();
@@ -397,7 +411,7 @@ namespace ChessCore.Tools
                 //Pour T87 protect Win
                 //si pour L4 il y plus des 1/2 des noeuds qui ont -999
                 //on ne passe plus par L3 et L2
-
+                
                 if (bestNodListLevel4.Count > 0)
                 {
                    
@@ -408,7 +422,11 @@ namespace ChessCore.Tools
 
                 }
 
-
+                //pour T95B si le L2InChessList n'est pas vide
+                //on ne prond plus les autres noeuds
+                //Pour T74, on ne que si c'est supperieur à 1
+                if (L2InChessList.Count>1)
+                       isNeedL3L2 = false;
                 if (isNeedL3L2)
                 {
                     Debug.WriteLine("L3--------------------");
@@ -427,6 +445,9 @@ namespace ChessCore.Tools
                         }
 
                     }
+                    
+
+
 
                     if (bestNodeListLevel3.Count > 0)
                     {
@@ -439,7 +460,7 @@ namespace ChessCore.Tools
                         //pour T78
                         //si maxBestNodListLevel3 count ==1
                         //si maxBestNodListLevel3 se trouve dans maxBestNodListLevel4
-                        /* if (maxBestNodListLevel3.Count == 1)
+                         if (maxBestNodListLevel3.Count == 1)
                          {
                            var bestNodeInlevel3 = maxBestNodListLevel3.First();
                            var equivalentInLevel4 = bestNodListLevel4.FirstOrDefault(x => x.Location == bestNodeInlevel3.Location && x.BestChildPosition == bestNodeInlevel3.BestChildPosition);
@@ -454,7 +475,9 @@ namespace ChessCore.Tools
                            }
 
                          }
-                         */
+
+                       
+
                     }
 
 
@@ -475,7 +498,7 @@ namespace ChessCore.Tools
                             if (diff < 0)
                                 bestNodeL.Weight = contain.Weight;
                         }
-
+                       
                     }
 
                     var toDeleteForL3L2Node = bestNodListLevel4.Where(x => x.Weight <= -900);
@@ -485,7 +508,7 @@ namespace ChessCore.Tools
                     {
                         bestNodeListLevel3.RemoveAll(x => x.Location == toDeleteNode.Location && x.BestChildPosition == toDeleteNode.BestChildPosition);
                     }
-
+                   
                     //pour T88
                     //on supprime aussi de l3 les eches en l2
                     //-998  e5 =>  c7
@@ -507,7 +530,7 @@ namespace ChessCore.Tools
                     {
                         bestNodeListLevel2.RemoveAll(x => x.Location == toDeleteNode.Location && x.BestChildPosition == toDeleteNode.BestChildPosition);
                     }
-                    var maxWeithLevel2 = -1111;
+                    var maxWeithLevel2 = -1111.0;
 
                     if (bestNodeListLevel2.Count > 0)
                     {
@@ -517,9 +540,11 @@ namespace ChessCore.Tools
 
 
                 }
-
+                
                 var maxWeithList = new List<Node>();
                 maxWeithList.AddRange(maxBestNodListLevel4);
+
+                
 
                 //Pour T32 et T33 si maxL4 == maxL2 et positive on ne prend plus L3 et L2
                 if (maxBestNodListLevel4.Count == 1 && maxBestNodListLevel2.Count == 1)
@@ -553,6 +578,7 @@ namespace ChessCore.Tools
                 //T53 pour tous L3 dans L4, on modifie le poids dans L3
                 //T92 on ne modifie que les L3 dans L4 et pas les L2
                 //foreach (var node in maxBestNodListLevel3)
+                
                 for (int i = 0; i < maxWeithList.Count; i++)
                 {
                     var node = maxWeithList[i];
@@ -583,7 +609,7 @@ namespace ChessCore.Tools
                     }
 
                 }
-
+               
                 var maxWeith = maxWeithList.Max(x => x.Weight);
                 maxWeithList = maxWeithList.Where(x => x.Weight == maxWeith).ToList();
 
@@ -602,17 +628,39 @@ namespace ChessCore.Tools
 
                 if (maxWeithList.Count() > 1)
                 {
-                    foreach (var node2 in maxWeithList)
+                    //pour T94, on ajoute le nombre des pions protégers dans Weight
+                    //on cherche ne nombre de protege
+                     
+                     foreach (var node in maxWeithList)
+                     {
+                        
+                             var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
+                             //Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition} protectedNumber = {protectedNumber}");
+                             node.Weight += 0.5;
+                        
+
+                     }
+                    maxWeith = maxWeithList.Max(x => x.Weight);
+                    maxWeithList = maxWeithList.Where(x => x.Weight == maxWeith).ToList();
+                    if (maxWeithList.Count() == 1)
+                        nodeResult = maxWeithList.First();
+                    else
                     {
-                        nodeResult.AsssociateNodeChess2.RandomEquivalentList.Add(node2.AsssociateNodeChess2);
+                        foreach (var node2 in maxWeithList)
+                        {
+                            nodeResult.AsssociateNodeChess2.RandomEquivalentList.Add(node2.AsssociateNodeChess2);
+                        }
+                        //rondom
+                        var rand = new Random();
+                        nodeResult = maxWeithList.ToList()[rand.Next(maxWeithList.Count())];
                     }
+
+                   
 
 
                   
-                    //rondom
-                    var rand = new Random();
-                    nodeResult = maxWeithList.ToList()[rand.Next(maxWeithList.Count())];
-
+                   
+                  
                 }
                 else
                     nodeResult = maxWeithList.First();

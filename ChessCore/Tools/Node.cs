@@ -12,7 +12,7 @@
         public int IsProtected { get; set; }
         public bool IsMenaced { get; set; }
 
-        public int Weight { get; set; }
+        public double Weight { get; set; }
         public string Location { get; set; }
         public string OldPositionName { get; set; }
 

@@ -595,6 +595,7 @@ namespace ChessCore.Tools
 
             var rand = new Random();
             BestNode = randomNodes[rand.Next(randomNodes.Count())];
+            
         }
 
 
@@ -666,6 +667,7 @@ namespace ChessCore.Tools
 
                     var maxWeight = parent.ChildList.Max(x => x.Weight);
                     parent.Weight = maxWeight;
+                   
 
 
 
@@ -673,7 +675,7 @@ namespace ChessCore.Tools
 
                     if (level == 1)
                     {
-
+                      
 
                         //Pour 82
                         //pour eviter le nulle on enleve evite de refaire les memes actions
@@ -799,10 +801,37 @@ namespace ChessCore.Tools
 
                             else
                             {
-                                //maxNodeList = maxNodeList.Where(x => x.Weight == maxWeith).ToList();
-                                var rand = new Random();
-                                maxNode = maxNodeList[rand.Next(maxNodeList.Count())];
-                                maxNode.RandomEquivalentList = maxNodeList;
+                                //Pour T95B si il y a plus de deux au hazard, on privilegie 
+                                //celui qui est protégé
+                                 if(maxWeith!=-999)
+                                {
+                                    foreach (var node in maxNodeList)
+                                    {
+                                        //if (node.GetIsLocationIsProtected(node.ToIndex, "W", "B"))
+                                        if (node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
+                                        {
+                                            node.Weight += 1;//0.5;
+                                        }
+                                            
+                                    }
+                                }
+                               
+                                maxWeith = maxNodeList.Max(x => x.Weight);
+                                maxNodeList = maxNodeList.Where(x => x.Weight == maxWeith).ToList();
+                                if (maxNodeList.Count() == 1)
+                                    maxNode = maxNodeList.First();
+                                else
+                                {
+                                    //maxNodeList = maxNodeList.Where(x => x.Weight == maxWeith).ToList();
+                                    var rand = new Random();
+                                    maxNode = maxNodeList[rand.Next(maxNodeList.Count())];
+                                    maxNode.RandomEquivalentList = maxNodeList;
+                                }
+
+                                  
+                                
+                               
+                                
 
 
 

@@ -26,7 +26,7 @@
         public int FromIndex { get; set; }
         public int ToIndex { get; set; }
 
-        public int Weight { get; set; }
+        public double Weight { get; set; }
         public NodeChess2()
         {
 
@@ -62,21 +62,34 @@
         public bool TargetIndexIsMenaced(Board board, string curentColor, string opinionColor, int targetIndex)
         {
 
-            var opinionListIndex = new List<int>();
+            //var opinionListIndex = new List<int>();
 
 
-            for (int i = 0; i < board.GetCases().Count(); i++)
-            {
-                var caseBoard = board.GetCases()[i];
-                if (caseBoard.Contains($"|{opinionColor}"))
-                    opinionListIndex.Add(i);
-            }
+            /* for (int i = 0; i < board.GetCases().Count(); i++)
+             {
+                 var caseBoard = board.GetCases()[i];
+                 if (caseBoard.Contains($"|{opinionColor}"))
+                     opinionListIndex.Add(i);
+             }*/
+            var opinionListIndex = board.GetCasesIndex(opinionColor);
 
 
             foreach (var index in opinionListIndex)
             {
-                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
-                foreach (var movedIndex in possiblesMoves)
+
+                if (targetIndex == -1)
+                    return false;
+                var cloneBoad = Utils.CloneBoad(board);
+
+                cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
+                // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
+               
+                var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+               
+                if (possiblesMoves.Contains(targetIndex))
+                    return true;
+
+                /*foreach (var movedIndex in possiblesMoves)
                 {
                     if (movedIndex == targetIndex)
                     {
@@ -86,7 +99,7 @@
 
                     }
 
-                }
+                }*/
             }
 
 
@@ -143,19 +156,22 @@
         }
 
 
-        public bool GetIsInChess( string opinionColor)
+        public bool GetIsInChess(string opinionColor, string computerColor)
         {
-            if (KingIsMenaced(Board, Color, opinionColor))
+
+            if (KingIsMenaced(Board, computerColor, opinionColor))
             {
-                return GetKingIsInChess(Board, Color, opinionColor);
+                return GetKingIsInChess(Board, computerColor, opinionColor);
             }
+
+
             return false;
         }
 
         public bool GetIsLocationIsProtected(int locationIndex,string currentColor,string opinionColor)
         {
-            if (!TargetIndexIsMenaced(Board, Color, opinionColor, locationIndex))
-                return false;
+            //if (!TargetIndexIsMenaced(Board, currentColor, opinionColor, locationIndex))
+            //    return false;
 
             //On creer une copy du board
             var copyBoard = Utils.CloneBoad(Board);
@@ -193,7 +209,6 @@
             }
             foreach (var index in alierIndexList)
             {
-                
                 if (GetIsLocationIsProtected(index, Color, opinionColor))
                 {
                     protectedNumber++;
@@ -201,7 +216,6 @@
                 }
                     
             }
-            var t_ = protectedList;
             return protectedNumber;
         }
         public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
@@ -236,6 +250,14 @@
 
             if (Level == maxDeepLevel)
             {
+                if (Level == 2)
+                {
+                    if (GetIsInChess("B", "W"))
+                    {
+                        Weight = -999;
+                        return;
+                    }
+                }
 
                 var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
                 if (opinionKingIndex == -1)
@@ -282,7 +304,6 @@
                     Weight = Board.BlackScore - Board.WhiteScore;
                 else
                     Weight = Board.WhiteScore - Board.BlackScore;
-
 
 
 
@@ -356,6 +377,7 @@
                 Weight = Board.WhiteScore - Board.BlackScore;
 
         }
+
     }
 
 }
