@@ -810,7 +810,7 @@ namespace ChessCore.Tools
                                         //if (node.GetIsLocationIsProtected(node.ToIndex, "W", "B"))
                                         if (node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
                                         {
-                                            node.Weight += 1;//0.5;
+                                            node.Weight += 0.5;
                                         }
                                             
                                     }

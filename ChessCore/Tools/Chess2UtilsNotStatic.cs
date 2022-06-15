@@ -636,7 +636,7 @@ namespace ChessCore.Tools
                         
                              var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
                              //Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition} protectedNumber = {protectedNumber}");
-                             node.Weight += 0.5;
+                             node.Weight += protectedNumber;
                         
 
                      }
