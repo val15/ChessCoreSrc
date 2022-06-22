@@ -2,6 +2,7 @@
 {
     public class NodeChess2
     {
+        public  string PawnName  { get; set; }
         public NodeChess2 BestNode { get; set; }
 
         public int MinW { get; set; }
@@ -65,12 +66,86 @@
             //var opinionListIndex = new List<int>();
 
 
-            /* for (int i = 0; i < board.GetCases().Count(); i++)
+            // for (int i = 0; i < board.GetCases().Count(); i++)
+            // {
+            //     var caseBoard = board.GetCases()[i];
+            //     if (caseBoard.Contains($"|{opinionColor}"))
+            //         opinionListIndex.Add(i);
+            // }
+            var opinionListIndex = board.GetCasesIndex(opinionColor);
+
+
+            foreach (var index in opinionListIndex)
+            {
+                if (targetIndex == -1)
+                    return false;
+                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
+                if (possiblesMoves.Contains(targetIndex))
+                {
+                    return true;
+                }
+                else
+                {
+                    var cloneBoad = Utils.CloneBoad(board);
+
+                    cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
+                    // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
+
+                     possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+
+                    if (possiblesMoves.Contains(targetIndex))
+                    {
+                        return true;
+                    }
+                }
+                /*;
+              
+                var cloneBoad = Utils.CloneBoad(board);
+
+                cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
+                // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
+
+                var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+
+                if (possiblesMoves.Contains(targetIndex))
+                {
+                    return true;
+                }*/
+
+
+                /*foreach (var movedIndex in possiblesMoves)
+                {
+                    if (movedIndex == targetIndex)
+                    {
+
+                        return true;
+
+
+                    }
+
+                }*/
+            }
+
+
+            /* var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+             foreach (var movedIndex in possiblesMoves)
              {
-                 var caseBoard = board.GetCases()[i];
-                 if (caseBoard.Contains($"|{opinionColor}"))
-                     opinionListIndex.Add(i);
              }*/
+            return false;
+        }
+
+        public bool TargetIndexIsMenacedOld(Board board, string curentColor, string opinionColor, int targetIndex)
+        {
+
+            //var opinionListIndex = new List<int>();
+
+
+            // for (int i = 0; i < board.GetCases().Count(); i++)
+            // {
+            //     var caseBoard = board.GetCases()[i];
+            //     if (caseBoard.Contains($"|{opinionColor}"))
+            //         opinionListIndex.Add(i);
+            // }
             var opinionListIndex = board.GetCasesIndex(opinionColor);
 
 
@@ -80,14 +155,17 @@
                 if (targetIndex == -1)
                     return false;
                 var cloneBoad = Utils.CloneBoad(board);
-
+               
                 cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
                 // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
                
                 var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
                
                 if (possiblesMoves.Contains(targetIndex))
+                {
                     return true;
+                }
+                    
 
                 /*foreach (var movedIndex in possiblesMoves)
                 {
@@ -116,7 +194,12 @@
             {
                 var caseBoard = board.GetCases()[i];
                 if (caseBoard.Contains($"K|{curentColor}"))
+                {
                     kingIndex = i;
+                    break;
+                }
+                   
+
             }
 
             return TargetIndexIsMenaced(board, curentColor, opinionColor, kingIndex);
@@ -144,12 +227,18 @@
             //si tous les indexs sont menacés, c'est echec et mat
             foreach (var indexPossiblesMovesOfKing in possiblesMovesOfKing)
             {
+                
                 if (TargetIndexIsMenaced(board, curentColor, opinionColor, indexPossiblesMovesOfKing))
                     isMenacedCount++;
 
             }
             if (isMenacedCount == possiblesMovesOfKing.Count())
+            {
+                //Board.Print();
+               // Board.PrintInDebug();
                 return true;
+            }
+               
             return false;
 
 
@@ -161,6 +250,7 @@
 
             if (KingIsMenaced(Board, computerColor, opinionColor))
             {
+                //return Utils.KingIsInChess(Board, computerColor);
                 return GetKingIsInChess(Board, computerColor, opinionColor);
             }
 
@@ -220,10 +310,12 @@
         }
         public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
         {
+            if(toIndex != -1)
+                PawnName = board.GetCases()[toIndex][0].ToString();
             FromIndex = formIndex;
             ToIndex = toIndex;
             Level = level;
-            Board = board;
+            Board = Utils.CloneBoad(board);
             Parent = parent;
             Color = color;
             ChildList = new List<NodeChess2>();
@@ -250,11 +342,16 @@
 
             if (Level == maxDeepLevel)
             {
+                //Pour T95B et T62
                 if (Level == 2)
                 {
-                    if (GetIsInChess("B", "W"))
+                  
+                    if (GetIsInChess(Utils.OpinionColor,Utils.ComputerColor))
                     {
+                        
                         Weight = -999;
+                      /*  if(ToIndex==31)
+                            Board.PrintInDebug();*/
                         return;
                     }
                 }

@@ -368,10 +368,10 @@ namespace ChessCore.Tools
 
                 //Ajout des neuds
                 var newNode = new NodeChess2(parentNode, copyAndMovingBord, level, color, index, movedIndex, ComputerColore, DeepLevel);
-                if (newNode.Weight == 999999)
+                /*if (newNode.Weight == 999999)
                 {
                     var t_ = "ds";
-                }
+                }*/
                 parentNode.ChildList.Add(newNode);
 
 
@@ -803,12 +803,13 @@ namespace ChessCore.Tools
                             {
                                 //Pour T95B si il y a plus de deux au hazard, on privilegie 
                                 //celui qui est protégé
-                                 if(maxWeith!=-999)
+                                //if(maxWeith<=-900)
+                                if (maxWeith >-900)
                                 {
                                     foreach (var node in maxNodeList)
                                     {
-                                        //if (node.GetIsLocationIsProtected(node.ToIndex, "W", "B"))
-                                        if (node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
+                                       /// if (node.GetIsLocationIsProtected(node.ToIndex, "B", "W"))
+                                        if (DeepLevel == 4 && node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
                                         {
                                             node.Weight += 0.5;
                                         }
@@ -822,6 +823,7 @@ namespace ChessCore.Tools
                                     maxNode = maxNodeList.First();
                                 else
                                 {
+                                    //if(List)
                                     //maxNodeList = maxNodeList.Where(x => x.Weight == maxWeith).ToList();
                                     var rand = new Random();
                                     maxNode = maxNodeList[rand.Next(maxNodeList.Count())];
