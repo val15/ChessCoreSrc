@@ -314,7 +314,8 @@ namespace ChessCore.Tools
             var maxInList = inList.Where(x => x.Weight ==maxWeight);
             foreach (var node in maxInList)
             {
-                bestNodListLevel4.Where(c => c.Location == node.Location && c.BestChildPosition == node.BestChildPosition).Select(c => { c.Weight = node.Weight; return c; }).ToList();
+                //Pour T53 ion ne modifie que les négatives
+                bestNodListLevel4.Where(c => c.Location == node.Location && c.BestChildPosition == node.BestChildPosition && c.Weight  <0).Select(c => { c.Weight = node.Weight; return c; }).ToList();
 
             }
             Debug.WriteLine($"bestNodList after edit max");
@@ -405,11 +406,15 @@ namespace ChessCore.Tools
                 if(bestNodListLevel4.Count>0)
                     L4MaxWeight = bestNodListLevel4.Max(x => x.Weight);
                 
-                //pour T60 si bestNodListLevel4.Count == 0
+                //pour T60 et T67 si bestNodListLevel4.Count == 0
                 if (bestNodListLevel4.Count ==0)
+                {
                     bestNodListLevel4.AddRange(L2ChessList);
-                if (bestNodListLevel4.Count == 0)
                     bestNodListLevel4.AddRange(L3ChessList);
+                }
+                    
+                
+                    
 
                 // pour T95B on modifie le pour des L2InChessList dans bestNodListLevel4
                 //mais pour T62 on ne pas le max de bestNodListLevel4
@@ -469,7 +474,6 @@ namespace ChessCore.Tools
 
                 
                 var maxWeithLevel4 = -1111.0;
-                var maxWeithLevel3 = -1111.0;
                 if (bestNodListLevel4 != null)
                 {
                     if (bestNodListLevel4.Count > 0)
@@ -488,45 +492,7 @@ namespace ChessCore.Tools
 
 
 
-                //Pour T87 Win
-                //si pour L4 il y a un noeud de 999
-                //on ne passe plus par L3 et L2
-                /*var isNeedL3L2 = true;
-                if (maxBestNodListLevel4.Count > 0)
-                {
-                    if (maxBestNodListLevel4.Max(x => x.Weight) >= 999)
-                    {
-                        isNeedL3L2 = false;
-                    }
-                }
-
-                //Pour T87 protect Win
-                //si pour L4 il y plus des 1/2 des noeuds qui ont -999
-                //on ne passe plus par L3 et L2
-                
-                if (bestNodListLevel4.Count > 0)
-                {
-                   
-                    var inChessNumber = bestNodListLevel4.Where(x => x.Weight == -999).ToList().Count;
-                    var half = bestNodListLevel4.Count / 2;
-                    if (inChessNumber >= half)
-                        isNeedL3L2 = false;
-
-                }
-
-                //pour T95B si le L2InChessList n'est pas vide
-                //on ne prond plus les autres noeuds
-                //Pour T74, on ne que si c'est supperieur à 1
-                if (L2InChessList.Count>1)
-                       isNeedL3L2 = false;
-
-                //Pour T53, si tous les maxBestNodListLevel4 sont 0 ou inferieur à 0 isNeedL3L2 = false;
-                var maxL4 = bestNodListLevel4.Max(x=>x.Weight);
-                if (maxL4<=0)
-                {
-                    isNeedL3L2 = false;
-                }
-                isNeedL3L2 = false;*/
+               
              
                 var maxWeithList = new List<Node>();
                 maxWeithList.AddRange(maxBestNodListLevel4);
@@ -538,39 +504,7 @@ namespace ChessCore.Tools
                
 
 
-                //T53 pour tous L3 dans L4, on modifie le poids dans L3
-                //T92 on ne modifie que les L3 dans L4 et pas les L2
-                //foreach (var node in maxBestNodListLevel3)
-              /*  
-                for (int i = 0; i < maxWeithList.Count; i++)
-                {
-                    var node = maxWeithList[i];
-
-
-                
-                    var nodeInL4 = bestNodListLevel4.FirstOrDefault(x => x.Location == node.Location && x.BestChildPosition == node.BestChildPosition && node.AsssociateNodeChess2.Level == 3);
-                    if (nodeInL4 != null)
-                    {
-
-
-                        Debug.WriteLine($"{node.Location} => {node.BestChildPosition}    {node.Weight} To {nodeInL4.Weight}");
-                        Console.WriteLine($"{node.Location} => {node.BestChildPosition}    {node.Weight} To {nodeInL4.Weight}");
-
-                        var diff = nodeInL4.Weight + node.Weight; //-4+1  -4 +3 
-                        if (diff <= -1)
-                        {
-                            // -4  e7 => e6
-                            // Debug.WriteLine("To l4");
-                            // Console.WriteLine("To l4");
-                            //Quand best node est aussi présent dans L2 et L3, on ne l'enleve pas
-                            node.Weight = nodeInL4.Weight;
-                        }
-                        //node.Weight = nodeInL4.Weight;
-                    }
-
-                }
-               
-             */   var maxWeith = maxWeithList.Max(x => x.Weight);
+                var maxWeith = maxWeithList.Max(x => x.Weight);
                 maxWeithList = maxWeithList.Where(x => x.Weight == maxWeith).ToList();
 
                 Console.WriteLine("--Best for all Levels--");
