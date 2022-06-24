@@ -201,14 +201,14 @@ namespace ChessCore.Tools
         * on prend level 2 de noeud sélectionné pour valider le noeud 2
         * */
 
-        public Node GetOneNodeLevel2Node(Board boarChess2, int fromIndex, int toIndex, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
+        public Node GetOneNodeFormSpecificLevel(int level,Board boarChess2, int fromIndex, int toIndex, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
 
 
             // {
             Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", fromIndex, Thread.CurrentThread.ManagedThreadId);
             //var cpuColor = ComputerColore[0].ToString();
-            var engine = new EngineMultiThreading(2, cpuColor, IsReprise, Utils.IsMenaced(fromIndex, boarChess2, cpuColor), SpecifiBoardList);
+            var engine = new EngineMultiThreading(level, cpuColor, IsReprise, Utils.IsMenaced(fromIndex, boarChess2, cpuColor), SpecifiBoardList);
 
 
             // var firstInLastMove = GetTreeLastAction();
@@ -354,16 +354,19 @@ namespace ChessCore.Tools
                 //Pour T67 si L2ChessList.Count<=2 on prend le L3
                 var diff0 = L2ChessList.Count - L2InChessList.Count;
                 
-                if (diff0 > 2 || L2ChessList.Count<=2)
+                if (/*diff0 > 2 || L2ChessList.Count<=2*/true)
                 {
                     Debug.WriteLine("L3--------------------");
                     Console.WriteLine("L3--------------------");
                      L3ChessList = GetBestNodeListFromLevel(boarChess, 3, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-                     L3MaxWeight = L3ChessList.Max(x => x.Weight);
+                    
+                  
+                    L3MaxWeight = L3ChessList.Max(x => x.Weight);
+
 
                     //
                 }
-                
+
                 //Pour les BestsPosition
                 // GC.Collect();
 
@@ -444,8 +447,8 @@ namespace ChessCore.Tools
                     if (maxListL3.Count == 1)
                     {
                         var toAddFromL3 = maxListL3.First();
-                        var inL2 = L2ChessList.FirstOrDefault(x => x.Location == toAddFromL3.Location && x.BestChildPosition == toAddFromL3.BestChildPosition);
-                        if(inL2!=null)
+                        //var inL2 = L2ChessList.FirstOrDefault(x => x.Location == toAddFromL3.Location && x.BestChildPosition == toAddFromL3.BestChildPosition);
+                       // if(inL2!=null)
                             bestNodListLevel4.Add(toAddFromL3);
                        // else if(toAddFromL3.Weight > L2MaxWeight )
                     }
@@ -497,11 +500,10 @@ namespace ChessCore.Tools
                 var maxWeithList = new List<Node>();
                 maxWeithList.AddRange(maxBestNodListLevel4);
 
-                
 
-              
 
-               
+
+
 
 
                 var maxWeith = maxWeithList.Max(x => x.Weight);
@@ -511,6 +513,7 @@ namespace ChessCore.Tools
                 Debug.WriteLine("--Best for all Levels--");
                 foreach (var node in maxWeithList)
                 {
+                     // nodeResult.Weight = t_.Weight;
                     Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
                     Console.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
 
@@ -559,8 +562,7 @@ namespace ChessCore.Tools
                 else
                     nodeResult = maxWeithList.First();
 
-
-
+              
                 return nodeResult;
 
 

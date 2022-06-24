@@ -340,7 +340,7 @@
 
 
 
-            if (Level == maxDeepLevel)
+            if (/*Level == maxDeepLevel*/true)
             {
                 //Pour T95B et T62
                 if (Level == 2)

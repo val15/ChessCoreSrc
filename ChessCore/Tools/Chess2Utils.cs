@@ -257,14 +257,14 @@ namespace ChessCore.Tools
         * on prend level 2 de noeud sélectionné pour valider le noeud 2
         * */
 
-        public static Node GetOneNodeLevel2Node(Board boarChess2, int fromIndex, int toIndex, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
+        public static Node GetOneNodeLevel4Node(Board boarChess2, int fromIndex, int toIndex, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
 
 
             // {
             Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", fromIndex, Thread.CurrentThread.ManagedThreadId);
             //var cpuColor = ComputerColore[0].ToString();
-            var engine = new EngineMultiThreading(2, cpuColor, IsReprise, Utils.IsMenaced(fromIndex, boarChess2, cpuColor), SpecifiBoardList);
+            var engine = new EngineMultiThreading(4, cpuColor, IsReprise, Utils.IsMenaced(fromIndex, boarChess2, cpuColor), SpecifiBoardList);
 
 
             // var firstInLastMove = GetTreeLastAction();

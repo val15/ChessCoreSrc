@@ -666,7 +666,9 @@ namespace ChessCore.Tools
                 {
 
                     var maxWeight = parent.ChildList.Max(x => x.Weight);
-                    parent.Weight = maxWeight;
+                    //T96 
+                    if(parent.Weight< maxWeight)
+                        parent.Weight = maxWeight;
                    
 
 
@@ -856,7 +858,10 @@ namespace ChessCore.Tools
                 {
 
                     var minWeight = parent.ChildList.Min(x => x.Weight);
-                    parent.Weight = minWeight;
+                    //T96 
+                    if (parent.Weight > minWeight)
+                        parent.Weight = minWeight;
+
 
 
 

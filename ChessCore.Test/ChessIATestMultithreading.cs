@@ -6775,6 +6775,30 @@ namespace ChessCore.Test
 
 
         }
+        /*tsiry;24-06-2022*/
+        [TestMethod]
+        public void MTT96LeCavalierBlanchDoitSePettreEnC7()
+        {
+
+            var computerColore = "White";
+            var testName = "T96LeCavalierBlanchDoitSePettreEnC7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreEqual(nodeResult.BestChildPosition, "c7");
+
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+        }
 
     }
 }
