@@ -12,74 +12,226 @@ namespace ChessCore.Test
     {
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
 
-
-        [TestMethod]
-        public void WhiteIsInChess()
-        {
-
-            var testName = "T95ZWhiteIsInChess";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            NodeChess2 nodeChess2 = new NodeChess2(null, board, 0, "W", 0, 0, "B", 0);
-            Utils.OpinionColor = "B";
-            Utils.ComputerColor = "W";
-           // Utils.MainBord = board;
-            var result = nodeChess2.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor);
-            Assert.IsTrue(result);
-        }
+    /*tsiry;03-07-2022*/
+    [TestMethod]
+    public void WhiteIsInChessT95ZWhiteIsInChess()
+    {
+      var testName = "T95ZWhiteIsInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "W");
 
 
-        [TestMethod]
-        public void WhiteIsNotInChess()
-        {
 
-            var testName = "T95ZWhiteIsNotInChess";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            NodeChess2 nodeChess2 = new NodeChess2(null, board, 0, "W", 0, 0, "B", 0);
-            Utils.OpinionColor = "B";
-            Utils.ComputerColor = "W";
-            //Utils.MainBord = board;
-            var result = nodeChess2.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor);
-            Assert.IsFalse(result);
-        }
-        [TestMethod]
-        public void BlackIsNotInChess()
-        {
+      Assert.IsTrue(result);
+    }
 
-            var testName = "T62ZLePionNoirDoitAttaqueLaReineBlancEnH5";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            NodeChess2 nodeChess2 = new NodeChess2(null, board, 0, "B", 0, 0, "W", 0);
-            Utils.ComputerColor = "B";
-            Utils.OpinionColor = "W";
-           // Utils.MainBord = board;
+    /*tsiry;03-07-2022*/
+    [TestMethod]
+    public void WhiteIsInChessT95Z1WhiteIsNotInChess()
+    {
+      var testName = "T95Z1WhiteIsNotInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "W");
 
-            var result = nodeChess2.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor);
-            Assert.IsFalse(result);
-        }
 
-        [TestMethod]
-        public void BlackIsInChess()
-        {
 
-            var testName = "T62Z213IsMenaced";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            NodeChess2 nodeChess2 = new NodeChess2(null, board, 0, "B", 0, 0, "W", 0);
-            Utils.ComputerColor = "B";
-            Utils.OpinionColor = "W";
-            // Utils.MainBord = board;
+      Assert.IsFalse(result);
+    }
 
-            // var result = nodeChess2.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor);
-            var result = nodeChess2.GetKingIsInChess(board, Utils.ComputerColor, Utils.OpinionColor);
-            Assert.IsTrue(result);
-        }
 
+    /*tsiry;02-07-2022*/
+    [TestMethod]
+    public void WhiteIsInChessT29WhiteIsInChess()
+    {
+      var testName = "T29WhiteIsInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "W");
+
+
+
+      Assert.IsTrue(result);
+    }
+
+    /*tsiry;03-07-2022*/
+    [TestMethod]
+    public void WhiteIsInChessT87WhiteIsInChess0()
+    {
+      var testName = "T87WhiteIsInChess0";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "W");
+
+
+
+      Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void WhiteIsNotInChessT87WhiteIsNotInChess1()
+    {
+      var testName = "T87WhiteIsNotInChess1";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "W");
+
+
+
+      Assert.IsFalse(result);
+    }
+
+    /*tsiry;02-07-2022*/
+    [TestMethod]
+    public void BlackIsInChessT07bInChess()
+    {
+      var testName = "T07bInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "B");
+
+
+
+      Assert.IsTrue(result);
+    }
+
+
+    /*tsiry;02-07-2022*/
+    [TestMethod]
+    public void BlackIsInChessT07aInChess0()
+    {
+      var testName = "T07aInChess0";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+     var result = Chess2Utils.TargetColorIsInChess(board, "B");
+      
+
+     
+      Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void BlackIsInChessT07aInChess1()
+    {
+      var testName = "T07aInChess0";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "B");
+
+
+
+      Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void BlackIsNotInChesT27BlackIsNotInChess()
+    {
+      var testName = "T27BlackIsNotInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "B");
+
+
+
+      Assert.IsFalse(result);
+    }
+    [TestMethod]
+    public void BlackkingIsNotProtecctedT07aInChess0()
+    {
+      var testName = "T07aInChess0";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetKingColorIsProteted(board, "B");
+
+
+
+      Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void BlackkingIsProtecctedT27BlackIsNotInChess()
+    {
+      var testName = "T27BlackIsNotInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetKingColorIsProteted(board, "B");
+
+
+
+      Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void BlackIsnotInChessT07aNotInChess0()
+    {
+      var testName = "T07aNotInChess0";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "B");
+
+
+
+      Assert.IsFalse(result);
+    }
+    [TestMethod]
+    public void BlackIsnotInChessT07aNotInChess1()
+    {
+      var testName = "T07aNotInChess1";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "B");
+
+
+
+      Assert.IsFalse(result);
+    }
+    [TestMethod]
+    public void BlackIsnotInChessT60BlackIsNotInChess()
+    {
+      var testName = "T60BlackIsNotInChess";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetColorIsInChess(board, "B");
+
+
+
+      Assert.IsFalse(result);
+    }
+
+    /*tsiry;02-07-2022*/
+    [TestMethod]
+    public void BlackkingIsManced()
+    {
+      var testName = "T07aInChess0";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetKingIsMenaced(board, "B");
+
+
+
+      Assert.IsTrue(result);
+    }
+
+   
+
+   
+    
         [TestMethod]
         public void White51IsNotMenaced()
         {
@@ -140,22 +292,7 @@ namespace ChessCore.Test
         }
 
 
-        [TestMethod]
-        public void BlackWin_WhiteIsInChess()
-        {
-
-            var testName = "T93ZWhiteIsInChess";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            NodeChess2 nodeChess2 = new NodeChess2(null, board, 0, "W", 0, 0, "B", 0);
-            Utils.OpinionColor = "B";
-            Utils.ComputerColor = "W";
-           // Utils.MainBord = board;
-            var result = nodeChess2.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor);
-            Assert.IsTrue(result);
-        }
-
+      
 
         [TestMethod]
         public void WhiteF2IsProtected_IsProtected()
@@ -187,22 +324,7 @@ namespace ChessCore.Test
         }
 
 
-        [TestMethod]
-        public void WhiteIsInChess1()
-        {
-
-            var testName = "T95Z1WhiteIsInChess";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            NodeChess2 nodeChess2 = new NodeChess2(null, board, 0, "W", 0, 0, "B", 0);
-            Utils.OpinionColor = "B";
-            Utils.ComputerColor = "W";
-            //Utils.MainBord = board;
-            var result = nodeChess2.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor);
-            Assert.IsTrue(result);
-        }
-
+   
         [TestMethod]
         public void WhiteF7IsProtected()
         {

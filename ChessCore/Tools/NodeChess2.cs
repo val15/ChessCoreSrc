@@ -206,58 +206,9 @@
 
         }
 
-        public bool GetKingIsInChess(Board board, string curentColor, string opinionColor)
-        {
-            var kingIndex = -1;
-            for (int i = 0; i < board.GetCases().Count(); i++)
-            {
-                var caseBoard = board.GetCases()[i];
-                if (caseBoard.Contains($"K|{curentColor}"))
-                    kingIndex = i;
-            }
+      
 
-            var possiblesMovesOfKing = board.GetPossibleMoves(kingIndex, 1).Select(x => x.Index);
-            if (possiblesMovesOfKing.Count() == 0)
-            {
-                return true;
-            }
-
-            var isMenacedCount = 0;
-
-            //si tous les indexs sont menacés, c'est echec et mat
-            foreach (var indexPossiblesMovesOfKing in possiblesMovesOfKing)
-            {
-                
-                if (TargetIndexIsMenaced(board, curentColor, opinionColor, indexPossiblesMovesOfKing))
-                    isMenacedCount++;
-
-            }
-            if (isMenacedCount == possiblesMovesOfKing.Count())
-            {
-                //Board.Print();
-               // Board.PrintInDebug();
-                return true;
-            }
-               
-            return false;
-
-
-        }
-
-
-        public bool GetIsInChess(string opinionColor, string computerColor)
-        {
-
-            if (KingIsMenaced(Board, computerColor, opinionColor))
-            {
-                //return Utils.KingIsInChess(Board, computerColor);
-                return GetKingIsInChess(Board, computerColor, opinionColor);
-            }
-
-
-            return false;
-        }
-
+     
         public bool GetIsLocationIsProtected(int locationIndex,string currentColor,string opinionColor)
         {
             //if (!TargetIndexIsMenaced(Board, currentColor, opinionColor, locationIndex))
@@ -342,19 +293,7 @@
 
             if (/*Level == maxDeepLevel*/true)
             {
-                //Pour T95B et T62
-                if (Level == 2)
-                {
-                  
-                    if (GetIsInChess(Utils.OpinionColor,Utils.ComputerColor))
-                    {
-                        
-                        Weight = -999;
-                      /*  if(ToIndex==31)
-                            Board.PrintInDebug();*/
-                        return;
-                    }
-                }
+               
 
                 var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
                 if (opinionKingIndex == -1)
@@ -368,64 +307,11 @@
                     Weight = -999;
                     return;
                 }
-
-
-
-
-
-                /* if(Level < 4)
-                 {
-                   // pour T87
-                   if (Utils.KingIsInChess(board, Utils.ComputerColor))
-                   {
-                     Weight = -999;
-                     return;
-                   }
-
-                   //if (Utils.KingIsInChess2(Board, Utils.OpinionColor))
-                   //{
-                   //  Weight = 999;
-                   //  return;
-                   //}
-                 }*/
-
-
-
-
-
-
-
-
                 Board.CalculeScores();
                 if (computeurColor == "B")
                     Weight = Board.BlackScore - Board.WhiteScore;
                 else
                     Weight = Board.WhiteScore - Board.BlackScore;
-
-
-
-
-                /* if (TargetIndexIsMenaced(board, color, computeurColor, ToIndex))
-                     Weight -= GetValue()-1;*/
-                //Is protected
-              
-              /*  var alierIndexList = new List<int>();
-                ///Board.GetCases().Where(x => x.Contains($"|{Color}"));
-                var i = 0;
-                foreach (var currentCase in Board.GetCases())
-                {
-                    if (currentCase.Contains($"|{Color}"))
-                        alierIndexList.Add(i);
-                    i++;
-                }
-                foreach (var index in alierIndexList)
-                {
-                    if (GetIsLocationIsProtected(index, color, computeurColor))
-                        Weight++;
-                }*/
-
-
-
             }
 
 
@@ -475,6 +361,13 @@
 
         }
 
+        public NodeChess2 GetRootParent(NodeChess2 inNode)
+        {
+            if(inNode.Parent.Level==1)
+                return inNode.Parent;
+            else
+                return GetRootParent(inNode.Parent);
+        }
     }
 
 }

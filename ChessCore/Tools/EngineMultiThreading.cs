@@ -94,17 +94,19 @@ namespace ChessCore.Tools
             }
 
 
-
+           
             if (BestNode == null)
             {
                 if ((tunNumber == "1" || tunNumber == "0") && !_isReprise)
                     EmulAllPossibleMovesForFirstTurn(null, mainBord, ComputerColore, 0, -1, -1);
                 else
                     EmulAllPossibleMovesForOnce(null, mainBord, ComputerColore, 0, pawnIndex);
-
+              //  if(Utils.BestNode!=null)
+               //                 return Utils.BestNode;
                 // if (BestNode == null)
                 MinMaxByRoot();
             }
+            
 
             /*if (BestNode != null)
             {
@@ -225,10 +227,10 @@ namespace ChessCore.Tools
         public void EmulAllPossibleMovesForOnce(NodeChess2 parentNode, Board board, string color, int level, int currentPawnIndex)
         {
 
+      
+      
 
-
-
-            if (level == 0)
+      if (level == 0)
             {
                 var node = new NodeChess2(null, board, level, color, -1, -1, ComputerColore, DeepLevel);
                 node.Weight = 0;
@@ -296,15 +298,16 @@ namespace ChessCore.Tools
                 if (color == "B")
                     newColor = "W";
 
-                /* if (Chess2Console.Utils.KingIsInChess2(copyAndMovingBord, Chess2Console.Utils.OpinionColor))
+              /*   if (newNode.GetIsInChess(Utils.OpinionColor, Utils.ComputerColor))
                  {
                    var t_ = 1;
                  }
 
-                 if (Chess2Console.Utils.KingIsInChess2(copyAndMovingBord, Chess2Console.Utils.ComputerColor))
-                 {
+        if (newNode.GetIsInChess(Utils.ComputerColor, Utils.OpinionColor))
+        {
                    var t_ = 1;
-                 }*/
+                 }
+              */
                 EmulAllPossibleMovesFor(newNode, copyAndMovingBord, newColor, level, index, movedIndex);
             }
 
@@ -359,38 +362,13 @@ namespace ChessCore.Tools
 
 
 
-
-
-
-
-
-
-
                 //Ajout des neuds
                 var newNode = new NodeChess2(parentNode, copyAndMovingBord, level, color, index, movedIndex, ComputerColore, DeepLevel);
-                /*if (newNode.Weight == 999999)
-                {
-                    var t_ = "ds";
-                }*/
+             
                 parentNode.ChildList.Add(newNode);
 
 
-                //if (newNode.Level == DeepLevel)
-                //{
-
-                //  //LastNodes.Add(newNode);
-
-                //  //if (_oldW < newNode.Weight)
-                //  //{
-                //    LastNodes.Add(newNode);
-                //  //  _oldW = newNode.Weight;
-                // // }
-
-
-
-                //}
-
-
+           
 
 
 
@@ -398,15 +376,7 @@ namespace ChessCore.Tools
                 if (color == "B")
                     newColor = "W";
 
-                /* if (Chess2Console.Utils.KingIsInChess2(copyAndMovingBord, Chess2Console.Utils.OpinionColor))
-                 {
-                   var t_ = 1;
-                 }
-
-                 if (Chess2Console.Utils.KingIsInChess2(copyAndMovingBord, Chess2Console.Utils.ComputerColor))
-                 {
-                   var t_ = 1;
-                 }*/
+               
                 EmulAllPossibleMovesFor(newNode, copyAndMovingBord, newColor, level, index, movedIndex);
             }
 
@@ -419,17 +389,9 @@ namespace ChessCore.Tools
 
         public void EmulAllPossibleMovesFor(NodeChess2 parentNode, Board board, string color, int level, int fromIndex, int toIndex, int fromIndexNotValide = -1, int toIndexNotValide = -1)
         {
-            //if (Chess2Console.Utils.KingIsInChess2(board, Chess2Console.Utils.ComputerColor))
-            //  return;
-            /* if (Chess2Console.Utils.KingIsInChess2(board, Chess2Console.Utils.OpinionColor))
-             {
-               return;
-             }
-
-             if (Chess2Console.Utils.KingIsInChess2(board, Chess2Console.Utils.ComputerColor))
-             {
-               return;
-             }*/
+    
+      if (BestNode != null)
+        return;
             if (level == 0)
             {
                 var node = new NodeChess2(null, board, level, color, -1, -1, ComputerColore, DeepLevel);
@@ -483,20 +445,7 @@ namespace ChessCore.Tools
                     var copyAndMovingBord = Utils.CloneAndMove(board, index, movedIndex, level);
 
 
-                    /////copyAndMovingBord.Print();
-                    //si Board est menacer et copyAndMovingBord aussi mencer, on ne l'éxpoite plus
-
-                    /*  if (!_isChessInNextLevel)
-                      {
-                        if (isInChess && !opinionIsInChess)
-                        {
-                          if (copyAndMovingBord.IsInChess(color))
-                          {
-                            continue;
-                          }
-                        }
-                      }*/
-
+                   
 
 
 
@@ -516,25 +465,57 @@ namespace ChessCore.Tools
                     if (newNode.Level == DeepLevel)
                     {
 
-                        //LastNodes.Add(newNode);
-
-                        //if (_oldW < newNode.Weight)
-                        // {
-
-                        // if()
                         LastNodes.Add(newNode);
-                        // _oldW = newNode.Weight;
-                        // }
-
-
 
                     }
 
 
+        //pour T80, o regarde les lose et les win seulment pour les DeepLevel == 4
+        if(DeepLevel == 4)
+        {
+             if(level<=3 && Chess2Utils.TargetColorIsInChess(board, Utils.ComputerColor))
+          {
+            
+            //LOSE node
+             Console.WriteLine("lose");
+                  Debug.WriteLine("lose");
+            newNode.Parent.Parent.Weight=-999;
+            Utils.NodeLoseList.Add(newNode.Parent.Parent);
+            return;
+            
+          
+          }
+          if (level<=3 && Chess2Utils.TargetColorIsInChess(board, Utils.OpinionColor))
+          {
 
 
+            if(Utils.MainBoard.GetCases()[newNode.Parent.FromIndex].Contains($"|{Utils.ComputerColor}"))//si from index n' est pas vide dans MainBoard 
+            {
+              var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.Index);
+              //si newNode.Parent.Toindex est dans possibleMovesofFromIndex
+              if(possibleMovesofFromIndex.Contains(newNode.Parent.ToIndex))
+              {
+               
+                  //WIN Node
+                  Console.WriteLine("win");
+                  Debug.WriteLine("win");
+                 // newNode.Board.PrintInDebug();
+                  //Chess2Utils.ma
+                  //newNode.Parent.
+                  BestNode = newNode.Parent;
+                  BestNode.Weight = 999;
+                  return;
+                
+              
+              }
+              
+            }
+          }
 
-                    var newColor = "B";
+        }
+        
+
+          var newColor = "B";
                     if (color == "B")
                         newColor = "W";
                     EmulAllPossibleMovesFor(newNode, copyAndMovingBord, newColor, level, index, movedIndex);
@@ -549,7 +530,7 @@ namespace ChessCore.Tools
 
         public void EmulAllPossibleMovesForFirstTurn(NodeChess2 parentNode, Board board, string color, int level, int fromIndex, int toIndex)
         {
-
+    
             var randomNodes = new List<NodeChess2>();
             if (level == 0)
             {
@@ -636,11 +617,17 @@ namespace ChessCore.Tools
 
         public List<NodeChess2> GetParentListAndMinMax(List<NodeChess2> nodesIn, int level)
         {
+           //if(Utils.BestNodeIsFind)
+           //     return null;
             var oldParent = new NodeChess2();
             List<NodeChess2> parentLevelList = new List<NodeChess2>();
 
             foreach (var node in nodesIn)//Remplissage des parent
             {
+                 //Pour tous les parentLevel5List
+            //TODO
+           
+           
                 var currentParent = node.Parent;
                 if (oldParent == currentParent)
                 {
@@ -653,8 +640,7 @@ namespace ChessCore.Tools
 
             //Pour T07
 
-            //Pour tous les parentLevel5List
-            //MAX
+            
 
 
 
@@ -664,8 +650,9 @@ namespace ChessCore.Tools
             {
                 if (level == 1 || level == 3)//MAX
                 {
-
+                  
                     var maxWeight = parent.ChildList.Max(x => x.Weight);
+                  
                     //T96 
                     if(parent.Weight< maxWeight)
                         parent.Weight = maxWeight;
@@ -764,7 +751,7 @@ namespace ChessCore.Tools
 
                         var maxNodeList = parent.ChildList.Where(x => x.Weight == maxWeith).ToList();
                         //pour T90 et T91,seulement pour les L4, on ajoute les minNodes pour ne plus les prendres dans L3 et L2
-                        if (DeepLevel == 4)
+                        if (/*DeepLevel == 4*/true)
                         {
                             var minWeith = parent.ChildList.Min(x => x.Weight);
                             var minNodeList = parent.ChildList.Where(x => x.Weight == minWeith).ToList();
@@ -856,8 +843,10 @@ namespace ChessCore.Tools
 
                 else//MIN
                 {
-
+                               
+                  
                     var minWeight = parent.ChildList.Min(x => x.Weight);
+
                     //T96 
                     if (parent.Weight > minWeight)
                         parent.Weight = minWeight;
@@ -873,7 +862,7 @@ namespace ChessCore.Tools
 
             level--;
 
-
+          //  Utils.IsFirstTurn=false;
             if (level == 0)
                 return parentLevelList;
             else
@@ -895,12 +884,14 @@ namespace ChessCore.Tools
         public void MinMaxByRoot()
         {
 
+         
 
             //var maxW = LastNodes.Max(x => x.Weight);
             var parentLevel1List = GetParentListAndMinMax(LastNodes, DeepLevel);
 
-
-
+            //Pour T07a
+            if(BestNode !=null )
+                return;
             if (parentLevel1List != null)
             {
                 if (parentLevel1List.Count != 0)

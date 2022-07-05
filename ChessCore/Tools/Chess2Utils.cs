@@ -5,7 +5,151 @@ namespace ChessCore.Tools
     public static class Chess2Utils
     {
 
-        public static List<Pawn> LoadFromDirectorie(string dirLocation)
+
+    public static bool TargetKingColorIsProteted(Board inBoard, string targetkingColor)
+    {
+      try
+      {
+     //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
+     //     return false;
+
+        var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+        var alliesIndex = inBoard.GetCasesIndex(targetkingColor).ToList();
+        alliesIndex.Remove(targetkingindex);
+        //var possibleMovesAllies = 
+        foreach (var alieFromIndex in alliesIndex)
+        {
+          var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x=>x.Index);
+          //il faut faire un copi du bord original en déplacent le roi vers le possible move
+          foreach (var alieToIndex in possibleMovesIndex)
+          {
+            var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
+            //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
+            var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, targetkingindex);
+            if (!isMelaced)
+              return true;
+
+          }
+        }
+        
+
+       
+
+
+
+
+        return false;
+      }
+      catch (Exception ex)
+      {
+        return false;
+      }
+
+    }
+
+    /// <summary>
+    /// tsiry;02-07-2022
+    /// </summary>
+
+    public static bool TargetColorIsInChess(Board inBoard, string targetkingColor)
+    {
+      try
+      {
+        if(!TargetKingIsMenaced( inBoard,targetkingColor))
+          return false;
+       
+
+        var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+        var possibleKingMoves = inBoard.GetKingPossiblesMoveIndex(targetkingColor);
+
+        //il faut faire un copi du bord original en déplacent le roi vers le possible move
+        foreach (var index in possibleKingMoves)
+        {
+          var copyBord = CloneAndMove(inBoard, targetkingindex, index,0);
+        //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
+          var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, index);
+          if (!isMelaced)
+            return false;
+
+        }
+
+         if (TargetKingColorIsProteted(inBoard, targetkingColor))
+          return false;
+
+
+
+       
+        return true;
+      }
+      catch (Exception ex)
+      {
+        return false;
+      }
+      
+    }
+
+    /// <summary>
+    /// tsiry;02-07-2022
+    /// </summary>
+
+    public static bool TargetIndexIsMenaced(Board inBoard, string targetColor,int targetIndex)
+    {
+      try
+      {
+        var opinionColor = "W";
+        if (targetColor == "W")
+          opinionColor = "B";
+        var index = 0;
+        var opibionOfTargetColorIndexList = new List<int>();
+        foreach (var item in inBoard.GetCases())
+        {
+          if (item.Contains($"|{opinionColor}"))
+          {
+            opibionOfTargetColorIndexList.Add(index);
+          }
+          index++;
+        }
+        var opibionPossibleMoveIndexList = new List<int>();
+        foreach (var opibionIndex in opibionOfTargetColorIndexList)
+        {
+          opibionPossibleMoveIndexList.AddRange(inBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.Index));
+        }
+         ;
+        if (opibionPossibleMoveIndexList.Contains(targetIndex))
+          return true;
+
+        return false;
+      }
+      catch (Exception ex)
+      {
+        return false;
+
+      }
+    }
+
+
+    /// <summary>
+    /// tsiry;02-07-2022
+    /// </summary>
+
+    public static bool TargetKingIsMenaced(Board inBoard, string targetkingColor)
+    {
+      try
+      {
+        var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+    
+
+        return TargetIndexIsMenaced(inBoard, targetkingColor, targetkingindex);
+        
+
+      }
+      catch (Exception ex)
+      {
+        return false;
+
+      }
+    }
+    public static List<Pawn> LoadFromDirectorie(string dirLocation)
         {
             try
             {

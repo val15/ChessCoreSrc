@@ -2,6 +2,13 @@
 {
     public static class Utils
     {
+    //pour T07a et T07b
+    public static Board MainBoard { get; set; }
+
+        public static List<NodeChess2> NodeLoseList {get;set;} = new List<NodeChess2>();
+      //  public static List<NodeChess2> NodeLoseList2 {get;set;} = new List<NodeChess2>();
+       //  public static List<NodeChess2> NodeLoseList3 {get;set;} = new List<NodeChess2>();
+       // public static NodeChess2 BestNode {get;set;} 
         private static int[] _evolutionPawnIndexBlack =
        {
       56,57,58,59,60,61,62,63
@@ -31,6 +38,7 @@
 "a1","b1","c1","d1","e1","f1","g1","h1"
     };
 
+   
 
         public static string ChangeLongNameToShortName(string longName)
         {
@@ -158,139 +166,8 @@
                 return true;
             return false;
         }
-        /*07-12-2021
-         * */
-        public static bool KingIsInChess(Board board, string color)
-        {
-            //var KingMainBoardIndex = Utils.MainBord.GetCases().ToList().IndexOf($"K|{color}");
-            var kingIndex = board.GetCases().ToList().IndexOf($"K|{color}");
-            if (kingIndex == -1)
-                return true;
-            /* if (KingMainBoardIndex == kingIndex)
-             {*/
-            var kingPossibleMoves = board.GetPossibleMoves(kingIndex, 0).Select(x => x.Index);
-            foreach (var possibleIndex in kingPossibleMoves)
-            {
-                var emulateBord = CloneAndMove(board, kingIndex, possibleIndex, 0);
-                if (!KingIsMenaced(emulateBord, color))
-                    return false;
-            }
-            return true;
-            /*  }
-              else
-                return false;*/
 
-
-        }
-
-        /*04-01-2022
-         * */
-        public static bool KingIsInChess2(Board board, string color)
-        {
-
-            var kingIsInChess = true;
-            //on prend tous les index des pion adverse
-            var opinionCaseIndex = board.GetCasesIndex(OpinionColor);
-            //on prend tous les index menacés par les pions adverses
-            var menacedIndexByOpinion = new List<PossibleMove>();
-            //on prend tous les possible moves des opinions
-            var opinionPossibleMovesIndex = new List<PossibleMove>();
-            foreach (var opinionIndex in opinionCaseIndex)
-            {
-                //si opinionIndex est nenacé, on ne fait rien
-                if (Utils.IsMenaced(opinionIndex, board, OpinionColor))
-                    continue;
-
-                var opinionPossibleMoves = board.GetPossibleMoves(opinionIndex, 0);
-                opinionPossibleMovesIndex.AddRange(opinionPossibleMoves);
-                //SI SIMPLE PION,ON AJOUT CES LES DEUX CASE A COTE SI ILS SONT LIBRES
-
-                //var currentCase = board.GetCases()[opinionIndex];
-                var pawnName = board.GetPawnShortNameInIndex(opinionIndex);
-                if (pawnName == "P")
-                {
-                    // var t_oIndex = opinionIndex;
-
-                    var caseColor = board.GetPawnColorNameInIndex(opinionIndex);
-
-                    var indexInTab64 = Utils.Tab64[opinionIndex];
-                    //si B
-                    var toAddList = new List<int>();
-                    var sing = -1;
-                    if (caseColor == "B")
-                        sing = 1;
-
-                    //Diagonal for opinion
-                    var toAddOpinionListList = new List<int>();
-                    toAddOpinionListList.Add((10 * sing) + 1);
-                    toAddOpinionListList.Add((10 * sing) - 1);
-
-
-
-
-                    foreach (var toAdd in toAddOpinionListList)
-                    {
-                        var destinationIndexInTab64 = indexInTab64 + toAdd;
-                        var destinationIndex = Utils.Tab64.ToList().IndexOf(destinationIndexInTab64);
-
-                        if (destinationIndex < 0 || destinationIndex > 63)
-                            continue;
-                        var isContent = board.GetIsContent(destinationIndex, caseColor);
-                        if (isContent == 0)
-                        {
-                            //results.Add(destinationIndex);
-                            opinionPossibleMovesIndex.Add(new PossibleMove { FromIndex = opinionIndex, Index = destinationIndex, IsContainOpinion = false });
-                            // opinionPossibleMovesIndex.Add(destinationIndex);
-                        }
-
-
-
-                    }
-
-
-                }
-
-                var menacedIndex = opinionPossibleMoves.Where(x => x.IsContainOpinion);
-                menacedIndexByOpinion.AddRange(menacedIndex);
-                //on prend tous les possible moves des opinions
-
-            }
-
-
-
-
-
-            //   var t_ds = menacedIndexByOpinion;
-            //si le roi est dans les menacedIndexByOpinion
-            var kingIndex = Utils.GetKing(board, color);
-            var kingIsMenaced = false;
-            foreach (var opinionMove in menacedIndexByOpinion)
-            {
-                if (kingIndex == opinionMove.Index)
-                    kingIsMenaced = true;
-            }
-            if (kingIsMenaced)
-            {
-                var kingPossiblesMove = board.GetPossibleMoves(kingIndex, 0).Select(x => x.Index);
-                var opinionPossibleMovesIndexInList = opinionPossibleMovesIndex.Select(x => x.Index);
-
-                foreach (var kingPossibleIndex in kingPossiblesMove)
-                {
-                    //si les possible moves ne l'adversaire ne contiennents pas le possible index du roi
-                    //le roi n'est pas en echec
-                    if (!opinionPossibleMovesIndexInList.Contains(kingPossibleIndex))
-                        return false;
-                }
-
-            }
-            else
-                return false;
-
-            return kingIsInChess;
-
-
-        }
-
+       
         /*12-11-2021
          * pour T80
          * */
