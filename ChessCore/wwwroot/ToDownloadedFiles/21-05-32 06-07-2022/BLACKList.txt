@@ -1,0 +1,4 @@
+Rook;e8;Black;False;False;False;False
+SimplePawn;a7;Black;False;False;False;False
+SimplePawn;f7;Black;False;False;False;False
+Bishop;b1;Black;False;False;False;False

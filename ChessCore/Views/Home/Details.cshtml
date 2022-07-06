@@ -244,17 +244,43 @@
     @*  @Html.ActionLink("save historique", "SaveHistory")*@
   </div>
 
-  @*on ajoute une espace pour la version inverser*@
-  @if (Model.RevertWrapperClass == "revertWrapper")
-  {
-    <div class="d-inline-block" style="width: 100px;">
-    </div>
+ 
+  
+  
+
+ <div class="d-inline-block" style="margin-top: 43px;">
+  @{
+    if (Model.RevertWrapperClass == "revertWrapper")
+    {
+      string[] coordYArray = {"1", "2", "3", "4","5","6","7","8"};
+              
+              foreach (var coordY in coordYArray)
+              {
+                <div style="height:70px; background-color: #04AA6D;" >
+                <label   style="font-weight: bold; margin-top: 25px" > @coordY &nbsp;</label>
+                </div>
+              
+              }
+    }
+    else
+    {
+       string[] coordYArray = {"8", "7", "6", "5","4","3","2","1"};
+              
+              foreach (var coordY in coordYArray)
+              {
+                <div style="height:70px; background-color: #04AA6D;" >
+                <label   class="@Model.RevertWrapperClass" style="font-weight: bold; margin-top: 25px" > @coordY &nbsp</label>
+                </div>
+              
+              }
+    }
+    
   }
-
-
+</div>
   <div class="d-inline-block" style="width: 500px;">
-
+   
     <div class="wrapper @Model.RevertWrapperClass">
+      
       <div class="top">
 
         <div class="wrapper-inner">
@@ -263,6 +289,7 @@
           </div>
 
           <div align="right">
+            
             @if (Model.HuntingBoardWhiteImageList != null)
             {
               foreach (var imageSrc in Model.HuntingBoardWhiteImageList)
@@ -284,10 +311,13 @@
             <div class="box-inner @Model.RevertWrapperClass">H</div>*@
         </div>
       </div>
+    
       @for (int i = 0; i < 8; i++)
       {
+      
         for (int j = 0; j < 8; j++)
         {
+          
           <div id="@Model.GetPawn(j + (8 * i)).Index"
                class="box"
                onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
@@ -308,11 +338,24 @@
 
 
           </div>
+          
         }
+        
+        
+        
       }
+      
 
       <div class="bottom">
-
+<div>
+        @{
+        string[] coordXArray = {"A", "B", "C", "D","E","F","G","H"};
+        
+        foreach (var coordX in coordXArray)
+        {
+          <label   class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
+        }
+    
         <div class="wrapper-inner">
           <div align="left">
             <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
@@ -329,21 +372,19 @@
               }
             }
           </div>
-          @*<div class="box-inner @Model.RevertWrapperClass">A</div>
-            <div class="box-inner @Model.RevertWrapperClass">B</div>
-            <div class="box-inner @Model.RevertWrapperClass">C</div>
-            <div class="box-inner @Model.RevertWrapperClass">D</div>
-            <div class="box-inner @Model.RevertWrapperClass">E</div>
-            <div class="box-inner @Model.RevertWrapperClass">F</div>
-            <div class="box-inner @Model.RevertWrapperClass">G</div>
-            <div class="box-inner @Model.RevertWrapperClass">H</div>*@
+          
+          
         </div>
-      </div>
 
+        }
+      </div>
     </div>
+    
 
   </div>
 </div>
+
+
 
 
 <br />

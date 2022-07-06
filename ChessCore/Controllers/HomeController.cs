@@ -295,11 +295,13 @@ namespace ChessCore.Controllers
             //var t_ = selectionLevel;
             if (selectedLevel != -1)
                 MainUtils.DeepLevel = selectedLevel;
-            MainUtils.InitialDuration = 30 * 60;
+            MainUtils.InitialDuration = 60 * 60;
             if (selectedDurationType != null)
             {
-                if (selectedDurationType == "15mn")
-                    MainUtils.InitialDuration = 15 * 60;
+              if (selectedDurationType == "30mn")
+                MainUtils.InitialDuration = 60 * 60;
+            if (selectedDurationType == "15mn")
+                        MainUtils.InitialDuration = 15 * 60;
                 if (selectedDurationType == "1h")
                     MainUtils.InitialDuration = 60 * 60;
             }

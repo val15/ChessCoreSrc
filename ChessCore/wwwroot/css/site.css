@@ -43,8 +43,8 @@ body {
 }
 
 .wrapper {
-    border: 49px solid #462921;
-    width: 560px;
+    border: solid #462921;
+    width: 567px;
     margin: 0 auto;
     display: grid;
     grid-gap: 0;
