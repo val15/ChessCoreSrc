@@ -144,20 +144,10 @@ namespace ChessCore.Controllers
                 //decopression
                 var destinationDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles",file.FileName.Replace(".Chess.zip", ""));
 
-                var exists = System.IO.Directory.Exists(destinationDirectory);
+                //var exists = System.IO.Directory.Exists(destinationDirectory);
+if (Directory.Exists(destinationDirectory)) Directory.Delete(destinationDirectory, true);
 
-                if (exists)
-                {
-
-                    var di = new DirectoryInfo(destinationDirectory);
-                    FileInfo[] files = di.GetFiles();
-                    foreach (FileInfo fil in files)
-                    {
-                        fil.Delete();
-                    }
-                    System.IO.Directory.Delete(destinationDirectory);
-                }
-
+              
 
                 System.IO.Directory.CreateDirectory(destinationDirectory);
 
@@ -286,7 +276,149 @@ namespace ChessCore.Controllers
          //   return RedirectToAction("Files");
         }
 
-      
+      /// <summary>
+    /// tsiry;02-07-2022
+    /// fonction Preview, à partie de MainUtils.MovingList,
+    /// on revien en arrier
+    /// </summary>
+        public IActionResult Preview()
+        {
+            try{
+                if(MainUtils.MovingListIndex==0)//si on est au debut, on ne pouge plus
+                {
+                    MainUtils.MovingListIndex=1;
+                }
+                //bestNodeList.Where().Select(c => { c.Weight = node.Weight; return c; }).ToList();
+                //on enleve le courseur
+                for(var i=0;i<MainUtils.VM.MainBord.MovingList.Count();i++)
+                {
+                    if(MainUtils.VM.MainBord.MovingList[i].Contains(Utils.NavigationStoryCursor))
+                    {
+                       MainUtils.VM.MainBord.MovingList[i]=MainUtils.VM.MainBord.MovingList[i].Replace(Utils.NavigationStoryCursor,"");
+                      
+                    }
+                }
+                var oldMovingList=MainUtils.VM.MainBord.MovingList;
+                var lastMoveStr = "";
+                if(MainUtils.MovingListIndex == -1 )
+                    MainUtils.MovingListIndex =MainUtils.VM.MainBord.MovingList.Count();
+
+                MainUtils.MovingListIndex--;
+                lastMoveStr = MainUtils.VM.MainBord.MovingList[MainUtils.MovingListIndex];
+                
+                var data = lastMoveStr.Split(">");
+                var fromSrt = data[0];
+                var toSrt = data[1];
+              
+                  
+                var copyBord= new Board(MainUtils.VM.MainBord);
+                copyBord.NavigationMove(toSrt, fromSrt);
+                //copyBord.
+
+              //  mainBord.HuntingBoardWhiteImageList = huntingBoardWhiteImageList;
+              //  mainBord.HuntingBoardBlackImageList = huntingBoardBlackImageList;
+             //   mainBord.MovingList = historyList;
+
+               return SetBoardAndHystoryOfIndexPage(copyBord,oldMovingList);
+               
+            }
+              catch(Exception ex)
+            {
+                Debug.Write(ex.ToString());
+                return null;
+            } 
+        }
+
+ /// <summary>
+    /// tsiry;02-07-2022
+    /// fonction Next, à partie de MainUtils.MovingList,
+    /// on revien en arrier
+    /// </summary>
+        public IActionResult Next()
+        {
+            try{
+                if(MainUtils.MovingListIndex==MainUtils.VM.MainBord.MovingList.Count())//si on està la fin
+                {
+                    MainUtils.MovingListIndex=MainUtils.VM.MainBord.MovingList.Count-1;
+                }
+                //bestNodeList.Where().Select(c => { c.Weight = node.Weight; return c; }).ToList();
+                //on enleve le courseur
+                for(var i=0;i<MainUtils.VM.MainBord.MovingList.Count();i++)
+                {
+                    if(MainUtils.VM.MainBord.MovingList[i].Contains(Utils.NavigationStoryCursor))
+                    {
+                       MainUtils.VM.MainBord.MovingList[i]=MainUtils.VM.MainBord.MovingList[i].Replace(Utils.NavigationStoryCursor,"");
+                      
+                    }
+                }
+                var oldMovingList=MainUtils.VM.MainBord.MovingList;
+                var lastMoveStr = "";
+             //   if(MainUtils.MovingListIndex == -1 )
+             //       MainUtils.MovingListIndex =MainUtils.VM.MainBord.MovingList.Count();
+
+                
+                lastMoveStr = MainUtils.VM.MainBord.MovingList[MainUtils.MovingListIndex];
+                
+                var data = lastMoveStr.Split(">");
+                var fromSrt = data[0];
+                var toSrt = data[1];
+              
+                  
+                var copyBord= new Board(MainUtils.VM.MainBord);
+                copyBord.NavigationMove(fromSrt,toSrt,true);
+                //copyBord.
+
+              //  mainBord.HuntingBoardWhiteImageList = huntingBoardWhiteImageList;
+              //  mainBord.HuntingBoardBlackImageList = huntingBoardBlackImageList;
+             //   mainBord.MovingList = historyList;
+MainUtils.MovingListIndex++;
+               return SetBoardAndHystoryOfIndexPage(copyBord,oldMovingList);
+               
+            }
+              catch(Exception ex)
+            {
+                Debug.Write(ex.ToString());
+                return null;
+            } 
+        }
+
+
+  /// <summary>
+    /// tsiry;02-07-2022
+    //// utiliser dans les fonctrions Preview et next
+    /// pour réaficher le boad qui a été modifier avec l'hystorique
+    /// </summary>
+        IActionResult SetBoardAndHystoryOfIndexPage(Board copyBord,List<string> oldMovingList)
+        {
+             MainUtils.VM = new MainPageViewModel(copyBord);
+                MainUtils.VM.IsFormLoander = true;
+              // MainUtils.VM.HuntingBoardWhiteImageList = huntingBoardWhiteImageList;
+              //  MainUtils.VM.HuntingBoardBlackImageList = huntingBoardBlackImageList;
+              //  MainUtils.VM.MovingList = historyList;
+                MainUtils.VM.MainBord.CalculeScores();
+                //pour les scores
+                if (MainUtils.VM.MainBord.WhiteScore < MainUtils.VM.MainBord.BlackScore)
+                    MainUtils.VM.BlackScore = $"+{(MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore).ToString()}";
+                else if (MainUtils.VM.MainBord.BlackScore < MainUtils.VM.MainBord.WhiteScore)
+                    MainUtils.VM.WhiteScore = $"+{(MainUtils.VM.MainBord.WhiteScore - MainUtils.VM.MainBord.BlackScore).ToString()}";
+                else
+                    MainUtils.VM.BlackScore = MainUtils.VM.WhiteScore = "";
+               MainUtils.VM.MainBord.MovingList=oldMovingList;
+
+               
+               MainUtils.VM.MovingList = oldMovingList;
+               //ajout d'un curseur
+               for(var i=0;i<MainUtils.VM.MovingList.Count();i++)
+               {
+                    var line = MainUtils.VM.MovingList[i];
+                    if(i==MainUtils.MovingListIndex-1)
+                    {
+                        MainUtils.VM.MovingList[i]=$"{Utils.NavigationStoryCursor}{line}";
+                    }
+               }
+                return View("Index", MainUtils.VM);
+        }
+
 
         [HttpPost]
         public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, string selectedDurationType, int selectedLevel)
@@ -299,7 +431,7 @@ namespace ChessCore.Controllers
             if (selectedDurationType != null)
             {
               if (selectedDurationType == "30mn")
-                MainUtils.InitialDuration = 60 * 60;
+                MainUtils.InitialDuration = 30 * 60;
             if (selectedDurationType == "15mn")
                         MainUtils.InitialDuration = 15 * 60;
                 if (selectedDurationType == "1h")
@@ -556,22 +688,30 @@ namespace ChessCore.Controllers
 
         }
 
-        public FileResult SaveHistory()
+          public FileResult SaveHistory()
         {
-            var movingListStr = String.Join("\n", MainUtils.MovingList); //MainUtils.MovingList.Join( ("\\n");
-            var dateTimeString = DateTime.Now.ToString("HH-mm-ss dd-MM-yyyy");
-            // _partHistoryDestinationFileFullPath = Path.Combine(_destinationHistoryFolderPath, );
-            //var historyFilePath = $"~/{dateTimeString}History.txt";
+            try{
+                var movingListStr = String.Join("\n", MainUtils.MovingList); //MainUtils.MovingList.Join( ("\\n");
+                var dateTimeString = DateTime.Now.ToString("HH-mm-ss dd-MM-yyyy");
+                // _partHistoryDestinationFileFullPath = Path.Combine(_destinationHistoryFolderPath, );
+                //var historyFilePath = $"~/{dateTimeString}History.txt";
 
-            var historyFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Histories", $"{dateTimeString}History.txt");
+                var historyFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Histories", $"{dateTimeString}History.txt");
 
-            var historyFileName = $"{dateTimeString}History.txt";
-            System.IO.File.WriteAllText(historyFilePath, movingListStr);
+                var historyFileName = $"{dateTimeString}History.txt";
+                System.IO.File.WriteAllText(historyFilePath, movingListStr);
 
 
 
-            byte[] fileBytes = System.IO.File.ReadAllBytes(historyFilePath);
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, historyFileName);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(historyFilePath);
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, historyFileName);
+            }
+            catch(Exception ex)
+            {
+                Debug.Write(ex.ToString());
+                return null;
+            } 
+            
 
 
 

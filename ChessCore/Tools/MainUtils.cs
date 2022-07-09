@@ -21,7 +21,10 @@ namespace ChessCore.Tools
 
         public static int TurnNumber { get; set; }
         public static string? CPUColor { get; set; }
+
+        public static int MovingListIndex { get; set; } =-1; //pour les next et le preview
         public static List<string>? MovingList { get; set; }
+
         public static List<string>? HuntingBoardWhiteImageList { get; set; }//pour le print
         public static List<string>? HuntingBoardBlackImageList { get; set; }//pour le print
 

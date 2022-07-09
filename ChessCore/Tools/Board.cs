@@ -421,8 +421,41 @@ namespace ChessCore.Tools
         }
 
 
+          /// <summary>
+    /// tsiry;07-07-2022
+    /// pour les mouvements preview et next
+    /// on revien en arrier
+    /// </summary>
+        public void NavigationMove(string initialStr, string destinationStr,bool isNext = false)
+        {
+            try{
 
+                  var fromSrtData = initialStr.Split("(");
+                var fromIndex = Int32.Parse(fromSrtData[0]);
+                
+                 var toSrtData = destinationStr.Split("(");
+                var toIndex = Int32.Parse(toSrtData[0]);
+                var fromContain = fromSrtData[1].Substring(0,fromSrtData[1].Count()-1);
+                var toContain = toSrtData[1].Substring(0,toSrtData[1].Count()-1);
+                if(!isNext)
+                {
+                      _cases[fromIndex] = fromContain;
+                    _cases[toIndex] =  toContain;
+                }
+                else
+                {
+                      _cases[fromIndex] = "__";
+                    _cases[toIndex] = fromContain ;
+                }
+              
+               
+                PrintInDebug();
 
+            }catch(Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
 
         public void Move(int initialIndex, int destinationIndex, int level)
         {

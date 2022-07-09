@@ -232,7 +232,13 @@
         }
       }
     </div>
-    @*<button onclick="SavehistoryClicked()">download</button>*@
+    
+    <a href="@Url.Action("Preview", "Home")">
+      <button type="button" >
+          @*<i class="bi bi-camera"></i>*@
+          Preview
+      </button>
+    </a>
     <a href="@Url.Action("SaveHistory", "Home")">
       <button type="button" >
           @*<i class="bi bi-camera"></i>*@
@@ -241,7 +247,7 @@
     </a>
 
 
-    @*  @Html.ActionLink("save historique", "SaveHistory")*@
+   
   </div>
 
  
@@ -301,14 +307,7 @@
             }
 
           </div>
-          @*<div class="box-inner @Model.RevertWrapperClass">A</div>
-            <div class="box-inner @Model.RevertWrapperClass">B</div>
-            <div class="box-inner @Model.RevertWrapperClass">C</div>
-            <div class="box-inner @Model.RevertWrapperClass">D</div>
-            <div class="box-inner @Model.RevertWrapperClass">E</div>
-            <div class="box-inner @Model.RevertWrapperClass">F</div>
-            <div class="box-inner @Model.RevertWrapperClass">G</div>
-            <div class="box-inner @Model.RevertWrapperClass">H</div>*@
+        
         </div>
       </div>
     
@@ -347,42 +346,42 @@
       
 
       <div class="bottom">
-<div>
-        @{
-        string[] coordXArray = {"A", "B", "C", "D","E","F","G","H"};
-        
-        foreach (var coordX in coordXArray)
-        {
-          <label   class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
-        }
-    
-        <div class="wrapper-inner">
-          <div align="left">
-            <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
-          </div>
+        <div>
+                @{
+                string[] coordXArray = {"A", "B", "C", "D","E","F","G","H"};
+                
+                foreach (var coordX in coordXArray)
+                {
+                  <label   class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
+                }
+            
+                <div class="wrapper-inner">
+                  <div align="left">
+                    <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
+                  </div>
 
-          <div align="right">
-            @if (Model.HuntingBoardBlackImageList != null)
-            {
-              foreach (var imageSrc in Model.HuntingBoardBlackImageList)
-              {
-                <img src=@imageSrc width="25" height="25"
-                     class="@Model.RevertWrapperClass" />
+                  <div align="right">
+                    @if (Model.HuntingBoardBlackImageList != null)
+                    {
+                      foreach (var imageSrc in Model.HuntingBoardBlackImageList)
+                      {
+                        <img src=@imageSrc width="25" height="25"
+                            class="@Model.RevertWrapperClass" />
 
-              }
-            }
+                      }
+                    }
+                  </div>
+                  
+                  
+                </div>
+
+                }
+              </div>
+            </div>
+            
+
           </div>
-          
-          
         </div>
-
-        }
-      </div>
-    </div>
-    
-
-  </div>
-</div>
 
 
 

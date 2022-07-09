@@ -2,6 +2,8 @@
 {
     public static class Utils
     {
+
+        public static string NavigationStoryCursor { get; set; }="-";//07-07-2022
     //pour T07a et T07b
     public static Board MainBoard { get; set; }
 

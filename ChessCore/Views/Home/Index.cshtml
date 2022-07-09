@@ -56,9 +56,18 @@
             }
           </div>
           @*<button onclick="SavehistoryClicked()">download</button>*@
-          <a href="@Url.Action("SaveHistory", "Home")">
-            <button class="fa fa-save"></button>
-          </a>
+           <a href="@Url.Action("Preview", "Home")">
+      <button type="button" >
+          @*<i class="bi bi-camera"></i>*@
+          Preview
+      </button>
+    </a>
+               <a href="@Url.Action("Next", "Home")">
+      <button type="button" >
+          @*<i class="bi bi-camera"></i>*@
+          Next
+      </button>
+    </a>
 
 
           @*  @Html.ActionLink("save historique", "SaveHistory")*@
@@ -71,7 +80,35 @@
           </div>
         }
 
-
+ <div class="d-inline-block" style="margin-top: 43px;">
+  @{
+    if (Model.RevertWrapperClass == "revertWrapper")
+    {
+      string[] coordYArray = {"1", "2", "3", "4","5","6","7","8"};
+              
+              foreach (var coordY in coordYArray)
+              {
+                <div style="height:70px; background-color: #04AA6D;" >
+                <label   style="font-weight: bold; margin-top: 25px" > @coordY &nbsp;</label>
+                </div>
+              
+              }
+    }
+    else
+    {
+       string[] coordYArray = {"8", "7", "6", "5","4","3","2","1"};
+              
+              foreach (var coordY in coordYArray)
+              {
+                <div style="height:70px; background-color: #04AA6D;" >
+                <label   class="@Model.RevertWrapperClass" style="font-weight: bold; margin-top: 25px" > @coordY &nbsp</label>
+                </div>
+              
+              }
+    }
+    
+  }
+</div>
         <div class="d-inline-block" style="width: 500px;">
 
           <div class="wrapper @Model.RevertWrapperClass">
@@ -101,7 +138,7 @@
             {
               for (int j = 0; j < 8; j++)
               {
-                <div id="@Model.GetPawn(j + (8 * i)).Index"
+                <div 
                      class="box"
                      onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
                   @* <p>@Model.GetPawn(j + (8 * i)).Index</p>*@
@@ -124,32 +161,47 @@
               }
             }
 
-            <div class="bottom">
+           <div class="bottom">
+        <div>
+                @{
+                string[] coordXArray = {"A", "B", "C", "D","E","F","G","H"};
+                
+                foreach (var coordX in coordXArray)
+                {
+                  <label   class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
+                }
+            
+                <div class="wrapper-inner">
+                  <div align="left">
+                    <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
+                  </div>
 
-              <div class="wrapper-inner">
-                <div align="left">
-                  <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
-                </div>
-
-                <div align="right">
-                  @if (Model.HuntingBoardBlackImageList != null)
-                  {
-                    foreach (var imageSrc in Model.HuntingBoardBlackImageList)
+                  <div align="right">
+                    @if (Model.HuntingBoardBlackImageList != null)
                     {
-                      <img src=@imageSrc width="25" height="25"
-                           class="@Model.RevertWrapperClass" />
+                      foreach (var imageSrc in Model.HuntingBoardBlackImageList)
+                      {
+                        <img src=@imageSrc width="25" height="25"
+                            class="@Model.RevertWrapperClass" />
 
+                      }
                     }
-                  }
+                  </div>
+                  
+                  
                 </div>
-             
+
+                }
               </div>
             </div>
+            
+
+          </div>
+        </div>
 
           </div>
 
-        </div>
-      </div>
+       
 
 
     }
