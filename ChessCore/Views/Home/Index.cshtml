@@ -31,14 +31,39 @@
       }
     });
   };
+
+   function SaveLoadingBoard() {
+
+    //var selectedLevel = $('#level').val();
+    //TODO remmetre le leve
+    var selectedLevel = '4';
+    //alert(computerColor);
+    var data = {};
+    $.ajax({
+      type: "POST",
+      url: "/Home/SaveLoadingBoard",
+      data: data,
+      contentType: 'application/x-www-form-urlencoded',
+      dataType: "html",
+     success: function (data)
+        {
+
+          window.location.href = '@Url.Action("SaveBoard", "Home")';
+          //window.location.href = '@Url.Action("Index", "Home")';
+          console.log('Upload successfully');
+        }
+      });
+    
+  };
 </script>
 <div>
   <div>
     <form asp-controller="Home" asp-action="UploadFile" method="post"
       enctype="multipart/form-data">  
-    <input type="file" name="file" accept = ".Chess.zip"/>  
+    <input type="file" name="file" accept = ".Chess.zip"/>
     <button type="submit">Upload File</button>  
 </form>
+
     @if (Model.IsFormLoander)
     {
       <h6>Apercus : </h6>
@@ -62,6 +87,7 @@
           Preview
       </button>
     </a>
+    <button onclick="SaveLoadingBoard()">save</button>
                <a href="@Url.Action("Next", "Home")">
       <button type="button" >
           @*<i class="bi bi-camera"></i>*@
@@ -155,7 +181,7 @@
                          class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
                   }
                   @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
-
+<div class="caseNumber" style=" font-size: 10px;">@(j+(i*8))</div>
 
                 </div>
               }

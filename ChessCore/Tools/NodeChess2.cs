@@ -271,29 +271,12 @@
             Color = color;
             ChildList = new List<NodeChess2>();
 
-            //Pour T69
-            /* var kingIndex = board.GetCases().ToList().IndexOf($"K|{computeurColor}");
-               if (kingIndex == -1)
-                 Weight =  -999;
-
-               */
-            /*if(parent != null)
-            {
-              if (Utils.KingIsInChess(parent.Board, Utils.OpinionColor))
-              {
-                var t_in = 0;
-              }
-            }
-         */
+           
 
 
 
 
-
-
-            if (/*Level == maxDeepLevel*/true)
-            {
-               
+           
 
                 var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
                 if (opinionKingIndex == -1)
@@ -312,8 +295,32 @@
                     Weight = Board.BlackScore - Board.WhiteScore;
                 else
                     Weight = Board.WhiteScore - Board.BlackScore;
-            }
 
+
+                //Pour T97A
+                if(level<=3)
+                {
+                    foreach(var i in Board.GetCasesIndex(Utils.ComputerColor))
+                    {
+                        if(Board.GetCaseInIndex(i).Contains("P"))
+                            continue;
+                        if(Board.GetCaseInIndex(i).Contains("K"))
+                            continue;
+
+
+         // if (Chess2Utils.TargetKingColorIsProteted(Board, Utils.ComputerColor, i))
+          if(!Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
+            continue;
+
+          if (Chess2Utils.TargetIndexIsMenaced(Board, Utils.ComputerColor, i))
+                        {
+                            Weight-=Board.GetWeightInIndex(i);
+                        }
+                    }
+        
+                }
+              
+                
 
 
 

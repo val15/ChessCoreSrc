@@ -145,3 +145,10 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.caseNumber{
+    position: relative;
+    top: -50px;
+    right: -40px;
+    transform: translate(-50%, -50%);
+}

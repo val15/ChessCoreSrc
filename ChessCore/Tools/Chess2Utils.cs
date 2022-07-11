@@ -5,6 +5,47 @@ namespace ChessCore.Tools
     public static class Chess2Utils
     {
 
+    public static bool TargetIndexIsProteted(Board inBoard, string targetkingColor,int targetIndex)
+    {
+      try
+      {
+        //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
+        //     return false;
+
+        //var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+        var alliesIndex = inBoard.GetCasesIndex(targetkingColor).ToList();
+        alliesIndex.Remove(targetIndex);
+        //var possibleMovesAllies = 
+        foreach (var alieFromIndex in alliesIndex)
+        {
+          var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.Index);
+          //il faut faire un copi du bord original en déplacent le roi vers le possible move
+          foreach (var alieToIndex in possibleMovesIndex)
+          {
+            var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
+            //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
+            var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, targetIndex);
+            if (!isMelaced)
+              return true;
+
+          }
+        }
+
+
+
+
+
+
+
+        return false;
+      }
+      catch (Exception ex)
+      {
+        return false;
+      }
+
+    }
+
 
     public static bool TargetKingColorIsProteted(Board inBoard, string targetkingColor)
     {
@@ -126,6 +167,8 @@ namespace ChessCore.Tools
 
       }
     }
+
+
 
 
     /// <summary>

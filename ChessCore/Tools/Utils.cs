@@ -1,4 +1,6 @@
-﻿namespace ChessCore.Tools
+﻿using System.Diagnostics;
+
+namespace ChessCore.Tools
 {
     public static class Utils
     {
@@ -40,7 +42,20 @@
 "a1","b1","c1","d1","e1","f1","g1","h1"
     };
 
-   
+   public static void GCColect()
+    {
+      Debug.WriteLine("Memory used before collection:       {0:N0}",
+       GC.GetTotalMemory(false));
+      Console.WriteLine("Memory used before collection:       {0:N0}",
+              GC.GetTotalMemory(false));
+      Debug.WriteLine("Collect");
+
+      GC.Collect();
+      Debug.WriteLine("Memory used before collection:       {0:N0}",
+            GC.GetTotalMemory(false));
+      Console.WriteLine("Memory used before collection:       {0:N0}",
+              GC.GetTotalMemory(false));
+    }
 
         public static string ChangeLongNameToShortName(string longName)
         {

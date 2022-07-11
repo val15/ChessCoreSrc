@@ -1,0 +1,1 @@
+ajout des T97: ajout de indexIsMenaced pour level<4; dans l UI: ajout de numéro de case et SaveLoadingBoard 

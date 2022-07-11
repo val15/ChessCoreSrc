@@ -420,6 +420,112 @@ MainUtils.MovingListIndex++;
         }
 
 
+
+ public FileResult SaveLoadingBoard()
+        {
+
+
+
+            // var initialVm = new DetailsViewModel(MainUtils.VM.MainBord, whiteTimeInSecond, blackTimeInSecond);
+
+             var dateTimeString = DateTime.Now.ToString("HH-mm-ss dd-MM-yyyy");
+            //TODO il faut ajouter une boite de dialoge demandant le nom du docier
+            var dirName = dateTimeString;
+            //var dirLocalPath = Server.MapPath($"~/ToDownloadedFiles/{dirName}");
+            var dirLocalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ToDownloadedFiles", $"{dirName}");
+
+          //  var dirLocalPath = ($"~/ToDownloadedFiles/{dirName}");
+
+
+
+            if (Directory.Exists(dirLocalPath))
+                System.IO.Directory.Delete(dirLocalPath);
+            System.IO.Directory.CreateDirectory(dirLocalPath);
+
+
+
+            // var t_board = MainUtils.VM.MainBord;
+            var caseList = MainUtils.VM.MainBord.GetCases().ToList();
+            if (caseList == null)
+                return null;
+            var caseListStr = String.Join("\n", caseList);
+            //  var dirPath = AppDomain.CurrentDomain.BaseDirectory + dirName;// $"~/{dateTimeString}";
+            if (Directory.Exists(dirLocalPath))
+            {
+
+            /*     //Image
+                image = image.Replace("data:image/octet-stream;base64,", "");
+                //var bytes = Convert.FromBase64String(image);
+                var imageFileName = $"IMG.png";
+                //using (var imageFile = new FileStream(filePath, FileMode.Create))
+                //{
+                //  imageFile.Write(bytes, 0, bytes.Length);
+                //  imageFile.Flush();
+                //}
+
+                var imageDestinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ToDownloadedFiles", $"{dirLocalPath}",$"{imageFileName}");
+
+               // var imageDestinationPath = Path.Combine("~", "//", );
+                if (System.IO.File.Exists(imageDestinationPath))
+                {
+                    System.IO.File.Delete(imageDestinationPath);
+                }
+
+                using (FileStream fs = new FileStream(imageDestinationPath, FileMode.Create))
+                {
+                    using (BinaryWriter bw = new BinaryWriter(fs))
+                    {
+                        byte[] bytes = Convert.FromBase64String(image);
+                        bw.Write(bytes, 0, bytes.Length);
+                        bw.Close();
+                    }
+                }
+*/
+                //Fichier
+                var pawnStringList = Chess2Utils.GeneratePawnStringListFromCaseList(caseList);
+                var pawnStringWhite = String.Join("\n", pawnStringList.Where(x => x.Contains("White")).ToList());
+                var pawnStringBlack = String.Join("\n", pawnStringList.Where(x => x.Contains("Black")).ToList());
+                System.IO.File.WriteAllText($"{dirLocalPath}/caseList.txt", caseListStr);
+                System.IO.File.WriteAllText($"{dirLocalPath}/WHITEList.txt", pawnStringWhite);
+                System.IO.File.WriteAllText($"{dirLocalPath}/BLACKList.txt", pawnStringBlack);
+
+                //historique
+                var movingListStr = String.Join("\n", MainUtils.VM.MainBord.MovingList); //MainUtils.MovingList.Join( ("\\n");
+                var historyFileName = $"{dateTimeString}History.txt";
+                System.IO.File.WriteAllText($"{dirLocalPath}/History.txt", movingListStr);
+
+                //HuntingBoardBlackImageList et HuntingBoardWhiteImageList
+
+                var huntingBoardWhiteImageListString = "";
+                var huntingBoardBlackImageListString = "";
+                if (MainUtils.HuntingBoardWhiteImageList != null)
+                    huntingBoardWhiteImageListString = String.Join("\n", MainUtils.HuntingBoardWhiteImageList);
+                if (MainUtils.HuntingBoardBlackImageList != null)
+                    huntingBoardBlackImageListString = String.Join("\n", MainUtils.HuntingBoardBlackImageList);
+
+                System.IO.File.WriteAllText($"{dirLocalPath}/huntingBoardWhiteImageList.txt", huntingBoardWhiteImageListString);
+                System.IO.File.WriteAllText($"{dirLocalPath}/huntingBoardBlackImageList.txt", huntingBoardBlackImageListString);
+
+
+            }
+
+
+
+            //crée le fichierzip
+            var zipDirPath = Path.Combine(dirLocalPath);
+            MainUtils.ZipFilePath = $"{zipDirPath}.Chess.zip";
+            MainUtils.ZipFileName = $"{dirName}.Chess.zip";
+
+            ZipFile.CreateFromDirectory(zipDirPath, MainUtils.ZipFilePath);
+
+
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(MainUtils.ZipFilePath);
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, MainUtils.ZipFilePath);
+
+        }
+
+
         [HttpPost]
         public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, string selectedDurationType, int selectedLevel)
         {
@@ -617,7 +723,7 @@ MainUtils.MovingListIndex++;
                 //  imageFile.Flush();
                 //}
 
-                var imageDestinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ToDownloadedFiles", $"{dirName}{imageFileName}");
+                var imageDestinationPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ToDownloadedFiles", $"{dirLocalPath}",$"{imageFileName}");
 
                // var imageDestinationPath = Path.Combine("~", "//", );
                 if (System.IO.File.Exists(imageDestinationPath))
