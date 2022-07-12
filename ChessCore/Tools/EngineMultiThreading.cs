@@ -473,23 +473,66 @@ namespace ChessCore.Tools
         //pour T80, o regarde les lose et les win seulment pour les DeepLevel == 4
         if(DeepLevel == 4)
         {
-             if(level<=3 && Chess2Utils.TargetColorIsInChess(board, Utils.ComputerColor))
-          {
-            
-            //LOSE node
-             Console.WriteLine("lose");
+
+            if (newNode.Level == 4)
+            {
+
+              if (newNode.Parent.Parent.Weight > -900)
+              {
+                if (Chess2Utils.TargetColorIsInChess(newNode.Board, Utils.ComputerColor))
+                {
+                  //LOSE node
+                  Console.WriteLine("lose");
                   Debug.WriteLine("lose");
-            newNode.Parent.Parent.Weight=-999;
-            Utils.NodeLoseList.Add(newNode.Parent.Parent);
-            return;
+                  newNode.Parent.Parent.Weight = -999;
+                  Utils.NodeLoseList.Add(newNode.Parent.Parent);
+                  return;
+                }
+              }
+            }
+
+          
+          //Pour T97A
+          /* if(newNode.Level == 4)
+           {
+         if(Utils.NodeLoseList.Count > 0)
+         {
+           var loserparentparent = Utils.NodeLoseList.First(x => x.FromIndex == newNode.Parent.Parent.FromIndex && x.ToIndex == newNode.Parent.Parent.ToIndex);
+           if (loserparentparent == null)//si newNode.Parent.Parent n'est pas dans Utils.NodeLoseList
+           {
+             if (Chess2Utils.TargetColorIsInChess(newNode.Board, Utils.ComputerColor))
+             {
+               //LOSE node
+               Console.WriteLine("lose");
+               Debug.WriteLine("lose");
+               newNode.Parent.Parent.Weight = -999;
+               Utils.NodeLoseList.Add(newNode.Parent.Parent);
+               return;
+             }
+           }
+           }*/
+
+
+          if (level<=3 )
+          {
+            if(Chess2Utils.TargetColorIsInChess(board, Utils.ComputerColor))
+            {
+                 //LOSE node
+                Console.WriteLine("lose");
+                    Debug.WriteLine("lose");
+                newNode.Parent.Parent.Weight=-999;
+                Utils.NodeLoseList.Add(newNode.Parent.Parent);
+                return;
+            }
+           
             
           
           }
-          if (level<=3 && Chess2Utils.TargetColorIsInChess(board, Utils.OpinionColor))
+          if (level<=3 )
           {
-
-
-            if(Utils.MainBoard.GetCases()[newNode.Parent.FromIndex].Contains($"|{Utils.ComputerColor}"))//si from index n' est pas vide dans MainBoard 
+            if(Chess2Utils.TargetColorIsInChess(board, Utils.OpinionColor))
+            {
+                if(Utils.MainBoard.GetCases()[newNode.Parent.FromIndex].Contains($"|{Utils.ComputerColor}"))//si from index n' est pas vide dans MainBoard 
             {
               var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.Index);
               //si newNode.Parent.Toindex est dans possibleMovesofFromIndex
@@ -510,6 +553,10 @@ namespace ChessCore.Tools
               }
               
             }
+            }
+
+
+            
           }
 
         }
@@ -798,7 +845,7 @@ namespace ChessCore.Tools
                                     foreach (var node in maxNodeList)
                                     {
                                        /// if (node.GetIsLocationIsProtected(node.ToIndex, "B", "W"))
-                                        if (DeepLevel == 4 && node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
+                                        if (node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
                                         {
                                             node.Weight += 0.5;
                                         }

@@ -1,4 +1,6 @@
-﻿namespace ChessCore.Tools
+﻿using System.Diagnostics;
+
+namespace ChessCore.Tools
 {
     public class NodeChess2
     {
@@ -259,26 +261,46 @@
             }
             return protectedNumber;
         }
-        public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
-        {
-            if(toIndex != -1)
-                PawnName = board.GetCases()[toIndex][0].ToString();
-            FromIndex = formIndex;
-            ToIndex = toIndex;
-            Level = level;
-            Board = Utils.CloneBoad(board);
-            Parent = parent;
-            Color = color;
-            ChildList = new List<NodeChess2>();
-
-           
+    public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
+    {
+      if (toIndex != -1)
+        PawnName = board.GetCases()[toIndex][0].ToString();
+      FromIndex = formIndex;
+      ToIndex = toIndex;
+      Level = level;
+      Board = Utils.CloneBoad(board);
+      Parent = parent;
+      Color = color;
+      ChildList = new List<NodeChess2>();
 
 
 
+      //Pour T97A
+    /*  if (Level == 4 )
+      {
+        
+          if (Parent.Parent.Weight>-900)
+          {
+            if (Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
+            {
+              //LOSE node
+              Console.WriteLine("lose");
+              Debug.WriteLine("lose");
+              Parent.Parent.Weight = -999;
+              Parent.Parent.Weight = -999;
+              Utils.NodeLoseList.Add(Parent.Parent);
+              return;
+            }
+          }
+        }
 
-           
+      }*/
+    
 
-                var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
+
+
+
+      var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
                 if (opinionKingIndex == -1)
                 {
                     Weight = 999;
@@ -290,6 +312,8 @@
                     Weight = -999;
                     return;
                 }
+
+              
                 Board.CalculeScores();
                 if (computeurColor == "B")
                     Weight = Board.BlackScore - Board.WhiteScore;
@@ -297,8 +321,8 @@
                     Weight = Board.WhiteScore - Board.BlackScore;
 
 
-                //Pour T97A
-                if(level<=3)
+                //Pour T97A A TESTER
+            /*    if(level<=3)
                 {
                     foreach(var i in Board.GetCasesIndex(Utils.ComputerColor))
                     {
@@ -306,19 +330,18 @@
                             continue;
                         if(Board.GetCaseInIndex(i).Contains("K"))
                             continue;
+                        if(Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
+                            continue;
 
-
-         // if (Chess2Utils.TargetKingColorIsProteted(Board, Utils.ComputerColor, i))
-          if(!Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
-            continue;
-
-          if (Chess2Utils.TargetIndexIsMenaced(Board, Utils.ComputerColor, i))
-                        {
-                            Weight-=Board.GetWeightInIndex(i);
-                        }
+                        if (Chess2Utils.TargetIndexIsMenaced(Board, Utils.ComputerColor, i))
+                                        {
+                                            Weight-=Board.GetWeightInIndex(i);
+                                        }
                     }
+
+                    
         
-                }
+                }*/
               
                 
 
@@ -331,6 +354,7 @@
 
 
         }
+    
 
         public void CalculeScores()
         {

@@ -250,14 +250,16 @@ namespace ChessCore.Tools
 
             WhiteScore =
                  whitePawnNumber
-                 + (whiteBishopNumber + whiteKnightNumber) * 3
+                 + whiteBishopNumber*3
+                  + whiteKnightNumber * 3
                  + whiteRookNumber * 5
                  + whiteQueenNumber * 9
              + whiteKingNumber * 100
             + whiteBonus;
             BlackScore =
               blackPawnNumber
-              + (blackBishopNumber + blackKnightNumber) * 3
+              + blackBishopNumber *3
+              + blackKnightNumber * 3
               + blackRooktNumber * 5
               + blackQueenNumber * 9
               + blackKingNumber * 100
