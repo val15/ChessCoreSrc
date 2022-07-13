@@ -287,6 +287,9 @@ namespace ChessCore.Tools
                 Console.WriteLine($"Opinion color = {Utils.OpinionColor}");
                  Debug.WriteLine($"Computer color = {Utils.ComputerColor}");
                 Debug.WriteLine($"Opinion color = {Utils.OpinionColor}");
+                Utils.StartedProcessTime =DateTime.Now;
+              //  Debug.WriteLine("StartedProcessTime = "+ Utils.StartedProcessTime.ToString("hh:mm:ss tt"));
+             //   Debug.WriteLine("StartedProcessTime = "+ Utils.StartedProcessTime.ToString("hh:mm:ss tt"));
                 Utils.NodeLoseList.Clear();
                 Debug.WriteLine("L4--------------------");
                 Console.WriteLine("L4--------------------");

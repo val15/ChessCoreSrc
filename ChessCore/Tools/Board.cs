@@ -249,24 +249,25 @@ namespace ChessCore.Tools
 
 
             WhiteScore =
-                 whitePawnNumber
-                 + whiteBishopNumber*3
-                  + whiteKnightNumber * 3
-                 + whiteRookNumber * 5
-                 + whiteQueenNumber * 9
+                 whitePawnNumber*10
+                 + whiteBishopNumber*30
+                  + whiteKnightNumber * 30
+                 + whiteRookNumber * 50
+                 + whiteQueenNumber * 90
              + whiteKingNumber * 100
             + whiteBonus;
             BlackScore =
-              blackPawnNumber
-              + blackBishopNumber *3
-              + blackKnightNumber * 3
-              + blackRooktNumber * 5
-              + blackQueenNumber * 9
+              blackPawnNumber*10
+              + blackBishopNumber *30
+              + blackKnightNumber * 30
+              + blackRooktNumber * 50
+              + blackQueenNumber * 90
               + blackKingNumber * 100
               + blackBonus;
 
 
-            Diff = Math.Abs(BlackScore - WhiteScore);
+           
+            Diff = Math.Abs(WhiteScore -BlackScore);
             if (Utils.ComputerColor == "B")
                 Weight = BlackScore - WhiteScore;
             else

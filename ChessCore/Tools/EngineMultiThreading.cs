@@ -473,8 +473,8 @@ namespace ChessCore.Tools
         //pour T80, o regarde les lose et les win seulment pour les DeepLevel == 4
         if(DeepLevel == 4)
         {
-
-            if (newNode.Level == 4)
+       
+          /* T97 if (newNode.Level == 4)
             {
 
               if (newNode.Parent.Parent.Weight > -900)
@@ -489,28 +489,10 @@ namespace ChessCore.Tools
                   return;
                 }
               }
-            }
+            }*/
 
           
-          //Pour T97A
-          /* if(newNode.Level == 4)
-           {
-         if(Utils.NodeLoseList.Count > 0)
-         {
-           var loserparentparent = Utils.NodeLoseList.First(x => x.FromIndex == newNode.Parent.Parent.FromIndex && x.ToIndex == newNode.Parent.Parent.ToIndex);
-           if (loserparentparent == null)//si newNode.Parent.Parent n'est pas dans Utils.NodeLoseList
-           {
-             if (Chess2Utils.TargetColorIsInChess(newNode.Board, Utils.ComputerColor))
-             {
-               //LOSE node
-               Console.WriteLine("lose");
-               Debug.WriteLine("lose");
-               newNode.Parent.Parent.Weight = -999;
-               Utils.NodeLoseList.Add(newNode.Parent.Parent);
-               return;
-             }
-           }
-           }*/
+      
 
 
           if (level<=3 )
@@ -881,7 +863,21 @@ namespace ChessCore.Tools
                             //parent.MinNodeList = minNodeList;
                             break;
                         }
+                      /*  foreach(var i in parent.BestNode.Board.GetCasesIndex(Utils.ComputerColor))
+                            {
+                                if(parent.BestNode.Board.GetCaseInIndex(i).Contains("P"))
+                                    continue;
+                                if(parent.BestNode.Board.GetCaseInIndex(i).Contains("K"))
+                                    continue;
+                             //   if(Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
+                              //      continue;
 
+                                if (Chess2Utils.TargetIndexIsMenaced(parent.BestNode.Board, Utils.ComputerColor, i))
+                                                {
+                                                    parent.BestNode.Weight-=parent.BestNode.Board.GetWeightInIndex(i);
+                                                }
+                            }*/
+                       // parent.BestNode.Weight = 
                     }
 
 

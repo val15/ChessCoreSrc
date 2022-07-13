@@ -292,9 +292,9 @@ namespace ChessCore.Tools
               return;
             }
           }
-        }
+        }*/
 
-      }*/
+      
     
 
 
@@ -312,6 +312,27 @@ namespace ChessCore.Tools
                     Weight = -999;
                     return;
                 }
+            if(level == 4)
+            {
+
+               //T41
+                  var diffTime =    (DateTime.Now- Utils.StartedProcessTime).TotalMinutes;
+              //  Debug.WriteLine("diffTime = "+ diffTime);
+              //  Debug.WriteLine("diffTime = "+ diffTime);
+                if(diffTime<Utils.LimitationForT41InMn)
+                {
+               //      Debug.WriteLine("Chess2Utils.TargetColorIsInChess() in L4");
+               // Debug.WriteLine("Chess2Utils.TargetColorIsInChess() in L4");
+                      //T97A
+                if(Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
+                            {
+                                Parent.Parent.Weight --;//+= -99;//Poure que T97A marche avec T37
+                                return;
+                            }
+                }
+              
+            }
+              
 
               
                 Board.CalculeScores();
@@ -320,8 +341,12 @@ namespace ChessCore.Tools
                 else
                     Weight = Board.WhiteScore - Board.BlackScore;
 
-
-                //Pour T97A A TESTER
+            //pour le test 
+           /* if(Weight==-11)
+            {
+                this.Board.PrintInDebug();
+                var t_n =this;
+            } */               //Pour T97A A TESTER
             /*    if(level<=3)
                 {
                     foreach(var i in Board.GetCasesIndex(Utils.ComputerColor))

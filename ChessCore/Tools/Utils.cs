@@ -4,6 +4,10 @@ namespace ChessCore.Tools
 {
     public static class Utils
     {
+        public static DateTime StartedProcessTime { get; set; }
+        //Pour T41, on limite le temps de reflection, si le temps depasse le seul, on ne fait plus de verification, in Chess2Utils.TargetColorIsInChess() au niveau 4
+        public static double LimitationForT41InMn { get; set; }=1.5;
+
 
         public static string NavigationStoryCursor { get; set; }="-";//07-07-2022
     //pour T07a et T07b
