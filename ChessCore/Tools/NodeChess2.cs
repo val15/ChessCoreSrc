@@ -74,7 +74,7 @@ namespace ChessCore.Tools
             //     if (caseBoard.Contains($"|{opinionColor}"))
             //         opinionListIndex.Add(i);
             // }
-            var opinionListIndex = board.GetCasesIndex(opinionColor);
+            var opinionListIndex = board.GetCasesIndexForColor(opinionColor);
 
 
             foreach (var index in opinionListIndex)
@@ -148,7 +148,7 @@ namespace ChessCore.Tools
             //     if (caseBoard.Contains($"|{opinionColor}"))
             //         opinionListIndex.Add(i);
             // }
-            var opinionListIndex = board.GetCasesIndex(opinionColor);
+            var opinionListIndex = board.GetCasesIndexForColor(opinionColor);
 
 
             foreach (var index in opinionListIndex)

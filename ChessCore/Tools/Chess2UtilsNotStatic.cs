@@ -247,7 +247,7 @@ namespace ChessCore.Tools
             
              
  
-                    var computerPawnsIndex = boarChess2.GetCasesIndex(cpuColor).ToList();//.OrderBy(x=>x);
+                    var computerPawnsIndex = boarChess2.GetCasesIndexForColor(cpuColor).ToList();//.OrderBy(x=>x);
                      bestNodList.AddRange(EmuleAllIndexInParallelForEach(boarChess2, computerPawnsIndex, level, cpuColor, IsReprise, SpecifiBoardList));  
                       return bestNodList;
 
@@ -325,7 +325,7 @@ namespace ChessCore.Tools
                 
                  if(Utils.NodeLoseList.Count>0)
                 {
-
+            //T98
             try
             {
               Console.WriteLine("--LOSE NODE DETECTED--");

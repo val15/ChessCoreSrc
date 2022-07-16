@@ -5,6 +5,8 @@ namespace ChessCore.Tools
     public static class Chess2Utils
     {
 
+
+
     public static bool TargetIndexIsProteted(Board inBoard, string targetkingColor,int targetIndex)
     {
       try
@@ -13,7 +15,7 @@ namespace ChessCore.Tools
         //     return false;
 
         //var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var alliesIndex = inBoard.GetCasesIndex(targetkingColor).ToList();
+        var alliesIndex = inBoard.GetCasesIndexForColor(targetkingColor).ToList();
         alliesIndex.Remove(targetIndex);
         //var possibleMovesAllies = 
         foreach (var alieFromIndex in alliesIndex)
@@ -55,7 +57,7 @@ namespace ChessCore.Tools
      //     return false;
 
         var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var alliesIndex = inBoard.GetCasesIndex(targetkingColor).ToList();
+        var alliesIndex = inBoard.GetCasesIndexForColor(targetkingColor).ToList();
         alliesIndex.Remove(targetkingindex);
         //var possibleMovesAllies = 
         foreach (var alieFromIndex in alliesIndex)
@@ -527,7 +529,7 @@ namespace ChessCore.Tools
 
             /* if (level < 4)
              {*/
-            var computerPawnsIndex = boarChess2.GetCasesIndex(cpuColor).ToList();//.OrderBy(x=>x);
+            var computerPawnsIndex = boarChess2.GetCasesIndexForColor(Utils.ComputerColor);//.OrderBy(x=>x);
             bestNodList.AddRange(EmuleAllIndexInParallelForEach(boarChess2, computerPawnsIndex, level, cpuColor, IsReprise, SpecifiBoardList));                                                                                 // var computerPawnsIndex = new List<int>();
 
             /* }

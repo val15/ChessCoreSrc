@@ -246,7 +246,7 @@ namespace ChessCore.Tools
             //dans le cas la case de déstination contien un pion adverse, on l'enleve
             if (cloneBoard.GetCases()[toIndex].Contains("|"))
                 cloneBoard.GetCases()[toIndex] = "__";
-            var opinionIndexs = cloneBoard.GetCasesIndex(opinionColor);
+            var opinionIndexs = cloneBoard.GetCasesIndexForColor(opinionColor);
             foreach (var index in opinionIndexs)
             {
 
@@ -321,7 +321,7 @@ namespace ChessCore.Tools
             if (Utils.ComputerColor == "W")
                 opinionColor = "B";
 
-            var opinionIndexs = board.GetCasesIndex(opinionColor);
+            var opinionIndexs = board.GetCasesIndexForColor(opinionColor);
             foreach (var item in opinionIndexs)
             {
                 var possibleMove = board.GetPossibleMoves(item, 0).Select(x => x.Index);

@@ -64,34 +64,41 @@ namespace ChessCore.Tools
         public int BlackScore { get; set; }
         public int Level { get; set; }
 
-
-        //retourne tous les index du couleur
-        public int[] GetCasesIndex(string colore)
+    /// <summary>
+    /// retourne tous les index de la couleur
+    /// </summary>
+    public List<int> GetCasesIndexForColor (string colore)
         {
-            List<int> results = new List<int>();
-            //foreach (var item in _cases)
-            for (int i = 0; i < _cases.Count(); i++)
-            {
-                var item = _cases[i];
-                if (item.Contains("|"))
-                {
-                    var caseDatas = item.Split('|');
-                    var caseColor = caseDatas[1];
+            var indexAndCaseList = new List<IndexAndCase>();
 
-                    if (caseColor == colore)
-                        results.Add(i);
+      for (int i = 0; i < _cases.Count(); i++)
+      {
 
+        indexAndCaseList.Add(new IndexAndCase { Index = i, CaseContain = _cases[i] });
+      }
 
-                }
-            }
+      //on ordone les pieces celont leur rang
+      var caseInOrder = indexAndCaseList.Where(x=>x.CaseContain.Contains($"|{colore}") ).ToList().OrderByDescending(x => this.GetValue(x.CaseContain));
+      //foreach (var item in _cases)
 
-            return results.ToArray();
+      return caseInOrder.Select(x=>x.Index).ToList();
+    
         }
+    /// <summary>
+    /// tsiry;16-07-2022
+    /// cette classe n'est util que dans la methode GetCasesIndex
+    /// pour ordoner les cases selont les rang des pieces
+    /// </summary>
+    class IndexAndCase
+    {
+      public int Index { get; set; }
+      public string CaseContain { get; set; }
+    }
 
-        /*tsiry;07-01-2022
-        * returne tout les index sauf 
-        * */
-        public int[] GetCasesAllIndexExcept(string colore, string exceptPawnName)
+    /*tsiry;07-01-2022
+    * returne tout les index sauf 
+    * */
+    public int[] GetCasesAllIndexExcept(string colore, string exceptPawnName)
         {
             List<int> results = new List<int>();
             //foreach (var item in _cases)
@@ -687,7 +694,7 @@ namespace ChessCore.Tools
                 var opinionColor = "W";
                 if (color == "W")
                     opinionColor = "B";
-                var opinionPawns = GetCasesIndex(opinionColor);
+                var opinionPawns = GetCasesIndexForColor(opinionColor);
 
                 var possiblesMovesOpinionIndex = new List<int>();
                 foreach (var index in opinionPawns)

@@ -421,7 +421,7 @@ namespace ChessCore.Tools
 
 
 
-            var pawns = board.GetCasesIndex(color);
+            var pawns = board.GetCasesIndexForColor(color);
             // var opinionIsInChess = board.IsInChess(opinionColor);
             foreach (var index in pawns)
             {
@@ -573,7 +573,7 @@ namespace ChessCore.Tools
             if (level == DeepLevel)
                 return;
             level++;
-            var pawns = board.GetCasesIndex(color);
+            var pawns = board.GetCasesIndexForColor(color);
 
             foreach (var index in pawns)
             {
@@ -972,7 +972,7 @@ namespace ChessCore.Tools
 
         public void PrintAllPossiblePossiblesPositionFromColor(Board board, string color)
         {
-            var pawns = board.GetCasesIndex(color);
+            var pawns = board.GetCasesIndexForColor(color);
             foreach (var index in pawns)
             {
                 PrintAllPossiblePossiblesPositionFromOncePosition(board, index);

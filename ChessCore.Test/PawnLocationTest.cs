@@ -364,8 +364,8 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             var boad = Chess2Utils.GenerateBoardFormPawnList(pawnList);
-            var computerPawnsIndex = boad.GetCasesIndex("W").ToList();
-            var opinionPawnsIndex = boad.GetCasesIndex("B").ToList();
+            var computerPawnsIndex = boad.GetCasesIndexForColor("W").ToList();
+            var opinionPawnsIndex = boad.GetCasesIndexForColor("B").ToList();
             var possibleMoveList = new List<PossibleMove>();
             foreach (var index in computerPawnsIndex)
             {
