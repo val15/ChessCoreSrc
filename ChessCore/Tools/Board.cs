@@ -277,13 +277,13 @@ namespace ChessCore.Tools
         public int GetValue(string caseContaint)
         {
             if (caseContaint.Contains("P|"))
-                return 1;
+                return 10;
             if (caseContaint.Contains("B|") || caseContaint.Contains("C|"))
-                return 3;
+                return 30;
             if (caseContaint.Contains("T|"))
-                return 5;
+                return 50;
             if (caseContaint.Contains("Q|"))
-                return 9;
+                return 90;
             if (caseContaint.Contains("K|"))
                 return 100;
             return 0;

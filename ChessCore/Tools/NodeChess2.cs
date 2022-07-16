@@ -332,43 +332,39 @@ namespace ChessCore.Tools
                 }
               
             }
-              
 
-              
-                Board.CalculeScores();
-                if (computeurColor == "B")
-                    Weight = Board.BlackScore - Board.WhiteScore;
-                else
-                    Weight = Board.WhiteScore - Board.BlackScore;
 
-            //pour le test 
-           /* if(Weight==-11)
+            //if(level==4)
+              CalculeScores();
+     /* if (level == 1 && Chess2Utils.TargetIndexIsMenaced(Board,Utils.ComputerColor,toIndex))
+      {
+        Weight-=Board.GetWeightInIndex(toIndex);
+      }*///pour le test 
+        /* if(Weight==-11)
+         {
+             this.Board.PrintInDebug();
+             var t_n =this;
+         } */               //Pour T97A A TESTER
+        /*    if(level<=3)
             {
-                this.Board.PrintInDebug();
-                var t_n =this;
-            } */               //Pour T97A A TESTER
-            /*    if(level<=3)
+                foreach(var i in Board.GetCasesIndex(Utils.ComputerColor))
                 {
-                    foreach(var i in Board.GetCasesIndex(Utils.ComputerColor))
-                    {
-                        if(Board.GetCaseInIndex(i).Contains("P"))
-                            continue;
-                        if(Board.GetCaseInIndex(i).Contains("K"))
-                            continue;
-                        if(Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
-                            continue;
+                    if(Board.GetCaseInIndex(i).Contains("P"))
+                        continue;
+                    if(Board.GetCaseInIndex(i).Contains("K"))
+                        continue;
+                    if(Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
+                        continue;
 
-                        if (Chess2Utils.TargetIndexIsMenaced(Board, Utils.ComputerColor, i))
-                                        {
-                                            Weight-=Board.GetWeightInIndex(i);
-                                        }
-                    }
+                    if (Chess2Utils.TargetIndexIsMenaced(Board, Utils.ComputerColor, i))
+                                    {
+                                        Weight-=Board.GetWeightInIndex(i);
+                                    }
+                }
 
-                    
-        
-                }*/
-              
-                
+
+
+            }*/
 
 
 
@@ -378,7 +374,9 @@ namespace ChessCore.Tools
 
 
 
-        }
+
+
+      }
     
 
         public void CalculeScores()
@@ -386,29 +384,7 @@ namespace ChessCore.Tools
 
             Board.CalculeScores();
 
-            /* if(Utils.KingIsOut(Board, Utils.ComputerColor))
-             {
-               Weight = -999;
-               return;
-             }
-
-             if (Utils.KingIsOut(Board, Utils.OpinionColor))
-             {
-               Weight = 999;
-               return;
-             }*/
-
-            /*if (Utils.KingIsInChess(Board, Utils.ComputerColor))
-            {
-              Weight = -999;
-              return; 
-            }
-
-            if (Utils.KingIsInChess(Board, Utils.OpinionColor))
-            {
-              Weight = 999;
-              return;
-            }*/
+           
 
             if (Utils.ComputerColor == "B")
                 Weight = Board.BlackScore - Board.WhiteScore;

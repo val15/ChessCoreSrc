@@ -325,21 +325,30 @@ namespace ChessCore.Tools
                 
                  if(Utils.NodeLoseList.Count>0)
                 {
-                     Console.WriteLine("--LOSE NODE DETECTED--");
-                Debug.WriteLine("--LOSE NODE DETECTED--");
-                    //var firtNode2Win= Utils.NodeWinList.First();
-                    foreach(var node2 in Utils.NodeLoseList)
-                    {
-                        var nodeWinResult = new Node();
-                    nodeWinResult.Location = Chess2Utils.GetLocationFromIndex(node2.FromIndex);
-                    nodeWinResult.BestChildPosition = Chess2Utils.GetLocationFromIndex(node2.ToIndex);
-                    nodeWinResult.Weight =node2.Weight;
-                        Debug.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
-                  Console.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
-                    }
-                    
 
-                }
+            try
+            {
+              Console.WriteLine("--LOSE NODE DETECTED--");
+              Debug.WriteLine("--LOSE NODE DETECTED--");
+              //var firtNode2Win= Utils.NodeWinList.First();
+              foreach (var node2 in Utils.NodeLoseList)
+              {
+                var nodeWinResult = new Node();
+                nodeWinResult.Location = Chess2Utils.GetLocationFromIndex(node2.FromIndex);
+                nodeWinResult.BestChildPosition = Chess2Utils.GetLocationFromIndex(node2.ToIndex);
+                nodeWinResult.Weight = node2.Weight;
+                Debug.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
+                Console.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
+              }
+
+            }
+            catch (Exception)
+            {
+              Debug.WriteLine("DONT PANIC: too mach loseds nodes detected (loseds nodes ignoreds)");
+              Console.WriteLine("DONT PANIC: too mach loseds nodes detected (loseds nodes ignoreds)");
+            }
+
+          }
               }
                 else//si tous les noeud sont des lose, on fait un nouveau recherche sur les L2
                 {

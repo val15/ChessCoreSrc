@@ -90,11 +90,11 @@ namespace ChessCore.Controllers
                         vmEngine.RevertWrapperClass = "revertWrapper";
 
                     if (vmEngine.MainBord.WhiteScore < vmEngine.MainBord.BlackScore)
-                        vmEngine.BlackScore = $"+{(vmEngine.MainBord.BlackScore - vmEngine.MainBord.WhiteScore).ToString()}";
+                        vmEngine.BlackScore = (vmEngine.MainBord.BlackScore - vmEngine.MainBord.WhiteScore);
                     else if (vmEngine.MainBord.BlackScore < vmEngine.MainBord.WhiteScore)
-                        vmEngine.WhiteScore = $"+{(vmEngine.MainBord.WhiteScore - vmEngine.MainBord.BlackScore).ToString()}";
+                        vmEngine.WhiteScore = (vmEngine.MainBord.WhiteScore - vmEngine.MainBord.BlackScore);
                     else
-                        vmEngine.BlackScore = vmEngine.WhiteScore = "";
+                        vmEngine.BlackScore = vmEngine.WhiteScore = 0;
 
                     MainUtils.CaseList = vmEngine.MainBord.GetCases().ToList();
                     // System.GC.Collect();
@@ -252,11 +252,11 @@ if (Directory.Exists(destinationDirectory)) Directory.Delete(destinationDirector
                 MainUtils.VM.MainBord.CalculeScores();
                 //pour les scores
                 if (MainUtils.VM.MainBord.WhiteScore < MainUtils.VM.MainBord.BlackScore)
-                    MainUtils.VM.BlackScore = $"+{(MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore).ToString()}";
+                    MainUtils.VM.BlackScore = (MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore);
                 else if (MainUtils.VM.MainBord.BlackScore < MainUtils.VM.MainBord.WhiteScore)
-                    MainUtils.VM.WhiteScore = $"+{(MainUtils.VM.MainBord.WhiteScore - MainUtils.VM.MainBord.BlackScore).ToString()}";
+                    MainUtils.VM.WhiteScore = (MainUtils.VM.MainBord.WhiteScore - MainUtils.VM.MainBord.BlackScore);
                 else
-                    MainUtils.VM.BlackScore = MainUtils.VM.WhiteScore = "";
+                    MainUtils.VM.BlackScore = MainUtils.VM.WhiteScore = 0;
                 ViewBag.Message = "File Uploaded Successfully!!";
                 return View("Index", MainUtils.VM);
             }
@@ -398,11 +398,11 @@ MainUtils.MovingListIndex++;
                 MainUtils.VM.MainBord.CalculeScores();
                 //pour les scores
                 if (MainUtils.VM.MainBord.WhiteScore < MainUtils.VM.MainBord.BlackScore)
-                    MainUtils.VM.BlackScore = $"+{(MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore).ToString()}";
+                    MainUtils.VM.BlackScore = (MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore);
                 else if (MainUtils.VM.MainBord.BlackScore < MainUtils.VM.MainBord.WhiteScore)
-                    MainUtils.VM.WhiteScore = $"+{(MainUtils.VM.MainBord.WhiteScore - MainUtils.VM.MainBord.BlackScore).ToString()}";
+                    MainUtils.VM.WhiteScore = (MainUtils.VM.MainBord.WhiteScore - MainUtils.VM.MainBord.BlackScore);
                 else
-                    MainUtils.VM.BlackScore = MainUtils.VM.WhiteScore = "";
+                    MainUtils.VM.BlackScore = MainUtils.VM.WhiteScore = 0;
                MainUtils.VM.MainBord.MovingList=oldMovingList;
 
                
@@ -573,11 +573,11 @@ MainUtils.MovingListIndex++;
                 if (MainUtils.CPUColor == "B")
                     initialVm.RevertWrapperClass = "revertWrapper";
                 if (initialVm.MainBord.WhiteScore < initialVm.MainBord.BlackScore)
-                    initialVm.BlackScore = $"+{(initialVm.MainBord.BlackScore - initialVm.MainBord.WhiteScore).ToString()}";
+                    initialVm.BlackScore = (initialVm.MainBord.BlackScore - initialVm.MainBord.WhiteScore);
                 else if (initialVm.MainBord.BlackScore < initialVm.MainBord.WhiteScore)
-                    initialVm.WhiteScore = $"+{(initialVm.MainBord.WhiteScore - initialVm.MainBord.BlackScore).ToString()}";
+                    initialVm.WhiteScore = (initialVm.MainBord.WhiteScore - initialVm.MainBord.BlackScore);
                 else
-                    initialVm.BlackScore = initialVm.WhiteScore = "";
+                    initialVm.BlackScore = initialVm.WhiteScore = 0;
    
                 return PartialView("Details", initialVm);
             }
@@ -627,11 +627,11 @@ MainUtils.MovingListIndex++;
                     if (MainUtils.CPUColor == "B")
                         vmOld.RevertWrapperClass = "revertWrapper";
                     if (vmOld.MainBord.WhiteScore < vmOld.MainBord.BlackScore)
-                        vmOld.BlackScore = $"+{(vmOld.MainBord.BlackScore - vmOld.MainBord.WhiteScore).ToString()}";
+                        vmOld.BlackScore = (vmOld.MainBord.BlackScore - vmOld.MainBord.WhiteScore);
                     else if (vmOld.MainBord.BlackScore < vmOld.MainBord.WhiteScore)
-                        vmOld.WhiteScore = $"+{(vmOld.MainBord.WhiteScore - vmOld.MainBord.BlackScore).ToString()}";
+                        vmOld.WhiteScore = (vmOld.MainBord.WhiteScore - vmOld.MainBord.BlackScore);
                     else
-                        vmOld.BlackScore = vmOld.WhiteScore = "";
+                        vmOld.BlackScore = vmOld.WhiteScore = 0;
                     // return View(MainUtils.VM);
                     MainUtils.CaseList = vmOld.MainBord.GetCases().ToList();
 
@@ -673,11 +673,11 @@ MainUtils.MovingListIndex++;
                 vm.RevertWrapperClass = "revertWrapper";
 
             if (vm.MainBord.WhiteScore < vm.MainBord.BlackScore)
-                vm.BlackScore = $"+{(vm.MainBord.BlackScore - vm.MainBord.WhiteScore).ToString()}";
+                vm.BlackScore = (vm.MainBord.BlackScore - vm.MainBord.WhiteScore);
             else if (vm.MainBord.BlackScore < vm.MainBord.WhiteScore)
-                vm.WhiteScore = $"+{(vm.MainBord.WhiteScore - vm.MainBord.BlackScore).ToString()}";
+                vm.WhiteScore = (vm.MainBord.WhiteScore - vm.MainBord.BlackScore);
             else
-                vm.BlackScore = vm.WhiteScore = "";
+                vm.BlackScore = vm.WhiteScore = 0;
             // return View(MainUtils.VM);
 
             MainUtils.CaseList = vm.MainBord.GetCases().ToList();

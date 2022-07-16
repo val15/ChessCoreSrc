@@ -276,7 +276,24 @@ namespace ChessCore.Test
             var result = nodeChess2.TargetIndexIsMenaced(board, color, opinionColor, 61);
             Assert.IsTrue(result);
         }
-        [TestMethod]
+
+    /*tsiry;14-07-2022*/
+    [TestMethod]
+    public void WhiteB8IsMenaced()
+    {
+      var testName = "T99WhiteNotC7ToF7";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.TargetIndexIsMenaced(board, "W", 1);
+
+
+
+
+      Assert.IsTrue(result);
+    }
+
+    [TestMethod]
         public void Black13IsMenaced()
         {
 

@@ -133,7 +133,7 @@ namespace ChessCore.Tools
     /// tsiry;02-07-2022
     /// </summary>
 
-    public static bool TargetIndexIsMenaced(Board inBoard, string targetColor,int targetIndex)
+    public static bool TargetIndexIsMenaced(Board inBoard, string targetColor, int targetIndex)
     {
       try
       {
@@ -141,22 +141,28 @@ namespace ChessCore.Tools
         if (targetColor == "W")
           opinionColor = "B";
         var index = 0;
-        var opibionOfTargetColorIndexList = new List<int>();
-        foreach (var item in inBoard.GetCases())
+        var copyBoard = new Board(inBoard);
+        if (targetIndex != -1)
+        {
+          if (copyBoard.GetCases()[targetIndex].Contains($"|{opinionColor}"))//si la case contion un pion adverse, on le vide
+            copyBoard.GetCases()[targetIndex] = "__";
+        }
+
+        var opinionOfTargetColorIndexList = new List<int>();
+        foreach (var item in copyBoard.GetCases())
         {
           if (item.Contains($"|{opinionColor}"))
           {
-            opibionOfTargetColorIndexList.Add(index);
+            opinionOfTargetColorIndexList.Add(index);
           }
           index++;
         }
-        var opibionPossibleMoveIndexList = new List<int>();
-        foreach (var opibionIndex in opibionOfTargetColorIndexList)
+        var opinionPossibleMoveIndexList = new List<int>();
+        foreach (var opibionIndex in opinionOfTargetColorIndexList)
         {
-          opibionPossibleMoveIndexList.AddRange(inBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.Index));
+          opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.Index));
         }
-         ;
-        if (opibionPossibleMoveIndexList.Contains(targetIndex))
+        if (opinionPossibleMoveIndexList.Contains(targetIndex))
           return true;
 
         return false;
@@ -167,6 +173,7 @@ namespace ChessCore.Tools
 
       }
     }
+
 
 
 

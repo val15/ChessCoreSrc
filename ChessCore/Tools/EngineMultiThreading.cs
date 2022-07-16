@@ -681,17 +681,23 @@ namespace ChessCore.Tools
                 {
                   
                     var maxWeight = parent.ChildList.Max(x => x.Weight);
-                  
-                    //T96 
-                    if(parent.Weight< maxWeight)
-                        parent.Weight = maxWeight;
-                   
+
+          //T96 
+
+          /* if(level == 3)
+           {
+             if (parent.Weight < maxWeight)
+               parent.Weight = maxWeight;
+           }
+           else*/
+          if (parent.Weight < maxWeight)
+            parent.Weight = maxWeight;
 
 
 
 
 
-                    if (level == 1)
+          if (level == 1)
                     {
                       
 
@@ -768,6 +774,14 @@ namespace ChessCore.Tools
                             break;
                         }
 
+                        //T99 et T78
+            foreach (var node in parent.ChildList)
+            {
+              if (!Chess2Utils.TargetIndexIsMenaced(parent.Board, Utils.ComputerColor, node.FromIndex) && Chess2Utils.TargetIndexIsMenaced(node.Board, Utils.ComputerColor, node.ToIndex))
+              {
+                node.Weight -= node.Board.GetWeightInIndex(node.ToIndex);
+              }
+            }
 
 
 

@@ -18,9 +18,46 @@ namespace ChessCore.Models
         public string RevertWrapperClass { get; set; }
         public List<string> MovingList { get; set; }
 
-        public string WhiteScore { get; set; }
+        private int _whiteScore; 
 
-        public string BlackScore { get; set; }
+         public int WhiteScore
+         {
+            get {return _whiteScore;}
+            set
+            {
+                _whiteScore = value/10;
+            }
+         }
+           public string GetWhiteScoreString()
+          {
+            if(WhiteScore>0)
+                return $"+ {WhiteScore}";
+            else
+                return " ";
+
+           }
+   
+
+        private int _blackScore; 
+
+         public int BlackScore
+         {
+            get {return _blackScore;}
+            set
+            {
+                _blackScore = value/10;
+            }
+         }
+
+          public string GetBlackScoreString()
+          {
+            if(BlackScore>0)
+                return $"+ {BlackScore}";
+            else
+                return " ";
+
+           }
+
 
         public List<string> HuntingBoardWhiteImageList { get; set; }
         public List<string> HuntingBoardBlackImageList { get; set; }

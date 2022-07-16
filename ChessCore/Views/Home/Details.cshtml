@@ -290,7 +290,7 @@
 
         <div class="wrapper-inner">
           <div align="left">
-            <label class="@Model.RevertWrapperClass">@Model.BlackScore </label>
+            <label class="@Model.RevertWrapperClass">@Model.GetBlackScoreString() </label>
           </div>
 
           <div align="right">
@@ -333,7 +333,7 @@
                    class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
             }
             @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
-            <div class="caseNumber" style=" font-size: 10px;">@(j+(i*8))</div>
+            <div class="caseNumber" style=" font-size: 10px;"><p class="@Model.RevertWrapperClass">@(j+(i*8))</p></div>
 
 
           </div>
@@ -357,7 +357,7 @@
             
                 <div class="wrapper-inner">
                   <div align="left">
-                    <label class="@Model.RevertWrapperClass">@Model.WhiteScore </label>
+                    <label class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
                   </div>
 
                   <div align="right">
