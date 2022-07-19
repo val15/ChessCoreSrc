@@ -132,6 +132,30 @@ namespace ChessCore.Tools
     }
 
     /// <summary>
+    /// tsiry;19-07-2022
+    /// </summary>
+    public static int GetNumberOpionionMenaceds(Board inBoard, string opinionColorColor)
+    {
+      try
+      {
+        var number = 0;
+        var opinionPawnIndex = inBoard.GetCasesIndexForColor(opinionColorColor);
+        foreach (var index in opinionPawnIndex)
+        {
+          if (TargetIndexIsMenaced(inBoard, opinionColorColor, index))
+            number++;
+        }
+        return number;
+      }
+      catch (Exception ex)
+      {
+        return 0;
+
+      }
+    }
+
+
+    /// <summary>
     /// tsiry;02-07-2022
     /// </summary>
 

@@ -3802,5 +3802,59 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
     }
 
+
+/*tsiry;19-07-2022*/
+    [TestMethod]
+    public void MTT100BlackG6ToF5()
+    {
+
+      var computerColore = "Black";
+      var testName = "T100BlackG6ToF5";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+      {
+        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+        // Assert.AreNotEqual(nodeResult.Location, "c7");
+        Assert.AreEqual("f5",nodeResult.BestChildPosition);
+
+      }
+      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+      //Assert.IsNull(randomList);
+      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+    }
+
+
+/*tsiry;19-07-2022*/
+ /*   [TestMethod]
+    public void MTT101BlackG6ToF5()
+    {
+
+      var computerColore = "Black";
+      var testName = "T101BlackG6ToF5";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+      {
+        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+        // Assert.AreNotEqual(nodeResult.Location, "c7");
+        Assert.AreEqual("f5",nodeResult.BestChildPosition);
+
+      }
+      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+      //Assert.IsNull(randomList);
+      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+    }
+*/
   }
 }

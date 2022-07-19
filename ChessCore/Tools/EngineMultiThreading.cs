@@ -833,7 +833,7 @@ namespace ChessCore.Tools
 
                             else
                             {
-                                //Pour T95B si il y a plus de deux au hazard, on privilegie 
+                               //Pour T94 si il y a plus de deux au hazard, on privilegie 
                                 //celui qui est protégé
                                 //if(maxWeith<=-900)
                                 if (maxWeith >-900)
@@ -845,8 +845,9 @@ namespace ChessCore.Tools
                                         {
                                             node.Weight += 0.5;
                                         }
-                                            
-                                    }
+                    node.Weight += (Chess2Utils.GetNumberOpionionMenaceds(node.Board, Utils.OpinionColor))*0.5;
+                              
+                  }
                                 }
                                
                                 maxWeith = maxNodeList.Max(x => x.Weight);
