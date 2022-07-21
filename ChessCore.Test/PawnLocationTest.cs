@@ -12,6 +12,37 @@ namespace ChessCore.Test
     {
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
 
+
+    /*tsiry;03-07-2022*/
+    [TestMethod]
+    public void BlackGetWeigtOpionionMenacedsByToIndex29()
+    {
+      var testName = "T100GetWeigtOpionionMenacedsByToIndexBlackG6ToF5";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.GetWeigtOpionionMenacedsByToIndex(board, "W", 29);
+
+
+
+      Assert.AreEqual(60, result);
+    }
+
+
+    /*tsiry;03-07-2022*/
+    [TestMethod]
+    public void BlackGetWeigtOpionionMenacedsByToIndex35()
+    {
+      var testName = "T105GetWeigtOpionionMenacedsByToIndexBlackC6ToD4";
+      var testPath = Path.Combine(testsDirrectory, testName);
+      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+      var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+      var result = Chess2Utils.GetWeigtOpionionMenacedsByToIndex(board, "W", 35);
+
+
+
+      Assert.AreEqual(150, result);
+    }
     /*tsiry;03-07-2022*/
     [TestMethod]
     public void WhiteIsInChessT95ZWhiteIsInChess()

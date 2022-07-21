@@ -690,6 +690,7 @@ namespace ChessCore.Tools
                parent.Weight = maxWeight;
            }
            else*/
+          
           if (parent.Weight < maxWeight)
             parent.Weight = maxWeight;
 
@@ -841,13 +842,19 @@ namespace ChessCore.Tools
                                     foreach (var node in maxNodeList)
                                     {
                                        /// if (node.GetIsLocationIsProtected(node.ToIndex, "B", "W"))
-                                        if (node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
+                                    if (node.GetIsLocationIsProtected(node.ToIndex, Utils.ComputerColor, Utils.OpinionColor))
                                         {
                                             node.Weight += 0.5;
                                         }
-                    node.Weight += (Chess2Utils.GetNumberOpionionMenaceds(node.Board, Utils.OpinionColor))*0.5;
-                              
-                  }
+                    //T100 et T105 mais pour T33b ,il faut que toIndexne soit pas nenacé
+                    if (!Chess2Utils.TargetIndexIsMenaced(node.Board, Utils.ComputerColor, node.ToIndex))
+                      node.Weight += (Chess2Utils.GetWeigtOpionionMenacedsByToIndex(node.Board, Utils.OpinionColor,node.ToIndex))*0.1;
+                          /* if(node.ToIndex == 29)
+                            {
+                              var t_ = node;
+                              var t_w = Chess2Utils.GetWeigtOpionionMenacedsByToIndex(node.Board, Utils.OpinionColor, node.ToIndex);
+                            }*/
+                          }
                                 }
                                
                                 maxWeith = maxNodeList.Max(x => x.Weight);

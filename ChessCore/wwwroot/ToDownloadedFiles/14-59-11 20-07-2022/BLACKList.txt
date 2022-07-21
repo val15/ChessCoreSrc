@@ -1,0 +1,3 @@
+Rook;g8;Black;False;False;False;False
+SimplePawn;f5;Black;False;False;False;False
+King;g3;Black;False;False;False;False

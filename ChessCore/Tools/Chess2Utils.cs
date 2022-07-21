@@ -56,9 +56,31 @@ namespace ChessCore.Tools
      //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
      //     return false;
 
-        var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var alliesIndex = inBoard.GetCasesIndexForColor(targetkingColor).ToList();
-        alliesIndex.Remove(targetkingindex);
+        var targetkingIndex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+      return TargetIndexIsProteted( inBoard, targetkingIndex,targetkingColor);
+        
+
+       
+
+      }
+      catch (Exception ex)
+      {
+        return false;
+      }
+
+    }
+     /// <summary>
+    /// tsiry;20-07-2022
+    /// </summary>
+ public static bool TargetIndexIsProteted(Board inBoard, int targetIndex,string targetColor)
+    {
+      try
+      {
+    
+
+      //  var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+        var alliesIndex = inBoard.GetCasesIndexForColor(targetColor).ToList();
+        alliesIndex.Remove(targetIndex);
         //var possibleMovesAllies = 
         foreach (var alieFromIndex in alliesIndex)
         {
@@ -68,7 +90,7 @@ namespace ChessCore.Tools
           {
             var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
             //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
-            var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, targetkingindex);
+            var isMelaced = TargetIndexIsMenaced(copyBord, targetColor, targetIndex);
             if (!isMelaced)
               return true;
 
@@ -89,6 +111,7 @@ namespace ChessCore.Tools
       }
 
     }
+    
 
     /// <summary>
     /// tsiry;02-07-2022
@@ -132,6 +155,30 @@ namespace ChessCore.Tools
     }
 
     /// <summary>
+    /// tsiry;20-07-2022
+    /// </summary>
+    public static int GetWeigtOpionionMenacedsByToIndex(Board inBoard, string opinionColorColor,int toIndex)
+    {
+      try
+      {
+        var weight = 0;
+        var opinionPawnIndex = inBoard.GetCasesIndexForColor(opinionColorColor);
+        foreach (var index in opinionPawnIndex)
+        {
+          
+          if (TargetIndexIsMenacedByToIndex(inBoard, opinionColorColor, index, toIndex))
+            weight+= inBoard.GetWeightInIndex(index);
+        }
+        return weight;
+      }
+      catch (Exception ex)
+      {
+        return 0;
+
+      }
+    }
+
+    /// <summary>
     /// tsiry;19-07-2022
     /// </summary>
     public static int GetNumberOpionionMenaceds(Board inBoard, string opinionColorColor)
@@ -143,13 +190,73 @@ namespace ChessCore.Tools
         foreach (var index in opinionPawnIndex)
         {
           if (TargetIndexIsMenaced(inBoard, opinionColorColor, index))
-            number++;
+            inBoard.GetWeightInIndex(index);
         }
         return number;
       }
       catch (Exception ex)
       {
         return 0;
+
+      }
+    }
+
+    /* /// <summary>
+       /// tsiry;20-07-2022
+       /// </summary>
+       public static double GetComputerProtectedsWeight(Board inBoard)
+       {
+         try
+         {
+           var result = 0;
+           var opinionPawnIndex = inBoard.GetCasesIndexForColor(Utils.ComputerColor);
+           foreach (var index in opinionPawnIndex)
+           {
+             if (TargetIndexIsProteted(inBoard,index, Utils.ComputerColor))
+             {
+               result+=inBoard.GetWeightInIndex(index);
+             }
+
+           }
+           return result;
+         }
+         catch (Exception ex)
+         {
+           return 0;
+
+         }
+       }
+   */
+    /// <summary>
+    /// tsiry;20-07-2022
+    /// </summary>
+    public static bool TargetIndexIsMenacedByToIndex(Board inBoard, string targetColor, int targetIndex,int toIndex)
+    {
+      try
+      {
+        var opinionColor = "W";
+        if (targetColor == "W")
+          opinionColor = "B";
+        var copyBoard = new Board(inBoard);
+        if (targetIndex != -1)
+        {
+          if (copyBoard.GetCases()[targetIndex].Contains($"|{opinionColor}"))//si la case contion un pion adverse, on le vide
+            copyBoard.GetCases()[targetIndex] = "__";
+        }
+
+      
+        var opinionPossibleMoveIndexList = new List<int>();
+       
+          opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(toIndex, 1, false).Select(x => x.Index));
+        
+        if (opinionPossibleMoveIndexList.Contains(targetIndex))
+          return true;
+
+        return false;
+      }
+      catch (Exception ex)
+      {
+        return false;
 
       }
     }

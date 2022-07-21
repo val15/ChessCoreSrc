@@ -1,0 +1,2 @@
+../../Images/KnightBlack.png
+../../Images/QueenBlack.png

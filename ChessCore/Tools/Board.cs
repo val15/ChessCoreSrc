@@ -225,7 +225,7 @@ namespace ChessCore.Tools
                 var contains = _cases[evolutionPawnIndex];
                 if (contains.Contains("P"))
                 {
-                    whiteBonus = 9;
+                    whiteBonus = 90;
                     break;
                 }
             }
@@ -235,7 +235,7 @@ namespace ChessCore.Tools
                 var contains = _cases[evolutionPawnIndex];
                 if (contains.Contains("P"))
                 {
-                    blackBonus = 9;
+                    blackBonus = 90;
                     break;
                 }
             }
