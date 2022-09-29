@@ -9,18 +9,18 @@ namespace ChessCore.Tools
 
         public List<Node> EmuleAllIndexInParallelForEach(Board boarChess2, List<int> computerPawnsIndex, int level, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
-           // Utils.BestNodeIsFind=false;
-           // Utils.IsFirstTurn=true;
+            // Utils.BestNodeIsFind=false;
+            // Utils.IsFirstTurn=true;
             // var cpuColor = ComputerColore[0].ToString();
             var opinionColor = "W";
             if (cpuColor == "W")
                 opinionColor = "B";
             List<Node> bestNodList = new List<Node>();
-            Parallel.ForEach(computerPawnsIndex, (pawnIndex,state) =>
+            Parallel.ForEach(computerPawnsIndex, (pawnIndex, state) =>
             {
                 // GC.Collect();
                 // {
-                 
+
                 Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
                 Console.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
                 var toBreack = false;
@@ -46,13 +46,13 @@ namespace ChessCore.Tools
                         var node = new Node();
                         node.Location = Chess2Utils.GetLocationFromIndex(bestNodeChess2.FromIndex);
                         node.BestChildPosition = Chess2Utils.GetLocationFromIndex(bestNodeChess2.ToIndex);
-                  node.Level = bestNodeChess2.Level;
-                  node.AsssociateNodeChess2 = bestNodeChess2;
-                  //DOTO
-                  //// node.AssociatePawn = GetPawn(node.Location);
-                  //Seulment pour les test
-                  node.AsssociateNodeChess2 = bestNodeChess2;
-                  node.Weight = bestNodeChess2.Weight;
+                        node.Level = bestNodeChess2.Level;
+                        node.AsssociateNodeChess2 = bestNodeChess2;
+                        //DOTO
+                        //// node.AssociatePawn = GetPawn(node.Location);
+                        //Seulment pour les test
+                        node.AsssociateNodeChess2 = bestNodeChess2;
+                        node.Weight = bestNodeChess2.Weight;
 
                         //Pour T49
                         // si la destination contien un pion adverse, 
@@ -95,7 +95,7 @@ namespace ChessCore.Tools
                         if (!kingIsMenaced)
                         {
 
-                           
+
 
                             Debug.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
                             Console.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
@@ -105,13 +105,13 @@ namespace ChessCore.Tools
 
 
                     }
-               
+
                 }
 
 
 
-            if(toBreack)
-                state.Break();
+                if (toBreack)
+                    state.Break();
 
             });
 
@@ -151,7 +151,7 @@ namespace ChessCore.Tools
                 {
                     //var toMenacedWeight = 0;
                     node.IsMenaced = Utils.IsMenaced(bestNodeChess2.ToIndex, boarChess2, cpuColor);
-                    
+
                     if (node.IsMenaced)
                     {
 
@@ -192,7 +192,7 @@ namespace ChessCore.Tools
         * on prend level 2 de noeud sélectionné pour valider le noeud 2
         * */
 
-        public Node GetOneNodeFormSpecificLevel(int level,Board boarChess2, int fromIndex, int toIndex, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
+        public Node GetOneNodeFormSpecificLevel(int level, Board boarChess2, int fromIndex, int toIndex, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
 
 
@@ -216,7 +216,7 @@ namespace ChessCore.Tools
                 //Seulment pour les test
                 node.AsssociateNodeChess2 = bestNodeChess2;
                 node.Weight = bestNodeChess2.Weight;
-              
+
                 //Pour T80 et T81
                 var kingIsMenaced = Utils.ComputerKingIsMenaced(node.AsssociateNodeChess2.Board);
 
@@ -244,12 +244,12 @@ namespace ChessCore.Tools
         public List<Node> GetBestNodeListFromLevel(Board boarChess2, int level, string cpuColor, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
         {
             var bestNodList = new List<Node>();
-            
-             
- 
-                    var computerPawnsIndex = boarChess2.GetCasesIndexForColor(cpuColor).ToList();//.OrderBy(x=>x);
-                     bestNodList.AddRange(EmuleAllIndexInParallelForEach(boarChess2, computerPawnsIndex, level, cpuColor, IsReprise, SpecifiBoardList));  
-                      return bestNodList;
+
+
+
+            var computerPawnsIndex = boarChess2.GetCasesIndexForColor(cpuColor).ToList();//.OrderBy(x=>x);
+            bestNodList.AddRange(EmuleAllIndexInParallelForEach(boarChess2, computerPawnsIndex, level, cpuColor, IsReprise, SpecifiBoardList));
+            return bestNodList;
 
         }
 
@@ -257,13 +257,13 @@ namespace ChessCore.Tools
         /// tsiry;17-06-2022
         /// pour modificer bestNodListLevel4 en fonction de maxWeight à partir de inList
         /// </summary>
-        public void EditBestNodListLevel4FromMaxOtherLevel(in List<Node>  bestNodListLevel4, double maxWeight, List<Node> inList)
+        public void EditBestNodListLevel4FromMaxOtherLevel(in List<Node> bestNodListLevel4, double maxWeight, List<Node> inList)
         {
-            var maxInList = inList.Where(x => x.Weight ==maxWeight);
+            var maxInList = inList.Where(x => x.Weight == maxWeight);
             foreach (var node in maxInList)
             {
                 //Pour T53 ion ne modifie que les négatives
-                bestNodListLevel4.Where(c => c.Location == node.Location && c.BestChildPosition == node.BestChildPosition && c.Weight  <0).Select(c => { c.Weight = node.Weight; return c; }).ToList();
+                bestNodListLevel4.Where(c => c.Location == node.Location && c.BestChildPosition == node.BestChildPosition && c.Weight < 0).Select(c => { c.Weight = node.Weight; return c; }).ToList();
 
             }
             Debug.WriteLine($"bestNodList after edit max");
@@ -281,15 +281,15 @@ namespace ChessCore.Tools
             try
             {
                 Utils.ComputerColor = colore[0].ToString();
-         boarChess.CalculeScores();
-        Utils.MainBoard = boarChess;
+                boarChess.CalculeScores();
+                Utils.MainBoard = boarChess;
                 Console.WriteLine($"Computer color = {Utils.ComputerColor}");
                 Console.WriteLine($"Opinion color = {Utils.OpinionColor}");
-                 Debug.WriteLine($"Computer color = {Utils.ComputerColor}");
+                Debug.WriteLine($"Computer color = {Utils.ComputerColor}");
                 Debug.WriteLine($"Opinion color = {Utils.OpinionColor}");
-                Utils.StartedProcessTime =DateTime.Now;
-              //  Debug.WriteLine("StartedProcessTime = "+ Utils.StartedProcessTime.ToString("hh:mm:ss tt"));
-             //   Debug.WriteLine("StartedProcessTime = "+ Utils.StartedProcessTime.ToString("hh:mm:ss tt"));
+                Utils.StartedProcessTime = DateTime.Now;
+                //  Debug.WriteLine("StartedProcessTime = "+ Utils.StartedProcessTime.ToString("hh:mm:ss tt"));
+                //   Debug.WriteLine("StartedProcessTime = "+ Utils.StartedProcessTime.ToString("hh:mm:ss tt"));
                 Utils.NodeLoseList.Clear();
                 Debug.WriteLine("L4--------------------");
                 Console.WriteLine("L4--------------------");
@@ -298,70 +298,70 @@ namespace ChessCore.Tools
                 //var maxBestNodListLevel2 = new List<Node>();
                 var useL2 = false;
                 var bestNodeList = GetBestNodeListFromLevel(boarChess, 4, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-             
-              if(bestNodeList.Count>0)
-              {
-//pour les Wins T93A,T07a,T07b,T95B
-                 if(bestNodeList.All(x=>x.Weight >=999))
+
+                if (bestNodeList.Count > 0)
                 {
+                    //pour les Wins T93A,T07a,T07b,T95B
+                    if (bestNodeList.All(x => x.Weight >= 999))
+                    {
                         var groupedBySameFromLoactionAndSameBestChildPosition = bestNodeList.GroupBy(v => new
                         {
-                          FromLoaction = v.Location,
-                          BestChildPosition = v.BestChildPosition
+                            FromLoaction = v.Location,
+                            BestChildPosition = v.BestChildPosition
                         });
-                      var bestNode = groupedBySameFromLoactionAndSameBestChildPosition.OrderByDescending(x=>x.Count()).First().First();
-                
-          
-          
-          
-          Console.WriteLine("--WIN NODE DETECTED--");
-                Debug.WriteLine("--WIN NODE DETECTED--");
-                  // nodeResult.Weight = t_.Weight;
-                  Debug.WriteLine($"{bestNode.Weight}  {bestNode.Location} =>  {bestNode.BestChildPosition}");
-                  Console.WriteLine($"{bestNode.Weight}  {bestNode.Location} =>  {bestNode.BestChildPosition}");
+                        var bestNode = groupedBySameFromLoactionAndSameBestChildPosition.OrderByDescending(x => x.Count()).First().First();
 
-                return bestNode;
+
+
+
+                        Console.WriteLine("--WIN NODE DETECTED--");
+                        Debug.WriteLine("--WIN NODE DETECTED--");
+                        // nodeResult.Weight = t_.Weight;
+                        Debug.WriteLine($"{bestNode.Weight}  {bestNode.Location} =>  {bestNode.BestChildPosition}");
+                        Console.WriteLine($"{bestNode.Weight}  {bestNode.Location} =>  {bestNode.BestChildPosition}");
+
+                        return bestNode;
+                    }
+
+                    if (Utils.NodeLoseList.Count > 0)
+                    {
+                        //T98
+                        try
+                        {
+                            Console.WriteLine("--LOSE NODE DETECTED--");
+                            Debug.WriteLine("--LOSE NODE DETECTED--");
+                            //var firtNode2Win= Utils.NodeWinList.First();
+                            foreach (var node2 in Utils.NodeLoseList)
+                            {
+                                var nodeWinResult = new Node();
+                                nodeWinResult.Location = Chess2Utils.GetLocationFromIndex(node2.FromIndex);
+                                nodeWinResult.BestChildPosition = Chess2Utils.GetLocationFromIndex(node2.ToIndex);
+                                nodeWinResult.Weight = node2.Weight;
+                                Debug.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
+                                Console.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
+                            }
+
+                        }
+                        catch (Exception)
+                        {
+                            Debug.WriteLine("DONT PANIC: too mach loseds nodes detected (loseds nodes ignoreds)");
+                            Console.WriteLine("DONT PANIC: too mach loseds nodes detected (loseds nodes ignoreds)");
+                        }
+
+                    }
                 }
-                
-                 if(Utils.NodeLoseList.Count>0)
-                {
-            //T98
-            try
-            {
-              Console.WriteLine("--LOSE NODE DETECTED--");
-              Debug.WriteLine("--LOSE NODE DETECTED--");
-              //var firtNode2Win= Utils.NodeWinList.First();
-              foreach (var node2 in Utils.NodeLoseList)
-              {
-                var nodeWinResult = new Node();
-                nodeWinResult.Location = Chess2Utils.GetLocationFromIndex(node2.FromIndex);
-                nodeWinResult.BestChildPosition = Chess2Utils.GetLocationFromIndex(node2.ToIndex);
-                nodeWinResult.Weight = node2.Weight;
-                Debug.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
-                Console.WriteLine($"{nodeWinResult.Weight}  {nodeWinResult.Location} =>  {nodeWinResult.BestChildPosition}");
-              }
-
-            }
-            catch (Exception)
-            {
-              Debug.WriteLine("DONT PANIC: too mach loseds nodes detected (loseds nodes ignoreds)");
-              Console.WriteLine("DONT PANIC: too mach loseds nodes detected (loseds nodes ignoreds)");
-            }
-
-          }
-              }
                 else//si tous les noeud sont des lose, on fait un nouveau recherche sur les L2
                 {
-                     Debug.WriteLine($"all L4 are losing using L2");
+                    Debug.WriteLine($"all L4 are losing using L2");
                     Console.WriteLine($"all L4 are losing using L2");
                     useL2 = true;
-                     bestNodeList = GetBestNodeListFromLevel(boarChess, 2, Utils.ComputerColor, IsReprise, SpecifiBoardList);
+                    bestNodeList = GetBestNodeListFromLevel(boarChess, 2, Utils.ComputerColor, IsReprise, SpecifiBoardList);
                 }
                 var maxWeight = 0.0;
-              //  if(bestNodListLevel4.Count>0)
-                    maxWeight = bestNodeList.Max(x => x.Weight);
-                
-              
+                //  if(bestNodListLevel4.Count>0)
+                maxWeight = bestNodeList.Max(x => x.Weight);
+
+
 
                 Debug.WriteLine($"bestNodList ");
                 Console.WriteLine($"bestNodList ");
@@ -371,55 +371,55 @@ namespace ChessCore.Tools
                     Console.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
                 }
 
-               
 
-            if(!useL2)//si on utilse le L2, on ne prend pas en charge le Level4BlackList
-            {
-                if(Utils.NodeLoseList.Count>0)
+
+                if (!useL2)//si on utilse le L2, on ne prend pas en charge le Level4BlackList
                 {
-                    if(Level4BlackList==null)
-                        Level4BlackList=new List<NodeChess2>();
-                    //Pour T29, on ajoute Utils.NodeLoseList
-                    Level4BlackList.AddRange(Utils.NodeLoseList);
-                }
-                    if(Level4BlackList!=null)
+                    if (Utils.NodeLoseList.Count > 0)
+                    {
+                        if (Level4BlackList == null)
+                            Level4BlackList = new List<NodeChess2>();
+                        //Pour T29, on ajoute Utils.NodeLoseList
+                        Level4BlackList.AddRange(Utils.NodeLoseList);
+                    }
+                    if (Level4BlackList != null)
                     {
                         Debug.WriteLine("Level4BlackList--------");
-                                        Console.WriteLine("Level4BlackList--------");
-                                        foreach (var node in Level4BlackList)
-                                        {
-                                            Debug.WriteLine($"fromIndex : {node.FromIndex} => toIndex : {node.ToIndex} = {node.Weight}");
-                                            Console.WriteLine($"fromIndex : {node.FromIndex} => toIndex : {node.ToIndex} = {node.Weight}");
-
-                                        }
-
-                    }
-                  
-                
-                
-                if (Level4BlackList != null)
-                {
-                    if (bestNodeList.Count > 0)
-                    {
-                        //Pour T88 on modifie les les Level4BlackList
+                        Console.WriteLine("Level4BlackList--------");
                         foreach (var node in Level4BlackList)
                         {
-                            bestNodeList.Where(x => x.AsssociateNodeChess2.FromIndex == node.FromIndex && x.AsssociateNodeChess2.ToIndex == node.ToIndex && node.Weight < -900).Select(c => { c.Weight = node.Weight; return c; }).ToList();
+                            Debug.WriteLine($"fromIndex : {node.FromIndex} => toIndex : {node.ToIndex} = {node.Weight}");
+                            Console.WriteLine($"fromIndex : {node.FromIndex} => toIndex : {node.ToIndex} = {node.Weight}");
 
                         }
-                      
-                      
+
+                    }
+
+
+
+                    if (Level4BlackList != null)
+                    {
+                        if (bestNodeList.Count > 0)
+                        {
+                            //Pour T88 on modifie les les Level4BlackList
+                            foreach (var node in Level4BlackList)
+                            {
+                                bestNodeList.Where(x => x.AsssociateNodeChess2.FromIndex == node.FromIndex && x.AsssociateNodeChess2.ToIndex == node.ToIndex && node.Weight < -900).Select(c => { c.Weight = node.Weight; return c; }).ToList();
+
+                            }
+
+
+                        }
                     }
                 }
-            }
-                    
-                    var maxWeithLevel4 = -1111.0;
-                    maxWeithLevel4 = bestNodeList.Max(x => x.Weight);
-                        maxBestNodeListLevel4 = bestNodeList.Where(x => x.Weight == maxWeithLevel4).ToList();
+
+                var maxWeithLevel4 = -1111.0;
+                maxWeithLevel4 = bestNodeList.Max(x => x.Weight);
+                maxBestNodeListLevel4 = bestNodeList.Where(x => x.Weight == maxWeithLevel4).ToList();
 
 
-               
-             
+
+
                 var maxWeithList = new List<Node>();
                 maxWeithList.AddRange(maxBestNodeListLevel4);
 
@@ -436,7 +436,7 @@ namespace ChessCore.Tools
                 Debug.WriteLine("--Best for all Levels--");
                 foreach (var node in maxWeithList)
                 {
-                     // nodeResult.Weight = t_.Weight;
+                    // nodeResult.Weight = t_.Weight;
                     Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
                     Console.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
 
@@ -450,16 +450,16 @@ namespace ChessCore.Tools
                 {
                     //pour T94, on ajoute le nombre des pions protégers dans Weight
                     //on cherche ne nombre de protege
-                     
-                     foreach (var node in maxWeithList)
-                     {
-                        
-                             var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
-                             //Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition} protectedNumber = {protectedNumber}");
-                             node.Weight += protectedNumber;
-                        
 
-                     }
+                    foreach (var node in maxWeithList)
+                    {
+
+                        var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
+                        //Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition} protectedNumber = {protectedNumber}");
+                        node.Weight += protectedNumber;
+
+
+                    }
                     maxWeith = maxWeithList.Max(x => x.Weight);
                     maxWeithList = maxWeithList.Where(x => x.Weight == maxWeith).ToList();
                     if (maxWeithList.Count() == 1)
@@ -478,7 +478,7 @@ namespace ChessCore.Tools
                 else
                     nodeResult = maxWeithList.First();
 
-              
+
                 return nodeResult;
 
 
@@ -516,7 +516,7 @@ namespace ChessCore.Tools
                     if (!line.Contains("|"))
                         continue;
                     var datas = line.Split(';');
-                    var newPawn = new  Pawn(datas[0], datas[1],  datas[2]);
+                    var newPawn = new Pawn(datas[0], datas[1], datas[2]);
                     //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
                     newPawn.IsFirstMove = true;
                     newPawn.IsFirstMoveKing = true;
@@ -708,8 +708,8 @@ namespace ChessCore.Tools
 
         public void Dispose()
         {
-      Utils.GCColect();
-    }
+            Utils.GCColect();
+        }
 
         public static int[] SimplePawnFirstBlackTab64 = {
 31, 32, 33, 34, 35, 36, 37, 38

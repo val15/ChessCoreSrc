@@ -336,6 +336,8 @@ namespace ChessCore.Tools
 
             //if(level==4)
               CalculeScores();
+          
+            
      /* if (level == 1 && Chess2Utils.TargetIndexIsMenaced(Board,Utils.ComputerColor,toIndex))
       {
         Weight-=Board.GetWeightInIndex(toIndex);

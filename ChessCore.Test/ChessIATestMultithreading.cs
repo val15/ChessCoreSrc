@@ -5,7 +5,7 @@ namespace ChessCore.Test
     [TestClass]
     public class ChessIATestMultithreading
     {
-        private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
+        private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS").Replace("\\bin\\","\\");
 
         [TestMethod]
         public void MTT00aLeKnigntBlanchNeDoitPasAttaquer()
@@ -89,7 +89,7 @@ namespace ChessCore.Test
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7", "c7");
             }
@@ -103,13 +103,13 @@ namespace ChessCore.Test
             /*La cavalier blanch ne doit pas attaquer*/
             //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7" 
 
-            
+
             var computerColore = "White";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -184,7 +184,7 @@ namespace ChessCore.Test
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 // var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7", "c7");
@@ -198,12 +198,12 @@ namespace ChessCore.Test
             /*La cavalier noit ne doit pas attaquer*/
             //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
 
-            
+
             var computerColore = "Black";
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -278,7 +278,7 @@ namespace ChessCore.Test
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
 
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a2", "c2");
             }
@@ -289,12 +289,12 @@ namespace ChessCore.Test
             /*La cavalier noit ne doit pas attaquer*/
             //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
 
-            
+
             var computerColore = "Black";
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -369,7 +369,7 @@ namespace ChessCore.Test
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a2", "c2");
             }
@@ -383,17 +383,17 @@ namespace ChessCore.Test
             /*La reine noir ne doit pas prendre le cavalier*/
             //Position final de la reine Noir ne doit pas etre "g5"
 
-            
+
             var computerColore = "Black";
 
 
-var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
+            var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
-           var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
- //Position final de la reine Noir ne doit pas etre "g5"
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                //Position final de la reine Noir ne doit pas etre "g5"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
             }
         }
@@ -405,13 +405,13 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             /*Le Rook blanc ne doit pas prendre le pion*/
             //Position final du Rook blanch  ne doit pas etre "a7"
 
-            
+
             var computerColore = "White";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -479,7 +479,7 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final du rook blanch  ne doit pas etre "a7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7");
             }
@@ -491,13 +491,13 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             /*Le Rook blanc ne doit pas prendre le pion*/
             //Position final du Rook blanch  ne doit pas etre "a7"
 
-            
+
             var computerColore = "White";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -565,7 +565,7 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final du rook blanch  ne doit pas etre "a7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7");
             }
@@ -577,12 +577,12 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             /*Le Rook noir ne doit pas prendre le pion*/
             //Position final du Rook blanch  ne doit pas etre "h2"
 
-            
+
             var computerColore = "Black";
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -650,7 +650,7 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final du rook blanch  ne doit pas etre "a7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "h2");
             }
@@ -666,20 +666,20 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
 
 
-            
+
             var testName = "T05LeFousBlacheDoitSeSaccrifierPourProtegerLeRook";
             var testPath = Path.Combine(testsDirrectory, testName);
-           var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-   Assert.AreNotEqual(nodeResult.BestChildPosition, "c4");
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreNotEqual(nodeResult.BestChildPosition, "c4");
             }
         }
 
@@ -695,13 +695,13 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -759,8 +759,8 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-               // Assert.AreEqual(nodeResult.AsssociateNodeChess2.RandomEquivalentList.Count, 0);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreEqual(nodeResult.AsssociateNodeChess2.RandomEquivalentList.Count, 0);
                 //rook blanch  doit etre "d8"
                 // Assert.AreEqual(nodeResult.AssociatePawn.Name, "Rook");
                 Assert.AreEqual(nodeResult.BestChildPosition, "d8");
@@ -778,13 +778,13 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -837,7 +837,7 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final blanche  doit etre "d8" ou "e8"
                 //Assert.AreEqual(nodeResult.AssociatePawn.Name, "Rook");
                 Assert.AreEqual(nodeResult.AsssociateNodeChess2.RandomEquivalentList.Count, 0);
@@ -859,18 +859,18 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
             var testName = "T11LaReineBlancNeDoitPasAttaqueLePion";
-                var testPath = Path.Combine(testsDirrectory, testName);
-                var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-                using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-                {
-                    var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
-                
+
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
             }
         }
@@ -885,7 +885,7 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
@@ -893,14 +893,14 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             var testName = "T15LaReineBlanchNeDoitPasPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
-               
+
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
             }
         }
@@ -914,23 +914,23 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
 
 
 
-            
+
             var testName = "T16SeulLePionDoitProtegerLeRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
-               
-               
+
+
                 Assert.AreEqual(nodeResult.BestChildPosition, "f6");
             }
         }
@@ -945,22 +945,22 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
 
 
             var testName = "T17LeRoirNoirNeDoitPasAttaquer";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
-               
-               
-            
+
+
+
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f6");
             }
         }
@@ -974,25 +974,25 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
 
 
 
-            
+
             var testName = "T18suiteDe16LeCavalierNoirDoitPrendreLeFouBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
-               
-               
-            
-           
+
+
+
+
                 Assert.AreEqual(nodeResult.BestChildPosition, "f6");
             }
         }
@@ -1006,7 +1006,7 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
@@ -1015,18 +1015,18 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
             var testName = "T19bLeFouBlanchDoitnenacerLaReineOulePionDoitProtegerLeTour";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
-               
-               
-            
-           
-              
+
+
+
+
+
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
                 ////////le poin blanch doit se mettre sur "c3"
@@ -1048,19 +1048,19 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
 
 
-      var testName = "T20LePionDoitPrendreLeCavalier";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-          Assert.AreEqual(nodeResult.BestChildPosition, "d3");
+            var testName = "T20LePionDoitPrendreLeCavalier";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreEqual(nodeResult.BestChildPosition, "d3");
             }
         }
 
@@ -1071,21 +1071,21 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             /*La roi blanch doit se mettre en d3*/
             //Positions final du roi blanch doit etre d3 
 
-            
+
             var computerColore = "White";
 
 
 
 
 
-            
+
             var testName = "T21LaNoirBlancheDoitSeMettreEnD3";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-          
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.AreEqual(nodeResult.BestChildPosition, "d3");
             }
         }
@@ -1099,19 +1099,19 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
 
 
 
             var testName = "T22LeBishopOuLeRoiNoirDoitPrendreLePion";
-             var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-          
-            
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
+
                 Assert.AreEqual(nodeResult.BestChildPosition, "e7");
             }
         }
@@ -1126,17 +1126,17 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
             var testName = "T23LeCavalierNoirNeDoitPasMenacerLeRoiBlanch";
-             var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        Assert.AreNotEqual(nodeResult.BestChildPosition, "b3");
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreNotEqual(nodeResult.BestChildPosition, "b3");
+            }
         }
-    }
 
 
         [TestMethod]
@@ -1147,15 +1147,15 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
- var testName = "T24LeCavalierNoirNeDoitPasBouger";
-             var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-      
+            var testName = "T24LeCavalierNoirNeDoitPasBouger";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.AreNotEqual(nodeResult.Location, "a1");
             }
 
@@ -1171,20 +1171,20 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var computerColore = "Black";
             var testName = "T25LeCavalierNoirDoitMenacerLeRoiBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
                 var isSuccess = false;
-                string[] accepdedArray = { "a6", "a5","h6","d6","g6","f6" };
+                string[] accepdedArray = { "a6", "a5", "h6", "d6", "g6", "f6" };
 
                 if (accepdedArray.Contains(nodeResult.BestChildPosition))
                     isSuccess = true;
                 Assert.IsTrue(isSuccess);
-              //  Assert.AreEqual(nodeResult.BestChildPosition, "b3");
+                //  Assert.AreEqual(nodeResult.BestChildPosition, "b3");
             }
 
         }
@@ -1197,17 +1197,17 @@ var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
 
-var testName = "T26LeCavalierNoirDoitBouger";
-             var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-      
-              
+            var testName = "T26LeCavalierNoirDoitBouger";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
+
                 Assert.AreEqual(nodeResult.Location, "f6");
             }
 
@@ -1215,19 +1215,14 @@ var testName = "T26LeCavalierNoirDoitBouger";
         [TestMethod]
         public void MTT01MultiThreadCPUsPawn()
         {
-            
+
             var computerColore = "White";
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
-           var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-
-
-
-
-
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
             }
 
@@ -1235,33 +1230,33 @@ var testName = "T26LeCavalierNoirDoitBouger";
 
 
 
-    [TestMethod]
-    public void MTT27LeBishopBlancDoitSeMettreEnA8()
-    {
-      /*Le Bishop blanc doit attaque le rook en a8 et non pas le cavalier*/
-      // Le Bishop blanc doit se mettre en a8
+        [TestMethod]
+        public void MTT27LeBishopBlancDoitSeMettreEnA8()
+        {
+            /*Le Bishop blanc doit attaque le rook en a8 et non pas le cavalier*/
+            // Le Bishop blanc doit se mettre en a8
 
 
 
 
-      var computerColore = "White";
+            var computerColore = "White";
 
 
 
 
 
 
-      var testName = "T27LeBishopBlancDoitSeMettreEnA8";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        Assert.IsTrue(nodeResult.BestChildPosition == "a8" || nodeResult.BestChildPosition == "g7");
-      }
-    }
-      
-        
+            var testName = "T27LeBishopBlancDoitSeMettreEnA8";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.IsTrue(nodeResult.BestChildPosition == "a8" || nodeResult.BestChildPosition == "g7");
+            }
+        }
+
+
 
         [TestMethod]
         public void MTT28LePionNoirDoitPrendreLeCavalier()
@@ -1271,14 +1266,14 @@ var testName = "T26LeCavalierNoirDoitBouger";
 
 
 
-            
+
             var computerColore = "Black";
-var testName = "T28LePionNoirDoitPrendreLeCavalier";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T28LePionNoirDoitPrendreLeCavalier";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "d6");
             }
         }
@@ -1291,7 +1286,7 @@ var testName = "T28LePionNoirDoitPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "White";
 
 
@@ -1300,10 +1295,10 @@ var testName = "T28LePionNoirDoitPrendreLeCavalier";
 
             var testName = "T29PourProtegerDEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 var isSuccess = false;
                 string[] accepdedArray = { "g5", "c2", "h4", "h2", "g2", "d5", "d4", "c1" };
@@ -1312,9 +1307,9 @@ var testName = "T28LePionNoirDoitPrendreLeCavalier";
                     isSuccess = true;
                 Assert.IsTrue(isSuccess);
             }
-                // Le pion blanc doit se mettre en h4 ou le Bishop doit se mettre en g2 ou reine en c2
-               
-            
+            // Le pion blanc doit se mettre en h4 ou le Bishop doit se mettre en g2 ou reine en c2
+
+
 
 
         }
@@ -1327,15 +1322,15 @@ var testName = "T28LePionNoirDoitPrendreLeCavalier";
 
 
 
-            
+
             var computerColore = "Black";
-var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-             Assert.AreNotEqual(nodeResult.BestChildPosition, "g4");
+            var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreNotEqual(nodeResult.BestChildPosition, "g4");
             }
 
 
@@ -1349,15 +1344,15 @@ var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
 
 
 
-            
+
             var computerColore = "Black";
 
-        var testName = "T31LaReineNoirDoitPrendreLaReineBlanch";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T31LaReineNoirDoitPrendreLaReineBlanch";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "a8");
             }
         }
@@ -1369,14 +1364,14 @@ var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
 
 
 
-            
+
             var computerColore = "White";
-var testName = "T32LaReineBlanchDoitAttaquerEnB7";
-var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T32LaReineBlanchDoitAttaquerEnB7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
             }
 
@@ -1389,14 +1384,14 @@ var testPath = Path.Combine(testsDirrectory, testName);
 
 
 
-            
+
             var computerColore = "White";
-        var testName = "T33LaReineBlanchDoitAttaquerEnB7";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T33LaReineBlanchDoitAttaquerEnB7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
             }
         }
@@ -1408,14 +1403,14 @@ var testPath = Path.Combine(testsDirrectory, testName);
 
 
 
-            
+
             var computerColore = "Black";
-        var testName = "T35LePoinNoirNeDoitPasSeMettreEnG5";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T35LePoinNoirNeDoitPasSeMettreEnG5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
             }
 
@@ -1431,16 +1426,16 @@ var testPath = Path.Combine(testsDirrectory, testName);
 
 
 
-            
+
             var computerColore = "Black";
 
 
- var testName = "T36LePoinNoirNeDoitPasSeMettreEnD6";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T36LePoinNoirNeDoitPasSeMettreEnD6";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "d6");
             }
 
@@ -1455,14 +1450,14 @@ var testPath = Path.Combine(testsDirrectory, testName);
 
 
 
-            
+
             var computerColore = "Black";
-var testName = "T37LaTourDoitEtreProtegE";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T37LaTourDoitEtreProtegE";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "c6");
             }
 
@@ -1472,16 +1467,16 @@ var testName = "T37LaTourDoitEtreProtegE";
         [TestMethod]
         public void MTT38LePionNoirNeDoitPasSeMettreSurA3()
         {
-            
+
             var computerColore = "Black";
 
-var testName = "T38LePionNoirNeDoitPasSeMettreSurA3";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-                
+            var testName = "T38LePionNoirNeDoitPasSeMettreSurA3";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a3");
             }
         }
@@ -1489,16 +1484,16 @@ var testName = "T38LePionNoirNeDoitPasSeMettreSurA3";
         [TestMethod]
         public void MTT39LePionNoirNeDoitPasSeMettreSurC4()
         {
-            
+
             var computerColore = "Black";
 
-var testName = "T39LePionNoirNeDoitPasSeMettreSurC4";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-            
+            var testName = "T39LePionNoirNeDoitPasSeMettreSurC4";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c3");
             }
         }
@@ -1507,15 +1502,15 @@ var testName = "T39LePionNoirNeDoitPasSeMettreSurC4";
         [TestMethod]
         public void MTT40LePionNoirNeDoitPasSeMettreSurA2()
         {
-            
+
             var computerColore = "Black";
-var testName = "T40LePionNoirNeDoitPasSeMettreSurA2";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-            
+            var testName = "T40LePionNoirNeDoitPasSeMettreSurA2";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.AreNotEqual(nodeResult, "a2");
             }
         }
@@ -1524,15 +1519,15 @@ var testName = "T40LePionNoirNeDoitPasSeMettreSurA2";
         [TestMethod]
         public void MTT41LaReineBlancheDoitMenacerLeRoiEnH5OuPrendreLaReineD6()
         {
-            
+
             var computerColore = "White";
-var testName = "T41LaReineBlancheDoitMenacerLeRoiEnH5";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-            
+            var testName = "T41LaReineBlancheDoitMenacerLeRoiEnH5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 // var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "a2");
 
                 var isSucces = false;
@@ -1546,15 +1541,15 @@ var testName = "T41LaReineBlancheDoitMenacerLeRoiEnH5";
         [TestMethod]
         public void MTT44LePionNoirPasRamdumeB5()
         {
-            
+
             var computerColore = "Black";
-var testName = "T44LePionNoirPasRamdumeB5";
-        var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-            
+            var testName = "T44LePionNoirPasRamdumeB5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 // var  MTT_value = nodeResult.Weight;
                 //var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "b5");
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b5");
@@ -2045,7 +2040,7 @@ var testName = "T44LePionNoirPasRamdumeB5";
         [TestMethod]
         public void MTT49LesNoirsDoiventprotegerLeRoiMenacE()
         {
-            
+
             var computerColore = "Black";
 
 
@@ -2055,7 +2050,7 @@ var testName = "T44LePionNoirPasRamdumeB5";
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
 
                 // var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -2070,32 +2065,32 @@ var testName = "T44LePionNoirPasRamdumeB5";
         [TestMethod]
         public void MTT50LaToureNoirDoitSeMettreEnA7()
         {
-            
+
             var computerColore = "Black";
             var testName = "T50LaToureNoirDoitSeMettreEnA7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "a7");
             }
         }
 
-      
+
 
         [TestMethod]
         /*tsiry;26-08-2021*/
         public void MTT52LaReineNoirNeDoitPasSeMettreEnC2()
         {
-            
+
             var computerColore = "Black";
-var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
+            var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c2");
             }
         }
@@ -2105,7 +2100,7 @@ var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
         /*tsiry;26-08-2021*/
         public void MTT53LaPositionFinalNoirNeDoitEtreE6OuE5()
         {
-            
+
             var computerColore = "Black";
 
             var testName = "T53LaPositionFinalNoirNeDoitEtreE6OuE5";
@@ -2131,9 +2126,9 @@ var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
         /*tsiry;27-08-2021*/
         public void MTT54ALesBlanchDoiventEviterLEvolutionDuPion()
         {
-            
+
             var computerColore = "White";
- var testName = "T54ALesBlanchDoiventEviterLEvolutionDuPion";
+            var testName = "T54ALesBlanchDoiventEviterLEvolutionDuPion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
@@ -2163,16 +2158,16 @@ var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
         /*tsiry;27-08-2021*/
         public void MTT54BLaTourBlancDoitDoitSeMettreEnA2CarB1EstDejaMenaC()
         {
-            
+
             var computerColore = "White";
- var testName = "T54BLaTourBlancDoitDoitSeMettreEnA2CarB1EstDejaMenaC";
+            var testName = "T54BLaTourBlancDoitDoitSeMettreEnA2CarB1EstDejaMenaC";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
-                Assert.IsTrue("b1"==nodeResult.BestChildPosition || "g6"==nodeResult.BestChildPosition);
+                Assert.IsTrue("b1" == nodeResult.BestChildPosition || "g6" == nodeResult.BestChildPosition);
             }
         }
 
@@ -2181,15 +2176,15 @@ var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
         /*tsiry;27-08-2021*/
         public void MTT54CLePionNoirDoitEvoluerDoitSeMettreEnA1()
         {
-            
+
             var computerColore = "Black";
 
-var testName = "T54CLePionNoirDoitEvoluerDoitSeMettreEnA1";
+            var testName = "T54CLePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
             }
         }
@@ -2199,15 +2194,15 @@ var testName = "T54CLePionNoirDoitEvoluerDoitSeMettreEnA1";
         /*tsiry;27-08-2021*/
         public void MTT54ELePionNoirDoitEvoluerDoitSeMettreEnA1()
         {
-            
+
             var computerColore = "Black";
-var testName = "T54ELePionNoirDoitEvoluerDoitSeMettreEnA1";
+            var testName = "T54ELePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-                
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
             }
         }
@@ -2215,15 +2210,15 @@ var testName = "T54ELePionNoirDoitEvoluerDoitSeMettreEnA1";
         /*tsiry;14-10-2021*/
         public void MTT54FLaReineNoirDoitMenaverLeRoiBlanc()
         {
-            
+
             var computerColore = "Black";
-var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
+            var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-                
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 var isSucces = true;
                 if (randomList != null)
@@ -2256,9 +2251,9 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         /*tsiry;27-08-2021*/
         public void MTT54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5()//  MTT54DLaReinneNoirDoitSeMettreEnC4()
         {
-            
+
             var computerColore = "Black";
- var testName = "T54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5";
+            var testName = "T54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
@@ -2276,7 +2271,7 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         /*tsiry;27-08-2021*/
         public void MTT54GLaReinneNoirDoitAttaquerEnC4()//  MTT54DLaReinneNoirDoitSeMettreEnC4()
         {
-            
+
             var computerColore = "Black";
 
 
@@ -2297,117 +2292,117 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
 
 
             }
-            
-               // 
-            
+
+            // 
+
 
         }
 
 
-    /*tsiry;30-08-2021
-     * DOTO
-     */
-    /*  
-       [TestMethod]public void MTT55SecificPositionLeCavalierBlanchDoitSeMettreSurG6()
-       {
-
-           var computerColore = "White";
-
-
-
-
-
-           var pawnListWhite = new List<Pawn>();
-           var pawnListBlack = new List<Pawn>();
-
-
-
-           //WHITEList
-           var whiteListString = "" +
-     "King;e1;White;False;True;True;True" +
-     "\nQueen;d1;White;False;False;False;False" +
-     "\nRook;a1;White;False;False;False;False" +
-     "\nRook;h1;White;False;False;False;False" +
-     "\nKnight;b5;White;False;False;False;False" +
-     "\nBishop;c1;White;False;False;False;False" +
-     "\nBishop;c4;White;False;False;False;False" +
-     "\nKnight;h4;White;False;False;False;False" +
-     "\nSimplePawn;a3;White;False;False;False;False" +
-     "\nSimplePawn;b2;White;True;False;False;False" +
-     "\nSimplePawn;c2;White;True;False;False;False" +
-     "\nSimplePawn;d4;White;False;False;False;False" +
-     "\nSimplePawn;e5;White;False;False;False;False" +
-     "\nSimplePawn;f2;White;True;False;False;False" +
-     "\nSimplePawn;g2;White;True;False;False;False" +
-     "\nSimplePawn;h2;White;True;False;False;False";
-           var whiteList = whiteListString.Split('\n');
-           foreach (var line in whiteList)
+        /*tsiry;30-08-2021
+         * DOTO
+         */
+        /*  
+           [TestMethod]public void MTT55SecificPositionLeCavalierBlanchDoitSeMettreSurG6()
            {
-               var datas = line.Split(';');
-               var newPawn = new Pawn(datas[0], datas[1], datas[2]);
-               //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
-               newPawn.IsFirstMove = bool.Parse(datas[3]);
-               newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
-               newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
-               newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
-               pawnListWhite.Add(newPawn);
+
+               var computerColore = "White";
+
+
+
+
+
+               var pawnListWhite = new List<Pawn>();
+               var pawnListBlack = new List<Pawn>();
+
+
+
+               //WHITEList
+               var whiteListString = "" +
+         "King;e1;White;False;True;True;True" +
+         "\nQueen;d1;White;False;False;False;False" +
+         "\nRook;a1;White;False;False;False;False" +
+         "\nRook;h1;White;False;False;False;False" +
+         "\nKnight;b5;White;False;False;False;False" +
+         "\nBishop;c1;White;False;False;False;False" +
+         "\nBishop;c4;White;False;False;False;False" +
+         "\nKnight;h4;White;False;False;False;False" +
+         "\nSimplePawn;a3;White;False;False;False;False" +
+         "\nSimplePawn;b2;White;True;False;False;False" +
+         "\nSimplePawn;c2;White;True;False;False;False" +
+         "\nSimplePawn;d4;White;False;False;False;False" +
+         "\nSimplePawn;e5;White;False;False;False;False" +
+         "\nSimplePawn;f2;White;True;False;False;False" +
+         "\nSimplePawn;g2;White;True;False;False;False" +
+         "\nSimplePawn;h2;White;True;False;False;False";
+               var whiteList = whiteListString.Split('\n');
+               foreach (var line in whiteList)
+               {
+                   var datas = line.Split(';');
+                   var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                   //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                   newPawn.IsFirstMove = bool.Parse(datas[3]);
+                   newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                   newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                   newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                   pawnListWhite.Add(newPawn);
+               }
+
+               //BLACKList
+               var blackListString = "" +
+         "King;e7;Black;False;False;True;True" +
+         "\nQueen;d8;Black;False;False;False;False" +
+         "\nRook;a8;Black;False;False;False;False" +
+         "\nRook;h8;Black;False;False;False;False" +
+         "\nKnight;b8;Black;False;False;False;False" +
+         "\nBishop;c8;Black;False;False;False;False" +
+         "\nBishop;f8;Black;False;False;False;False" +
+         "\nKnight;g8;Black;False;False;False;False" +
+         "\nSimplePawn;a4;Black;False;False;False;False" +
+         "\nSimplePawn;b6;Black;False;False;False;False" +
+         "\nSimplePawn;c7;Black;True;False;False;False" +
+         "\nSimplePawn;d7;Black;True;False;False;False" +
+         "\nSimplePawn;e6;Black;False;False;False;False" +
+         "\nSimplePawn;f5;Black;False;False;False;False" +
+         "\nSimplePawn;g7;Black;True;False;False;False" +
+         "\nSimplePawn;h6;Black;False;False;False;False";
+               var blackList = blackListString.Split('\n');
+               foreach (var line in blackList)
+               {
+                   var datas = line.Split(';');
+                   var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                   //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                   newPawn.IsFirstMove = bool.Parse(datas[3]);
+                   newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                   newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                   newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                   pawnListBlack.Add(newPawn);
+               }
+
+
+
+               var pawnList = new List<Pawn>();pawnList.AddRange(pawnListWhite);pawnList.AddRange(pawnListBlack);
+               using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+               {
+                   var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+
+
+                   Assert.AreEqual(nodeResult.BestChildPosition, "g6");
+               }
            }
 
-           //BLACKList
-           var blackListString = "" +
-     "King;e7;Black;False;False;True;True" +
-     "\nQueen;d8;Black;False;False;False;False" +
-     "\nRook;a8;Black;False;False;False;False" +
-     "\nRook;h8;Black;False;False;False;False" +
-     "\nKnight;b8;Black;False;False;False;False" +
-     "\nBishop;c8;Black;False;False;False;False" +
-     "\nBishop;f8;Black;False;False;False;False" +
-     "\nKnight;g8;Black;False;False;False;False" +
-     "\nSimplePawn;a4;Black;False;False;False;False" +
-     "\nSimplePawn;b6;Black;False;False;False;False" +
-     "\nSimplePawn;c7;Black;True;False;False;False" +
-     "\nSimplePawn;d7;Black;True;False;False;False" +
-     "\nSimplePawn;e6;Black;False;False;False;False" +
-     "\nSimplePawn;f5;Black;False;False;False;False" +
-     "\nSimplePawn;g7;Black;True;False;False;False" +
-     "\nSimplePawn;h6;Black;False;False;False;False";
-           var blackList = blackListString.Split('\n');
-           foreach (var line in blackList)
-           {
-               var datas = line.Split(';');
-               var newPawn = new Pawn(datas[0], datas[1], datas[2]);
-               //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
-               newPawn.IsFirstMove = bool.Parse(datas[3]);
-               newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
-               newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
-               newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
-               pawnListBlack.Add(newPawn);
-           }
-
-
-
-           var pawnList = new List<Pawn>();pawnList.AddRange(pawnListWhite);pawnList.AddRange(pawnListBlack);
-           using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-           {
-               var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-
-
-               Assert.AreEqual(nodeResult.BestChildPosition, "g6");
-           }
-       }
-
-   */
-    [TestMethod]
+       */
+        [TestMethod]
         /*tsiry;30-08-2021*/
         public void MTT56ToNotSecificPositionMesNoirDoiventEmpecherLeCavalierBlanchDeSeMettreSurG6()
         {
-            
+
             var computerColore = "Black";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -2477,11 +2472,11 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
 
 
 
-            var pawnList = new List<Pawn>();pawnList.AddRange(pawnListWhite);pawnList.AddRange(pawnListBlack);
+            var pawnList = new List<Pawn>(); pawnList.AddRange(pawnListWhite); pawnList.AddRange(pawnListBlack);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c6");
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b7");
@@ -2492,7 +2487,7 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         /*tsiry;30-08-2021*/
         public void MTT57SeulLeRookDoitBougerNotRandomD5()
         {
-            
+
 
             var computerColore = "Black";
 
@@ -2501,7 +2496,7 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                    var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "d5");
             }
         }
@@ -2511,17 +2506,17 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT59FinDePartieEviterMortDuRoiNoir()
         {
-            
+
 
             var computerColore = "Black";
 
-   var testName = "T59FinDePartieEviterMortDuRoiNoir";
+            var testName = "T59FinDePartieEviterMortDuRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                    var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-            var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 var isSuccess = true;
                 if (randomList != null)
                 {
@@ -2545,17 +2540,17 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         public void MTT61aPourBestSpecificPosition3White()
         {
             //Pour les SpecificPositions il faut se connecter � la base
-            
+
 
             //Pour les SpecificPositions il faut se connecter � la base
             //mainWindow.SetIsConnectedDB(true);
             var computerColore = "White";
             var testName = "T61aPourBestSpecificPosition3White";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
@@ -2571,43 +2566,43 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         public void MTT60BlackIsInChessInL3()
         {
             //Les noir ont déja pérdue
-            
+
             var computerColore = "Black";
 
             var testName = "T60BlackIsInChessInL3";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
                 //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-                Assert.AreEqual("f8",nodeResult.BestChildPosition);
+                Assert.AreEqual("f8", nodeResult.BestChildPosition);
             }
 
 
 
 
         }
- /*tsiry;05-07-2022*/
+        /*tsiry;05-07-2022*/
         [TestMethod]
         public void MTT60Suite1BlackIsInChessWhiteToF7()
         {
             //la reine blanche doit se mettre en f7
-                        var computerColore = "White";
+            var computerColore = "White";
 
             var testName = "T60Suite1BlackIsInChessWhiteToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-                Assert.AreEqual("e6",nodeResult.Location);
-                Assert.AreEqual("f7",nodeResult.BestChildPosition);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreEqual("e6", nodeResult.Location);
+                Assert.AreEqual("f7", nodeResult.BestChildPosition);
             }
 
 
@@ -2620,14 +2615,14 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT61PourEviterBestSpecificPosition3White()
         {
-            
+
 
             var computerColore = "Black";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -2696,10 +2691,10 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
 
 
 
-            var pawnList = new List<Pawn>();pawnList.AddRange(pawnListWhite);pawnList.AddRange(pawnListBlack);
+            var pawnList = new List<Pawn>(); pawnList.AddRange(pawnListWhite); pawnList.AddRange(pawnListBlack);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g7");
             }
         }
@@ -2708,7 +2703,7 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT62LePionNoirDoitAttaqueLaReineBlancEnH5()
         {
-            
+
 
             var computerColore = "Black";
             var testName = "T62LePionNoirDoitAttaqueLaReineBlancEnH5";
@@ -2722,8 +2717,8 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
             }
             // var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "d5");
             // Assert.IsNull(result);
-            
-            
+
+
         }
 
 
@@ -2731,7 +2726,7 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT65LeRookBlanchNeDoitPasSeMettreEnA6()
         {
-            
+
 
             var computerColore = "White";
 
@@ -2744,8 +2739,8 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
 
             }
-            
-            
+
+
         }
 
 
@@ -2753,41 +2748,41 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT67EchecBlancLaReineDoitProtegerLeRoiEtSeMettreEnF3()
         {
-            
+
 
             var computerColore = "White";
 
 
 
-  var testName = "T67EchecBlancLaReineDoitProtegerLeRoiEtSeMettreEnF3";
+            var testName = "T67EchecBlancLaReineDoitProtegerLeRoiEtSeMettreEnF3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-              Assert.AreEqual("f3",nodeResult.BestChildPosition);
+                Assert.AreEqual("f3", nodeResult.BestChildPosition);
             }
         }
 
 
-  /*tsiry;05-07-2022*/
+        /*tsiry;05-07-2022*/
         [TestMethod]
         public void MTT67SuiteLaReineNoirDoitSeMettreEnE2()
         {
-            
+
 
             var computerColore = "Black";
 
 
 
-  var testName = "T67SuiteLaReineNoirDoitSeMettreEnE2";
+            var testName = "T67SuiteLaReineNoirDoitSeMettreEnE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-              Assert.AreEqual("h2",nodeResult.Location);
-              Assert.AreEqual("e2",nodeResult.BestChildPosition);
+                Assert.AreEqual("h2", nodeResult.Location);
+                Assert.AreEqual("e2", nodeResult.BestChildPosition);
             }
         }
 
@@ -2795,21 +2790,21 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT68LeRoiBlanchNeDoitPasSeMettreEnG6()
         {
-            
+
 
             var computerColore = "White";
 
 
 
 
-            
+
             var testName = "T68LeRoiBlanchNeDoitPasSeMettreEnG6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-               Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
+                Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
             }
         }
 
@@ -2818,16 +2813,16 @@ var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
         [TestMethod]
         public void MTT69LeRoiBanchNeDoitPasPrendreLePionEnG2()
         {
-            
+
 
             var computerColore = "White";
-var testName = "T69LeRoiBanchNeDoitPasPrendreLePionEnG2";
+            var testName = "T69LeRoiBanchNeDoitPasPrendreLePionEnG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-           
+
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 var isSuccess = true;
                 if (randomList != null)
@@ -2856,12 +2851,12 @@ var testName = "T69LeRoiBanchNeDoitPasPrendreLePionEnG2";
         [TestMethod]
         public void MTT71LeRoisBlantNeDoitPasPrendreLeRookEnF5()
         {
-            
+
 
             var computerColore = "White";
 
 
-var testName = "T71LeRoisBlantNeDoitPasPrendreLeRookEnF5";
+            var testName = "T71LeRoisBlantNeDoitPasPrendreLeRookEnF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
@@ -2875,17 +2870,17 @@ var testName = "T71LeRoisBlantNeDoitPasPrendreLeRookEnF5";
         [TestMethod]
         public void MTT72LaReineNoirDoitPrendreLePionEnD5()
         {
-            
+
 
             var computerColore = "Black";
 
-var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
+            var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-               
+
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
 
 
@@ -2902,16 +2897,16 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT72BLaReineNoirDoitPrendreLePionEnD5()
         {
-            
+
 
             var computerColore = "White";
             var testName = "T72BLaReineBlanchDoitPrendreLePionEnD4";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 var isSuccess = false;
@@ -2928,16 +2923,16 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT73LeFouNoirNeDoitPasPrendreLePionEnB2()
         {
-            
+
 
             var computerColore = "Black";
 
             var testName = "T73LeFouNoirNeDoitPasPrendreLePionEnB2";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
@@ -2950,23 +2945,23 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT74LesBlanchsDoiventPrendreLePionEnD4()
         {
-            
+
 
             var computerColore = "White";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
             var testName = "T74LesBlanchsDoiventPrendreLePionEnD4";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList ;
                 //Assert.AreEqual(0, randomList.Count);
@@ -2979,23 +2974,23 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT78ProtectionDuRookDesNoirs()
         {
-            
+
 
             var computerColore = "White";
 
             var testName = "T78ProtectionDuRookDesNoirs";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 // var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //  Assert.IsNull(randomList);
                 //Assert.AreEqual(nodeResult.Location, "c1");
                 //Assert.AreEqual(nodeResult.BestChildPosition, "b2");
-                 Assert.AreEqual(nodeResult.Location, "a2");
+                Assert.AreEqual(nodeResult.Location, "a2");
                 Assert.AreEqual(nodeResult.BestChildPosition, "b2");
             }
         }
@@ -3005,20 +3000,20 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT79LeRoisBlanchDoitSeMettreEnG1()
         {
-            
+
 
             var computerColore = "White";
 
 
 
 
-            
-             var testName = "T79LeRoisBlanchDoitSeMettreEnG1";
+
+            var testName = "T79LeRoisBlanchDoitSeMettreEnG1";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
                 Assert.AreEqual(0, randomList.Count);
@@ -3028,45 +3023,45 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         }
 
 
-    /*tsiry;12-11-2021*/
-    [TestMethod]
-    public void MTT80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn()
-    {
+        /*tsiry;12-11-2021*/
+        [TestMethod]
+        public void MTT80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn()
+        {
 
 
-      var computerColore = "Black";
+            var computerColore = "Black";
 
 
 
 
-      var testName = "T80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
 
-        Assert.AreEqual(nodeResult.BestChildPosition, "c7");
+                Assert.AreEqual(nodeResult.BestChildPosition, "c7");
 
-      }
-    }
+            }
+        }
 
 
         /*tsiry;12-11-2021*/
         [TestMethod]
         public void MTT81LeCavalierBlanchNeDoitPasPrendreLaReinEtLesBlanchDoiventEviterLEchec()
         {
-            
+
 
             var computerColore = "White";
 
-  var testName = "T81LeCavalierBlanchNeDoitPasPrendreLaReinEtLesBlanchDoiventEviterLEchec";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-            var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testName = "T81LeCavalierBlanchNeDoitPasPrendreLaReinEtLesBlanchDoiventEviterLEchec";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f6");
             }
@@ -3076,14 +3071,14 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT82Null2LesNoirDoiventEviterLeNull()
         {
-            
+
 
             var computerColore = "Black";
 
 
 
 
-            
+
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -3125,7 +3120,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
 
 
-            var pawnList = new List<Pawn>();pawnList.AddRange(pawnListWhite);pawnList.AddRange(pawnListBlack);
+            var pawnList = new List<Pawn>(); pawnList.AddRange(pawnListWhite); pawnList.AddRange(pawnListBlack);
             //ajout des movements
             if (Utils.MovingList == null)
                 Utils.MovingList = new List<string>();
@@ -3140,7 +3135,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             Utils.MovingList.Add("34(K|W)>26(__)");
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //var t_movingList = Utils.MovingList;
@@ -3155,21 +3150,21 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT84EchecEtMatNoir()
         {
-            
+
 
             var computerColore = "Black";
 
 
 
 
-            
-             var testName = "T84EchecEtMatNoir";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-            var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-               
+
+            var testName = "T84EchecEtMatNoir";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
                 Assert.IsNull(nodeResult);
             }
 
@@ -3179,20 +3174,20 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         [TestMethod]
         public void MTT84BEchecEtMatNoir()
         {
-            
+
 
             var computerColore = "Black";
 
 
 
 
-            
+
             var testName = "T84EchecEtMatNoir";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-            var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //  var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 Assert.IsNull(nodeResult);
                 //echec si nodeResult.Location ==  nodeResult.BestChildPosition
@@ -3207,15 +3202,15 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T85LaToureNoirDoitPrendreLePionEnA5";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
@@ -3232,16 +3227,16 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "White";
 
             var testName = "T86ApplicationDownOutOfmemories";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
@@ -3256,15 +3251,15 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T87BlackInChessInL2";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "f2");
             } //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
               //Assert.IsNull(randomList);
@@ -3285,18 +3280,18 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "White";
 
             var testName = "T87BlackInChessInL2";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
-              
+
                 Assert.IsTrue(nodeResult.BestChildPosition == "e3" || nodeResult.BestChildPosition == "g3");//e3 ou g3 
             }
 
@@ -3308,16 +3303,16 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "White";
 
             var testName = "T88LesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
 
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
@@ -3334,14 +3329,14 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T88LesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
                 //Assert.IsNull(randomList);
@@ -3361,14 +3356,14 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T89LeFouNoirNeDoitPasSeMettreEnB4";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b4");
             }
@@ -3383,47 +3378,47 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         }
 
         /*tsiry;16-03-2022*/
-      /*  [TestMethod]
-        public void MTT90LePoinNoirDoitSeMettreEnH5()
-        {
-
-
-            
-            var computerColore = "Black";
-            var testName = "T90LePoinNoirDoitSeMettreEnH5";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-            {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
-
-                Assert.AreEqual(nodeResult.Location, "h7");
-                Assert.AreEqual(nodeResult.BestChildPosition, "h5");
-            }
-            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-            //Assert.IsNull(randomList);
-            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+        /*  [TestMethod]
+          public void MTT90LePoinNoirDoitSeMettreEnH5()
+          {
 
 
 
+              var computerColore = "Black";
+              var testName = "T90LePoinNoirDoitSeMettreEnH5";
+              var testPath = Path.Combine(testsDirrectory, testName);
+              var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+              using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+              {
+                  var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+
+                  Assert.AreEqual(nodeResult.Location, "h7");
+                  Assert.AreEqual(nodeResult.BestChildPosition, "h5");
+              }
+              //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+              //Assert.IsNull(randomList);
+              //echec si nodeResult.Location ==  nodeResult.BestChildPosition
 
 
-        }
-        */
+
+
+
+          }
+          */
         /*tsiry;17-03-2022*/
         [TestMethod]
         public void MTT91LaReineNoirDoitSeMettreEnH5()
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T91LaReineNoirDoitSeMettreEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.BestChildPosition, "h5");
@@ -3458,8 +3453,8 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
                 //Le poin doit pas se mettre en d4
                 //if()
                 Assert.IsTrue(nodeResult.BestChildPosition == "d4" || nodeResult.BestChildPosition == "d5");
-               // var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-               // Assert.AreEqual(randomList.Count, 0);
+                // var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+                // Assert.AreEqual(randomList.Count, 0);
             }
 
 
@@ -3474,14 +3469,14 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T92ALaReineNoirDoitSeMettreEnC3PourEviterLeChessParLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.BestChildPosition, "h8");
@@ -3501,14 +3496,14 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         {
 
 
-            
+
             var computerColore = "Black";
             var testName = "T92BLeCavalierNoirDoitPartieDeF6";
             var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.Location, "f6");
@@ -3522,7 +3517,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
 
         }
-       
+
         /*tsiry;19-05-2022*/
         [TestMethod]
         public void MTT93ALaReineNoirDoitSeMettreEnG3()
@@ -3566,7 +3561,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.IsTrue(result);
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-                Assert.AreEqual(randomList.Count,0);
+                Assert.AreEqual(randomList.Count, 0);
             }
 
             //echec si nodeResult.Location ==  nodeResult.BestChildPosition
@@ -3589,7 +3584,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-                Assert.AreEqual("f2",nodeResult.Location);//h1
+                Assert.AreEqual("f2", nodeResult.Location);//h1
 
             }
             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -3601,7 +3596,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
 
         }
- /*tsiry;05-07-2022*/
+        /*tsiry;05-07-2022*/
         [TestMethod]
         public void MTT95SuiteWhiteE4ToG3()
         {
@@ -3613,7 +3608,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-                Assert.AreEqual("g3",nodeResult.BestChildPosition);//h1
+                Assert.AreEqual("g3", nodeResult.BestChildPosition);//h1
 
             }
             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -3626,7 +3621,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
         }
 
- [TestMethod]
+        [TestMethod]
         public void MTT95SuiteSuite()
         {
 
@@ -3637,7 +3632,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-                Assert.AreEqual("f2",nodeResult.BestChildPosition);//h1
+                Assert.AreEqual("f2", nodeResult.BestChildPosition);//h1
 
             }
             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -3652,7 +3647,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
         /*tsiry;23-05-2022*/
         [TestMethod]
-         public void MTT95BLeCavalierBlanchDoitAttaquerEnF2()
+        public void MTT95BLeCavalierBlanchDoitAttaquerEnF2()
         {
 
             var computerColore = "White";
@@ -3700,7 +3695,7 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
         }
 
 
- /*tsiry;11-07-2022*/
+        /*tsiry;11-07-2022*/
         [TestMethod]
         public void MTT97AWhitePourAviterT97WhiteNotF1ToG2()
         {
@@ -3724,8 +3719,8 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
 
         }
-   
-  /*tsiry;11-07-2022*/
+
+        /*tsiry;11-07-2022*/
         [TestMethod]
         public void MTT97BBlackWhinG4ToE2()
         {
@@ -3751,189 +3746,252 @@ var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
 
         }
 
-    /*tsiry;14-07-2022*/
-    [TestMethod]
-    public void MTT98BlackNotNullE8ToF72()
-    {
+        /*tsiry;14-07-2022*/
+        [TestMethod]
+        public void MTT98BlackNotNullE8ToF72()
+        {
 
-      var computerColore = "Black";
-      var testName = "T98BlackNotNullE8ToF7";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        Assert.AreEqual(nodeResult.Location, "e8");
-        Assert.AreEqual(nodeResult.BestChildPosition, "f7");
+            var computerColore = "Black";
+            var testName = "T98BlackNotNullE8ToF7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreEqual(nodeResult.Location, "e8");
+                Assert.AreEqual(nodeResult.BestChildPosition, "f7");
 
-      }
-      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      //Assert.IsNull(randomList);
-      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
 
 
 
+
+
+        }
+        /*tsiry;14-07-2022*/
+        [TestMethod]
+        public void MTT99WhiteNotC7ToF7()
+        {
+
+            var computerColore = "White";
+            var testName = "T99WhiteNotC7ToF7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreNotEqual(nodeResult.Location, "c7");
+                Assert.IsFalse(nodeResult.BestChildPosition == "f7" || nodeResult.BestChildPosition == "b8");
+
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+        }
+
+
+        /*tsiry;19-07-2022*/
+        [TestMethod]
+        public void MTT100BlackG6ToF5()
+        {
+
+            var computerColore = "Black";
+            var testName = "T100BlackG6ToF5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreNotEqual(nodeResult.Location, "c7");
+                bool isCorrect = nodeResult.BestChildPosition == "f5" || nodeResult.BestChildPosition == "h7";
+                Assert.IsTrue(isCorrect);
+
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+        }
+        /*tsiry;19-07-2022*/
+        [TestMethod]
+        public void MTT105BlackC6ToD4()
+        {
+
+            var computerColore = "Black";
+            var testName = "T105BlackC6ToD4";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreNotEqual(nodeResult.Location, "c7");
+                //Assert.IsTrue(nodeResult.li)
+
+                var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+                Assert.AreEqual(0, randomList.Count);
+                Assert.AreEqual("d4", nodeResult.BestChildPosition);
+
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+        }
+
+
+        /*tsiry;26-07-2022*/
+        [TestMethod]
+        public void MTT106WhiteD1ToC2()
+        {
+
+            var computerColore = "White";
+            var testName = "T106WhiteD1ToC2";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreNotEqual(nodeResult.Location, "c7");
+                //Assert.IsTrue(nodeResult.li)
+
+                // var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+                // Assert.AreEqual(0,randomList.Count);
+                Assert.AreEqual("c2", nodeResult.BestChildPosition);
+
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+        }
+
+
+        /*tsiry;26-07-2022*/
+        /*  [TestMethod]
+          public void MTT107WhiteH5ToG7()
+          {
+
+            var computerColore = "White";
+            var testName = "T107WhiteH5ToG7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+              var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+              // Assert.AreNotEqual(nodeResult.Location, "c7");
+              //Assert.IsTrue(nodeResult.li)
+
+             // var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+           // Assert.AreEqual(0,randomList.Count);
+              Assert.AreEqual("g7",nodeResult.BestChildPosition);
+
+            }
+            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+            //Assert.IsNull(randomList);
+            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+          }
+      */
+        /*tsiry;19-07-2022*/
+        /*    [TestMethod]
+            public void MTT104BlackF7ToG7()
+            {
+
+              var computerColore = "Black";
+              var testName = "T104BlackF7ToG7";
+              var testPath = Path.Combine(testsDirrectory, testName);
+              var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+              using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+              {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreNotEqual(nodeResult.Location, "c7");
+                Assert.AreEqual("g7",nodeResult.BestChildPosition);
+
+              }
+
+
+
+
+
+            }
+
+        */
+        /*tsiry;19-07-2022*/
+        /*   [TestMethod]
+           public void MTT102WhiteD1ToC1()
+           {
+
+             var computerColore = "White";
+             var testName = "T102WhiteD1ToC1";
+             var testPath = Path.Combine(testsDirrectory, testName);
+             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+             {
+               var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+               // Assert.AreNotEqual(nodeResult.Location, "c7");
+               Assert.AreEqual("c1",nodeResult.BestChildPosition);
+
+             }
+             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+             //Assert.IsNull(randomList);
+             //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+           }
+       */
+
+        /*tsiry;19-07-2022*/
+        /*   [TestMethod]
+           public void MTT101BlackG6ToF5()
+           {
+
+             var computerColore = "Black";
+             var testName = "T101BlackG6ToF5";
+             var testPath = Path.Combine(testsDirrectory, testName);
+             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+             {
+               var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+               // Assert.AreNotEqual(nodeResult.Location, "c7");
+               Assert.AreEqual("f5",nodeResult.BestChildPosition);
+
+             }
+             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
+             //Assert.IsNull(randomList);
+             //echec si nodeResult.Location ==  nodeResult.BestChildPosition
+
+
+
+
+
+           }
+       */
     }
-    /*tsiry;14-07-2022*/
-    [TestMethod]
-    public void MTT99WhiteNotC7ToF7()
-    {
-
-      var computerColore = "White";
-      var testName = "T99WhiteNotC7ToF7";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        // Assert.AreNotEqual(nodeResult.Location, "c7");
-        Assert.IsFalse(nodeResult.BestChildPosition == "f7" || nodeResult.BestChildPosition == "b8");
-
-      }
-      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      //Assert.IsNull(randomList);
-      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
-    }
-
-
-/*tsiry;19-07-2022*/
-    [TestMethod]
-    public void MTT100BlackG6ToF5()
-    {
-
-      var computerColore = "Black";
-      var testName = "T100BlackG6ToF5";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        // Assert.AreNotEqual(nodeResult.Location, "c7");
-        Assert.AreEqual("f5",nodeResult.BestChildPosition);
-
-      }
-      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      //Assert.IsNull(randomList);
-      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
-    }
-/*tsiry;19-07-2022*/
-    [TestMethod]
-    public void MTT105BlackC6ToD4()
-    {
-
-      var computerColore = "Black";
-      var testName = "T105BlackC6ToD4";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        // Assert.AreNotEqual(nodeResult.Location, "c7");
-        //Assert.IsTrue(nodeResult.li)
-
-        var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      Assert.AreEqual(0,randomList.Count);
-        Assert.AreEqual("d4",nodeResult.BestChildPosition);
-
-      }
-      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      //Assert.IsNull(randomList);
-      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
-    }
-
-/*tsiry;19-07-2022*/
-/*    [TestMethod]
-    public void MTT104BlackF7ToG7()
-    {
-
-      var computerColore = "Black";
-      var testName = "T104BlackF7ToG7";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        // Assert.AreNotEqual(nodeResult.Location, "c7");
-        Assert.AreEqual("g7",nodeResult.BestChildPosition);
-
-      }
-
-
-
-
-
-    }
-
-*/
-/*tsiry;19-07-2022*/
- /*   [TestMethod]
-    public void MTT102WhiteD1ToC1()
-    {
-
-      var computerColore = "White";
-      var testName = "T102WhiteD1ToC1";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        // Assert.AreNotEqual(nodeResult.Location, "c7");
-        Assert.AreEqual("c1",nodeResult.BestChildPosition);
-
-      }
-      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      //Assert.IsNull(randomList);
-      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
-    }
-*/
-
-/*tsiry;19-07-2022*/
- /*   [TestMethod]
-    public void MTT101BlackG6ToF5()
-    {
-
-      var computerColore = "Black";
-      var testName = "T101BlackG6ToF5";
-      var testPath = Path.Combine(testsDirrectory, testName);
-      var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-      using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-      {
-        var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-        // Assert.AreNotEqual(nodeResult.Location, "c7");
-        Assert.AreEqual("f5",nodeResult.BestChildPosition);
-
-      }
-      //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-      //Assert.IsNull(randomList);
-      //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
-    }
-*/
-  }
 }

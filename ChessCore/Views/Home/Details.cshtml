@@ -1,4 +1,4 @@
-﻿@model  ChessCore.Models.DetailsViewModel
+﻿@model ChessCore.Models.DetailsViewModel
 @*<p>@Model.DateTimeNow </p>*@
 
 
@@ -6,385 +6,346 @@
 </script>
 <script type="text/javascript">
 
-  var initialSeconde = @Model.InitialDuration;
-  //alert(initialSeconde);
-  var isComputerTurn = @Model.GetIsComputerTurn();
+    var initialSeconde = @Model.InitialDuration;
+    //alert(initialSeconde);
+    var isComputerTurn = @Model.GetIsComputerTurn();
 
-  //pour les timers des joeurs
+    //pour les timers des joeurs
 
-  var blackTimeLabel = document.getElementById("blackTimeLabel");
-  var whiteTimeLabel = document.getElementById("whiteTimeLabel");
-  var totalSecondsWhite =@Model.WhiteTimeInSecond;
-  var totalSecondsBlack = @Model.BlackTimeInSecond;
-  //alert(@Model.WhiteTimeInSecond);
-  //alert(totalSecondsWhite);
-  var currentColor = '@Model.CurrentTurn';
+    var blackTimeLabel = document.getElementById("blackTimeLabel");
+    var whiteTimeLabel = document.getElementById("whiteTimeLabel");
+    var totalSecondsWhite = @Model.WhiteTimeInSecond;
+    var totalSecondsBlack = @Model.BlackTimeInSecond;
+    //alert(@Model.WhiteTimeInSecond);
+    //alert(totalSecondsWhite);
+    var currentColor = '@Model.CurrentTurn';
 
-  printTimes();
-  var oldTime =new Date();
+    printTimes();
+    var oldTime = new Date();
 
-  var newTime = null;
-
-
-
-  function printTimes() {
+    var newTime = null;
 
 
 
-    var mn = pad(parseInt((initialSeconde-totalSecondsWhite) / 60));
-    var s = pad((initialSeconde-totalSecondsWhite) % 60);
-    whiteTimeLabel.innerHTML = mn + " : " + s;
-    mn = pad(parseInt((initialSeconde-totalSecondsBlack) / 60));
-    s = pad((initialSeconde-totalSecondsBlack) % 60);
-
-    blackTimeLabel.innerHTML = mn + " : " + s;
-
-
-  }
-
-
-  function pad(val) {
-    var valString = val + "";
-    if (valString.length < 2) {
-      return "0" + valString;
-    } else {
-      return valString;
-    }
-  }
+    function printTimes() {
 
 
 
-  $(function () {
-    setInterval(BindPartialView, 1000);
-    setInterval(timerCount, 50);
-  });
+        var mn = pad(parseInt((initialSeconde - totalSecondsWhite) / 60));
+        var s = pad((initialSeconde - totalSecondsWhite) % 60);
+        whiteTimeLabel.innerHTML = mn + " : " + s;
+        mn = pad(parseInt((initialSeconde - totalSecondsBlack) / 60));
+        s = pad((initialSeconde - totalSecondsBlack) % 60);
+
+        blackTimeLabel.innerHTML = mn + " : " + s;
 
 
-  function timerCount()
-  {
-
-    var endDate = new Date();
-    //  alert(endDate);
-    var seconds = (endDate.getTime() - oldTime.getTime()) / 1000;
-    // alert(seconds);
-    if (seconds >= 1) {
-      oldTime = new Date()
-
-      if (currentColor == "W") {
-        ++totalSecondsWhite;
-      }
-      else {
-        ++totalSecondsBlack;
-      }
-
-
-
-      printTimes();
     }
 
-  }
 
-
-  function BindPartialView()
-  {
-    var objDiv = document.getElementById("history_div");
-    objDiv.scrollTop = objDiv.scrollHeight;
-
-
-    var data = { whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack};
-    if (isComputerTurn == "1")
-    {
-      //alert(isComputerTurn);
-      isComputerTurn = "0";
-      $.ajax({
-      type: "POST",
-      url: "/Home/DetailsTimer",
-        data: data,
-        contentType: 'application/x-www-form-urlencoded',
-      dataType: "html",
-      success: function(response) {
-        $('#dvPartial').html(response);
-        },
-      failure: function(response) {
-         // alert(response.responseText);
-        },
-      error: function(response) {
-        //  alert(response.responseText);
+    function pad(val) {
+        var valString = val + "";
+        if (valString.length < 2) {
+            return "0" + valString;
+        } else {
+            return valString;
         }
-      });
     }
 
-  }
-
-  function DivClicked(index)
-  {
-    document.getElementById(index).style.backgroundColor = 'yellow';
-    document.getElementById(index);
-   
-    var data = { objId: index, whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack, selectedLevel: -1 };
-    $.ajax({
-      type: "POST",
-      url: "/Home/Details",
-      data: data,
-      contentType: 'application/x-www-form-urlencoded',
-      dataType: "html",
-      success: function (response) {
-        $('#dvPartial').html(response);
-      },
-      failure: function (response) {
-        alert(response.responseText);
-      },
-      error: function (response) {
-        alert(response.responseText);
-      }
-    });
-  };
-
-  function Print() {
 
 
-      //html2canvas(document.body).then(function (canvas) {
-      //  document.body.appendChild(canvas);
-      //});
-    html2canvas(document.body, { background: '#fff' }).then(function (canvas) {
-
-      //document.body.appendChild(canvas);
-
-      // Get base64URL
-      var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
-
-
-     // alert(base64URL);
-      // AJAX request
-      $.ajax({
-        url: '/Home/SavePrintScreen',
-        type: 'post',
-        data: { image: base64URL },
-        success: function (data)
-        {
-
-          window.location.href = '@Url.Action("SaveBoard", "Home")';
-          console.log('Upload successfully');
-        }
-      });
+    $(function () {
+        setInterval(BindPartialView, 1000);
+        setInterval(timerCount, 50);
     });
 
 
+    function timerCount() {
 
-  }
+        var endDate = new Date();
+        //  alert(endDate);
+        var seconds = (endDate.getTime() - oldTime.getTime()) / 1000;
+        // alert(seconds);
+        if (seconds >= 1) {
+            oldTime = new Date()
+
+            if (currentColor == "W") {
+                ++totalSecondsWhite;
+            }
+            else {
+                ++totalSecondsBlack;
+            }
+
+
+
+            printTimes();
+        }
+
+    }
+
+
+    function BindPartialView() {
+        var objDiv = document.getElementById("history_div");
+        objDiv.scrollTop = objDiv.scrollHeight;
+
+
+        var data = { whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack };
+        if (isComputerTurn == "1") {
+            //alert(isComputerTurn);
+            isComputerTurn = "0";
+            $.ajax({
+                type: "POST",
+                url: "/Home/DetailsTimer",
+                data: data,
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "html",
+                success: function (response) {
+                    $('#dvPartial').html(response);
+                },
+                failure: function (response) {
+                    // alert(response.responseText);
+                },
+                error: function (response) {
+                    //  alert(response.responseText);
+                }
+            });
+        }
+
+    }
+
+    function DivClicked(index) {
+        document.getElementById(index).style.backgroundColor = 'yellow';
+        document.getElementById(index);
+
+        var data = { objId: index, whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack, selectedLevel: -1 };
+        $.ajax({
+            type: "POST",
+            url: "/Home/Details",
+            data: data,
+            contentType: 'application/x-www-form-urlencoded',
+            dataType: "html",
+            success: function (response) {
+                $('#dvPartial').html(response);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    };
+
+    function Print() {
+
+
+        //html2canvas(document.body).then(function (canvas) {
+        //  document.body.appendChild(canvas);
+        //});
+        html2canvas(document.body, { background: '#fff' }).then(function (canvas) {
+
+            //document.body.appendChild(canvas);
+
+            // Get base64URL
+            var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
+
+
+            // alert(base64URL);
+            // AJAX request
+            $.ajax({
+                url: '/Home/SavePrintScreen',
+                type: 'post',
+                data: { image: base64URL },
+                success: function (data) {
+
+                    window.location.href = '@Url.Action("SaveBoard", "Home")';
+                    console.log('Upload successfully');
+                }
+            });
+        });
+    }
 
 
 </script>
-<h5 class="d-inline-block inline">
-  <span class="informationFont">Current turn :</span>
-  @if (@Model.CurrentTurn == "W")
-  {
-    <span class="whiteFont">White</span>
-  }
-  else
-  {
-    <span class="blackFont">Black</span>
-  }
-  <span class="informationFont">Computer color :</span>
-  @if (@Model.ComputerColor == "W")
-  {
-    <span class="whiteFont">White</span>
-  }
-  else
-  {
-    <span class="blackFont">Black</span>
-  }
-  &emsp;
-  <label id="whiteTimeLabel" class="whiteFont"></label>
-  &ensp;
-  <label id="blackTimeLabel" class="blackFont"></label>
-  <button class="fa fa-camera" onclick="Print();">
-      print
-  </button>
-   <b style='color:red;'>@Model.GetMemoryUsed() </b>
-</h5>
-
-
-<br />
-
-
-
-@*<a href="@Url.Action("Home", "SaveHistory")" />*@
-@* @Html.ActionLink("print", "SaveHistory")*@
-@* <i class="fa fa-save"></i>*@
-<hr />
-
-
-@*<button onclick="RunEngine()">run engine</button>*@
-<div class="d-flex">
-
-  <div class="d-inline-block">
-
-    <div id="history_div" style="width: 150px; height: 700px; overflow-y: scroll;">
-      @if (Model.MovingList != null)
-      {
-        @Model.MovingList.Count
-        foreach (var line in Model.MovingList)
-        {
-          @line
-          <br />
-        }
-      }
-    </div>
-    
-    <a href="@Url.Action("Preview", "Home")">
-      <button type="button" >
-          @*<i class="bi bi-camera"></i>*@
-          Preview
-      </button>
-    </a>
-    <a href="@Url.Action("SaveHistory", "Home")">
-      <button type="button" >
-          @*<i class="bi bi-camera"></i>*@
-          save
-      </button>
-    </a>
-
-
-   
-  </div>
-
- 
-  
-  
-
- <div class="d-inline-block" style="margin-top: 43px;">
-  @{
-    if (Model.RevertWrapperClass == "revertWrapper")
+<h8 class="d-inline-block inline">
+    <span class="informationFont">Current turn :</span>
+    @if (@Model.CurrentTurn == "W")
     {
-      string[] coordYArray = {"1", "2", "3", "4","5","6","7","8"};
-              
-              foreach (var coordY in coordYArray)
-              {
-                <div style="height:70px; background-color: #04AA6D;" >
-                <label   style="font-weight: bold; margin-top: 25px" > @coordY &nbsp;</label>
-                </div>
-              
-              }
+        <span class="whiteFont">White</span>
     }
     else
     {
-       string[] coordYArray = {"8", "7", "6", "5","4","3","2","1"};
-              
-              foreach (var coordY in coordYArray)
-              {
-                <div style="height:70px; background-color: #04AA6D;" >
-                <label   class="@Model.RevertWrapperClass" style="font-weight: bold; margin-top: 25px" > @coordY &nbsp</label>
-                </div>
-              
-              }
+        <span class="blackFont">Black</span>
     }
-    
-  }
-</div>
-  <div class="d-inline-block" style="width: 500px;">
-   
-    <div class="wrapper @Model.RevertWrapperClass">
-      
-      <div class="top">
-
-        <div class="wrapper-inner">
-          <div align="left">
-            <label class="@Model.RevertWrapperClass">@Model.GetBlackScoreString() </label>
-          </div>
-
-          <div align="right">
-            
-            @if (Model.HuntingBoardWhiteImageList != null)
-            {
-              foreach (var imageSrc in Model.HuntingBoardWhiteImageList)
-              {
-                <img src=@imageSrc width="25" height="25"
-                     class="@Model.RevertWrapperClass" />
-
-              }
-            }
-
-          </div>
-        
-        </div>
-      </div>
-    
-      @for (int i = 0; i < 8; i++)
-      {
-      
-        for (int j = 0; j < 8; j++)
-        {
-          
-          <div id="@Model.GetPawn(j + (8 * i)).Index"
-               class="box"
-               onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
-            @* <p>@Model.GetPawn(j + (8 * i)).Index</p>*@
-
-
-            @if (@Model.GetPawn(j + (8 * i)).ImageIsExist)
-            {
-              <img src=@Model.GetPawn(j + (8 * i)).PawnImageSrc width="50" height="50"
-                   class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
-            }
-            else
-            {
-              <img src="" width="5" height="5"
-                   class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
-            }
-            @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
-            <div class="caseNumber" style=" font-size: 10px;"><p class="@Model.RevertWrapperClass">@(j+(i*8))</p></div>
-
-
-          </div>
-          
-        }
-        
-        
-        
-      }
-      
-
-      <div class="bottom">
-        <div>
-                @{
-                string[] coordXArray = {"A", "B", "C", "D","E","F","G","H"};
-                
-                foreach (var coordX in coordXArray)
+    <span class="informationFont">Computer color :</span>
+    @if (@Model.ComputerColor == "W")
+    {
+        <span class="whiteFont">White</span>
+    }
+    else
+    {
+        <span class="blackFont">Black</span>
+    }
+    &emsp;
+    <label id="whiteTimeLabel" class="whiteFont"></label>
+    &ensp;
+    <label id="blackTimeLabel" class="blackFont"></label>
+    <button class="fa fa-camera" onclick="Print();">
+        print
+    </button>
+    <b style='color:red;'>@Model.GetMemoryUsed() </b>
+    <div class="d-flex">
+        <div class="d-inline-block">
+            <div id="history_div" class="history">
+                @if (Model.MovingList != null)
                 {
-                  <label   class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
-                }
-            
-                <div class="wrapper-inner">
-                  <div align="left">
-                    <label class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
-                  </div>
-
-                  <div align="right">
-                    @if (Model.HuntingBoardBlackImageList != null)
+                    @Model.MovingList.Count
+                    foreach (var line in Model.MovingList)
                     {
-                      foreach (var imageSrc in Model.HuntingBoardBlackImageList)
-                      {
-                        <img src=@imageSrc width="25" height="25"
-                            class="@Model.RevertWrapperClass" />
-
-                      }
+                        @line
+                        <br />
                     }
-                  </div>
-                  
-                  
+                }
+            </div>
+            <a href="@Url.Action("SaveHistory", "Home")">
+                <button type="button">
+                    @*<i class="bi bi-camera"></i>*@
+                    save
+                </button>
+            </a>
+        </div>
+        <div class="d-inline-block" style="margin-top: 43px;">
+            @{
+                if (Model.RevertWrapperClass == "revertWrapper")
+                {
+                    string[] coordYArray = { "1", "2", "3", "4", "5", "6", "7", "8" };
+
+                    foreach (var coordY in coordYArray)
+                    {
+                        <div class="coordY">
+                            <label style="font-weight: bold; margin-top: 1vh;"> @coordY &nbsp;</label>
+                        </div>
+
+                    }
+                }
+                else
+                {
+                    string[] coordYArray = { "8", "7", "6", "5", "4", "3", "2", "1" };
+                    foreach (var coordY in coordYArray)
+                    {
+                        <div class="coordY">
+                            <label class="@Model.RevertWrapperClass" style="font-weight: bold;"> @coordY &nbsp</label>
+                        </div>
+
+                    }
+                }
+
+            }
+        </div>
+        <div class="d-inline-block" style="width: 40.5;">
+
+            <div class="wrapper @Model.RevertWrapperClass">
+
+                <div class="top">
+
+                    <div class="wrapper-inner">
+                        <div align="left">
+                            <label class="@Model.RevertWrapperClass">@Model.GetBlackScoreString() </label>
+                        </div>
+
+                        <div align="right">
+
+                            @if (Model.HuntingBoardWhiteImageList != null)
+                            {
+                                foreach (var imageSrc in Model.HuntingBoardWhiteImageList)
+                                {
+                                    <img src=@imageSrc width="25" height="25"
+                                 class="@Model.RevertWrapperClass" />
+
+                                }
+                            }
+
+                        </div>
+
+                    </div>
                 </div>
 
-                }
-              </div>
-            </div>
-            
+                @for (int i = 0; i < 8; i++)
+                {
 
-          </div>
+                    for (int j = 0; j < 8; j++)
+                    {
+
+                        <div id="@Model.GetPawn(j + (8 * i)).Index"
+                     class="box"
+                     onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
+                            @* <p>@Model.GetPawn(j + (8 * i)).Index</p>*@
+
+
+                            @if (@Model.GetPawn(j + (8 * i)).ImageIsExist)
+                            {
+                                <img src=@Model.GetPawn(j + (8 * i)).PawnImageSrc width="35vw" height="35vw"
+                         class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+                            }
+                            else
+                            {
+                                <img src="" width="5" height="5"
+                         class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+                            }
+                            @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
+                            <div class="caseNumber" style=" font-size: 10px; "><p class="@Model.RevertWrapperClass">@(j + (i * 8))</p></div>
+
+
+                        </div>
+
+                    }
+
+
+
+                }
+
+
+                <div class="bottom">
+                    <div>
+                        @{
+                            string[] coordXArray = { "A", "B", "C", "D", "E", "F", "G", "H" };
+
+                            foreach (var coordX in coordXArray)
+                            {
+
+                                <label class="coordXArray @Model.RevertWrapperClass">@coordX</label>
+                            }
+
+                            <div class="wrapper-inner">
+                                <div align="left">
+                                    <label class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
+                                </div>
+
+                                <div align="right">
+                                    @if (Model.HuntingBoardBlackImageList != null)
+                                    {
+                                        foreach (var imageSrc in Model.HuntingBoardBlackImageList)
+                                        {
+                                            <img src=@imageSrc width="25" height="25"
+                                         class="@Model.RevertWrapperClass" />
+
+                                        }
+                                    }
+                                </div>
+
+
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+
+            </div>
         </div>
 
 
 
 
-<br />
+        <br />
 

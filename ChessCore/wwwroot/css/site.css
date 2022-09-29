@@ -1,8 +1,3 @@
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
 .inline {
     display: inline;
 }
@@ -38,20 +33,64 @@ body {
 }
 
 body {
-    margin: 40px;
     background-color: #5d5d5d;
+   
 }
 
 .wrapper {
+    
     border: solid #462921;
-    width: 567px;
+    width: 40.5vw;
     margin: 0 auto;
     display: grid;
     grid-gap: 0;
-    grid-template-columns: repeat(8, 70px);
-    grid-template-rows: 40px repeat(8, 70px) 40px;
+    grid-template-columns: repeat(8, 5vw);
+    grid-template-rows: 40px repeat(8, 5vw) 40px;
     grid-auto-flow: row;
 }
+
+.coordY
+{
+    height:5vw; 
+    background-color: #04AA6D;
+}
+.coordXArray
+{
+    width: 4.6vw; 
+    font-weight: bold; 
+    text-align:center;
+}
+.history
+{
+    width: 150px; 
+    height: 45vw; 
+    overflow-y: scroll;
+}
+a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+  }
+  
+  a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  .previous {
+    background-color: #f1f1f1;
+    color: black;
+  }
+  
+  .next {
+    background-color: #f1f1f1;
+    color: black;
+  }
+  
+  .round {
+    border-radius: 50%;
+  }
+  
 
 .revertWrapper {
     transform: rotate(180deg);
@@ -80,7 +119,6 @@ img {
 }
 
 .box {
-    padding: 20px;
     font-size: 150%;
     background-color: #b5915f;
     color: #000;
@@ -148,7 +186,7 @@ textarea {
 
 .caseNumber{
     position: relative;
-    top: -50px;
-    right: -40px;
+    top: 1vw;
+    right: -4vw;
     transform: translate(-50%, -50%);
 }
