@@ -8,8 +8,13 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ChessCore.styles.css" asp-append-version="true" />
 </head>
+<script type="text/javascript">
+    // Pour définir la valeur
+    sessionStorage.setItem('totalSecondsWhite', '0');
+    sessionStorage.setItem('totalSecondsBlack', '0');
+</script>
 <body>
-    @*<header>
+  @*  <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ChessCore</a>

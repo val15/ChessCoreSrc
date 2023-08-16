@@ -1,0 +1,234 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="ChessCore.Test" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="ChessCore.Test" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="ChessIATestMultithreading" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT19bLeFouBlanchDoitnenacerLaReineOulePionDoitProtegerLeTour" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT19bLeFouBlanchDoitnenacerLaReineOulePionDoitProtegerLeTour" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT22LeBishopOuLeRoiNoirDoitPrendreLePion" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT22LeBishopOuLeRoiNoirDoitPrendreLePion" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT26LeCavalierNoirDoitBouger" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT26LeCavalierNoirDoitBouger" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT27LeBishopBlancDoitSeMettreEnA8" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT27LeBishopBlancDoitSeMettreEnA8" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT28LePionNoirDoitPrendreLeCavalier" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT28LePionNoirDoitPrendreLeCavalier" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT31LaReineNoirDoitPrendreLaReineBlanch" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT31LaReineNoirDoitPrendreLaReineBlanch" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT32LaReineBlanchDoitAttaquerEnB7" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT32LaReineBlanchDoitAttaquerEnB7" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT33LaReineBlanchDoitAttaquerEnB7" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT33LaReineBlanchDoitAttaquerEnB7" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT37LaTourDoitEtreProtegE" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT37LaTourDoitEtreProtegE" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT41LaReineBlancheDoitMenacerLeRoiEnH5OuPrendreLaReineD6" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT41LaReineBlancheDoitMenacerLeRoiEnH5OuPrendreLaReineD6" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT49LesNoirsDoiventprotegerLeRoiMenacE" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT49LesNoirsDoiventprotegerLeRoiMenacE" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT50LaToureNoirDoitSeMettreEnA7" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT50LaToureNoirDoitSeMettreEnA7" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT54ALesBlanchDoiventEviterLEvolutionDuPion" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT54ALesBlanchDoiventEviterLEvolutionDuPion" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT54CLePionNoirDoitEvoluerDoitSeMettreEnA1" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT54CLePionNoirDoitEvoluerDoitSeMettreEnA1" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT54GLaReinneNoirDoitAttaquerEnC4" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT54GLaReinneNoirDoitAttaquerEnC4" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT56ToNotSecificPositionMesNoirDoiventEmpecherLeCavalierBlanchDeSeMettreSurG6" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT56ToNotSecificPositionMesNoirDoiventEmpecherLeCavalierBlanchDeSeMettreSurG6" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT61aPourBestSpecificPosition3White" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT61aPourBestSpecificPosition3White" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT67EchecBlancLaReineDoitProtegerLeRoiEtSeMettreEnF3" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT67EchecBlancLaReineDoitProtegerLeRoiEtSeMettreEnF3" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT67SuiteLaReineNoirDoitSeMettreEnE2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT67SuiteLaReineNoirDoitSeMettreEnE2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT78ProtectionDuRookDesNoirs" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT78ProtectionDuRookDesNoirs" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT85LaToureNoirDoitPrendreLePionEnA5" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT85LaToureNoirDoitPrendreLePionEnA5" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT86ApplicationDownOutOfmemories" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT86ApplicationDownOutOfmemories" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT87BlackWinL2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT87BlackWinL2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT87WhiteAvoidInChessInL2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT87WhiteAvoidInChessInL2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT88LesBlanchDoiventEviterLEchec" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT88LesBlanchDoiventEviterLEchec" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT88LesNoirDoiventSeMettreEnF2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT88LesNoirDoiventSeMettreEnF2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT92ALaReineNoirDoitSeMettreEnC3PourEviterLeChessParLeCavalier" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT92ALaReineNoirDoitSeMettreEnC3PourEviterLeChessParLeCavalier" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT92BLeCavalierNoirDoitPartieDeF6" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT92BLeCavalierNoirDoitPartieDeF6" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT95SuiteSuite" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT95SuiteSuite" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT95BLeCavalierBlanchDoitAttaquerEnF2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT95BLeCavalierBlanchDoitAttaquerEnF2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT97BBlackWhinG4ToE2" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT97BBlackWhinG4ToE2" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT60Suite1BlackIsInChessWhiteToF7" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT60Suite1BlackIsInChessWhiteToF7" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT95LaReineNoirDoitSeMettreEnH1PourGagnier" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT95LaReineNoirDoitSeMettreEnH1PourGagnier" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="ChessCore.Test.ChessIATestMultithreading.MTT15LaReineBlanchNeDoitPasPrendreLePion" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="MTT15LaReineBlanchNeDoitPasPrendreLePion" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

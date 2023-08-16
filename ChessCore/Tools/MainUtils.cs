@@ -5,8 +5,11 @@ namespace ChessCore.Tools
     public static class MainUtils
     {
         //pour éviter le bug: le cpu bouge plusieurs foix d'affilé
+
+        public static bool IsFullCPU { get; set; } = false;
         public static int CpuCount { get; set; } = 0;
         public static int DeepLevel { get; set; }
+        
         public static List<string>? CaseList { get; set; }
         public static string? ZipFileName { get; set; }
         public static string? ZipFilePath { get; set; }

@@ -4,7 +4,7 @@ namespace ChessCore.Tools
 {
     public class NodeChess2
     {
-        public  string PawnName  { get; set; }
+        public string PawnName { get; set; }
         public NodeChess2 BestNode { get; set; }
 
         public int MinW { get; set; }
@@ -29,7 +29,7 @@ namespace ChessCore.Tools
         public int FromIndex { get; set; }
         public int ToIndex { get; set; }
 
-        public double Weight { get; set; }
+        public int Weight { get; set; }
         public NodeChess2()
         {
 
@@ -65,15 +65,6 @@ namespace ChessCore.Tools
         public bool TargetIndexIsMenaced(Board board, string curentColor, string opinionColor, int targetIndex)
         {
 
-            //var opinionListIndex = new List<int>();
-
-
-            // for (int i = 0; i < board.GetCases().Count(); i++)
-            // {
-            //     var caseBoard = board.GetCases()[i];
-            //     if (caseBoard.Contains($"|{opinionColor}"))
-            //         opinionListIndex.Add(i);
-            // }
             var opinionListIndex = board.GetCasesIndexForColor(opinionColor);
 
 
@@ -93,48 +84,57 @@ namespace ChessCore.Tools
                     cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
                     // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
 
-                     possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+                    possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
 
                     if (possiblesMoves.Contains(targetIndex))
                     {
                         return true;
                     }
                 }
-                /*;
-              
-                var cloneBoad = Utils.CloneBoad(board);
-
-                cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
-                // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
-
-                var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
-
-                if (possiblesMoves.Contains(targetIndex))
-                {
-                    return true;
-                }*/
-
-
-                /*foreach (var movedIndex in possiblesMoves)
-                {
-                    if (movedIndex == targetIndex)
-                    {
-
-                        return true;
-
-
-                    }
-
-                }*/
             }
-
-
-            /* var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
-             foreach (var movedIndex in possiblesMoves)
-             {
-             }*/
             return false;
         }
+
+        public bool TargetIndexIsMenacedMT(Board board, string curentColor, string opinionColor, int targetIndex)
+        {
+            var opinionListIndex = board.GetCasesIndexForColor(opinionColor);
+
+            bool isTargetMenaced = false;
+
+            Parallel.ForEach(opinionListIndex, (index, loopState) =>
+            {
+                if (targetIndex == -1)
+                {
+                    loopState.Break(); // Exit the loop early
+                    return;
+                }
+
+                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
+                if (possiblesMoves.Contains(targetIndex))
+                {
+                    isTargetMenaced = true;
+                    loopState.Break(); // Exit the loop early
+                    return;
+                }
+                else
+                {
+                    var cloneBoad = Utils.CloneBoad(board);
+
+                    cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
+
+                    possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+
+                    if (possiblesMoves.Contains(targetIndex))
+                    {
+                        isTargetMenaced = true;
+                        loopState.Break(); // Exit the loop early
+                        return;
+                    }
+                }
+            });
+            return isTargetMenaced;
+        }
+
 
         public bool TargetIndexIsMenacedOld(Board board, string curentColor, string opinionColor, int targetIndex)
         {
@@ -157,17 +157,17 @@ namespace ChessCore.Tools
                 if (targetIndex == -1)
                     return false;
                 var cloneBoad = Utils.CloneBoad(board);
-               
+
                 cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
                 // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
-               
+
                 var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
-               
+
                 if (possiblesMoves.Contains(targetIndex))
                 {
                     return true;
                 }
-                    
+
 
                 /*foreach (var movedIndex in possiblesMoves)
                 {
@@ -200,7 +200,7 @@ namespace ChessCore.Tools
                     kingIndex = i;
                     break;
                 }
-                   
+
 
             }
 
@@ -208,29 +208,38 @@ namespace ChessCore.Tools
 
         }
 
-      
 
-     
-        public bool GetIsLocationIsProtected(int locationIndex,string currentColor,string opinionColor)
+
+
+        public bool GetIsLocationIsProtected(int locationIndex, string currentColor, string opinionColor)
         {
-            //if (!TargetIndexIsMenaced(Board, currentColor, opinionColor, locationIndex))
-            //    return false;
+            try
+            {
+                //if (!TargetIndexIsMenaced(Board, currentColor, opinionColor, locationIndex))
+                //    return false;
 
-            //On creer une copy du board
-            var copyBoard = Utils.CloneBoad(Board);
-            var currentCase = copyBoard.GetCases()[locationIndex];
-            if (!currentCase.Contains("|"))
+                //On creer une copy du board
+                var copyBoard = Utils.CloneBoad(Board);
+                var currentCase = copyBoard.GetCases()[locationIndex];
+                if (!currentCase.Contains("|"))
+                    return false;
+
+                //on change la couleur 
+                currentCase = currentCase.Replace($"|{currentColor}", $"|{opinionColor}");
+                copyBoard.GetCases()[locationIndex] = currentCase;
+                //si apres changement de couleur, la position est menacer
+                //=> c'est que la position est protégée
+                if (TargetIndexIsMenaced(copyBoard, $"{opinionColor}", $"{currentColor}", locationIndex))
+                    return true;
+
                 return false;
+            }
+            catch(Exception ex) 
+            {
+                return false;
+            }
 
-            //on change la couleur 
-            currentCase =currentCase.Replace($"|{currentColor}", $"|{opinionColor}");
-            copyBoard.GetCases()[locationIndex]= currentCase;
-            //si apres changement de couleur, la position est menacer
-            //=> c'est que la position est protégée
-            if (TargetIndexIsMenaced(copyBoard, $"{opinionColor}", $"{currentColor}", locationIndex))
-                return true;
-
-            return false;
+          
         }
 
 
@@ -239,7 +248,7 @@ namespace ChessCore.Tools
             var opinionColor = "W";
             if (Color == "W")
                 opinionColor = "B";
-             var protectedNumber = 0;
+            var protectedNumber = 0;
             var alierIndexList = new List<int>();
             var protectedList = new List<int>();
             ///Board.GetCases().Where(x => x.Contains($"|{Color}"));
@@ -257,136 +266,166 @@ namespace ChessCore.Tools
                     protectedNumber++;
                     protectedList.Add(index);
                 }
-                    
+
             }
             return protectedNumber;
         }
-    public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
-    {
-      if (toIndex != -1)
-        PawnName = board.GetCases()[toIndex][0].ToString();
-      FromIndex = formIndex;
-      ToIndex = toIndex;
-      Level = level;
-      Board = Utils.CloneBoad(board);
-      Parent = parent;
-      Color = color;
-      ChildList = new List<NodeChess2>();
+        public NodeChess2(NodeChess2 parent, Board board, int level, string color, int formIndex, int toIndex, string computeurColor, int maxDeepLevel)
+        {
+            if (toIndex != -1)
+                PawnName = board.GetCases()[toIndex][0].ToString();
+            FromIndex = formIndex;
+            ToIndex = toIndex;
+            Level = level;
+            Board = Utils.CloneBoad(board);
+            Parent = parent;
+            Color = color;
+            ChildList = new List<NodeChess2>();
 
 
 
-      //Pour T97A
-    /*  if (Level == 4 )
-      {
-        
-          if (Parent.Parent.Weight>-900)
-          {
-            if (Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
+            //Pour T97A
+            /*  if (Level == 4 )
+              {
+
+                  if (Parent.Parent.Weight>-900)
+                  {
+                    if (Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
+                    {
+                      //LOSE node
+                      Console.WriteLine("lose");
+                      Utils.Writeline("lose");
+                      Parent.Parent.Weight = -999;
+                      Parent.Parent.Weight = -999;
+                      Utils.NodeLoseList.Add(Parent.Parent);
+                      return;
+                    }
+                  }
+                }*/
+
+
+
+
+
+
+
+            var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
+            if (opinionKingIndex == -1)
             {
-              //LOSE node
-              Console.WriteLine("lose");
-              Debug.WriteLine("lose");
-              Parent.Parent.Weight = -999;
-              Parent.Parent.Weight = -999;
-              Utils.NodeLoseList.Add(Parent.Parent);
-              return;
+                Weight = 999;
+                return;
             }
-          }
-        }*/
-
-      
-    
-
-
-
-
-      var opinionKingIndex = board.GetCases().ToList().IndexOf($"K|{Utils.OpinionColor}");
-                if (opinionKingIndex == -1)
-                {
-                    Weight = 999;
-                    return;
-                }
-                var kingIndex = board.GetCases().ToList().IndexOf($"K|{computeurColor}");
-                if (kingIndex == -1)
-                {
-                    Weight = -999;
-                    return;
-                }
-            if(level == 4)
+            var kingIndex = board.GetCases().ToList().IndexOf($"K|{computeurColor}");
+            if (kingIndex == -1)
+            {
+                Weight = -999;
+                return;
+            }
+            if (level == Utils.DeepLevel)
             {
 
-               //T41
-                  var diffTime =    (DateTime.Now- Utils.StartedProcessTime).TotalMinutes;
-              //  Debug.WriteLine("diffTime = "+ diffTime);
-              //  Debug.WriteLine("diffTime = "+ diffTime);
-                if(diffTime<Utils.LimitationForT41InMn)
+                //T41
+                var diffTime = (DateTime.Now - Utils.StartedProcessTime).TotalMinutes;
+
+                if (diffTime < Utils.LimitationForT41InMn)
                 {
-               //      Debug.WriteLine("Chess2Utils.TargetColorIsInChess() in L4");
-               // Debug.WriteLine("Chess2Utils.TargetColorIsInChess() in L4");
-                      //T97A
-                if(Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
-                            {
-                                Parent.Parent.Weight --;//+= -99;//Poure que T97A marche avec T37
-                                return;
-                            }
+                    //T97A
+                    if (Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
+                    {
+                        if(Parent!=null)
+                            Parent.Parent.Weight--;//+= -99;//Poure que T97A marche avec T37
+                        return;
+                    }
                 }
-              
+
             }
 
 
             //if(level==4)
-              CalculeScores();
-          
+            //if (level == Utils.DeepLevel)//TODO POUR L5
+                CalculeScores();
+            // if(Utils.DeepLevel<=4 || Utils.DeepLevel == level)
+            //        CalculeScores();
+
             
-     /* if (level == 1 && Chess2Utils.TargetIndexIsMenaced(Board,Utils.ComputerColor,toIndex))
-      {
-        Weight-=Board.GetWeightInIndex(toIndex);
-      }*///pour le test 
-        /* if(Weight==-11)
-         {
-             this.Board.PrintInDebug();
-             var t_n =this;
-         } */               //Pour T97A A TESTER
-        /*    if(level<=3)
+
+            if (toIndex == -1)
+                return;
+           //T108
+           // test
+           /* if (toIndex == 37 /*&& level == 1)*/
+           try
             {
-                foreach(var i in Board.GetCasesIndex(Utils.ComputerColor))
+               if(level % 2 !=0)
                 {
-                    if(Board.GetCaseInIndex(i).Contains("P"))
-                        continue;
-                    if(Board.GetCaseInIndex(i).Contains("K"))
-                        continue;
-                    if(Chess2Utils.TargetIndexIsProteted(Board,Utils.ComputerColor,i))
-                        continue;
+                    // var t_fd = index;
+                    var menaceds = new List<string>();
+                    var totalValue = 0;
+                    var panwValue = board.GetValue(board.GetCaseInIndex(toIndex));
+                    // on prend le total des poids des poins menacéer par toIndex
+                    var opinionColor = "W";
+                    if (Color == "W")
+                        opinionColor = "B";
+                    if (TargetIndexIsMenaced(Board, Color,opinionColor, toIndex) && !GetIsLocationIsProtected(toIndex, Color, opinionColor))
+                    {
+                        Weight -= panwValue;
+                        return;
+                    }
+                       
+                    if (GetIsLocationIsProtected(toIndex,Color, opinionColor))
+                    {
+                        // board.PrintInDebug();
+                       
+                        var possiblesMovesIndex = board.GetPossibleMoves(toIndex, 1).Select(x => x.Index);
+                        foreach (var targetIndex in possiblesMovesIndex)
+                        {
+                            var caseInIndex = board.GetCaseInIndex(targetIndex);
+                            if (caseInIndex != "__")
+                            {
+                                menaceds.Add(caseInIndex);
+                                if (TargetIndexIsMenaced(board, Color, computeurColor, targetIndex))
+                                {
+                                    var targetValue = board.GetValue(caseInIndex);
+                                    totalValue += targetValue;
+                                }
+                            }
+                        }
+                    }
+                    if (totalValue > 0 && menaceds.Count > 1)
+                    {
 
-                    if (Chess2Utils.TargetIndexIsMenaced(Board, Utils.ComputerColor, i))
-                                    {
-                                        Weight-=Board.GetWeightInIndex(i);
-                                    }
-                }
+                        //   si la valeur du poin qui menace * 2 est inférieur au total des poins nenaceé / 2
+                        //  on ajoute le bonnus
+                        if ((panwValue * 2) < totalValue / 2)
+                        {
+                            var t_ = menaceds;
+                            var t_df = totalValue;
+                            Weight += totalValue / 10;
+                        }
 
 
+                    }
+               }
+               
 
-            }*/
-
-
-
-
-
-
-
-
-
+            }
+            catch(Exception ex)  
+            { 
+                Console.WriteLine(ex.ToString());
+            }
 
 
-      }
-    
+            
+
+        }
+
 
         public void CalculeScores()
         {
 
-            Board.CalculeScores();
+            Board.CalculeScores(this);
 
-           
+
 
             if (Utils.ComputerColor == "B")
                 Weight = Board.BlackScore - Board.WhiteScore;
@@ -397,7 +436,7 @@ namespace ChessCore.Tools
 
         public NodeChess2 GetRootParent(NodeChess2 inNode)
         {
-            if(inNode.Parent.Level==1)
+            if (inNode.Parent.Level == 1)
                 return inNode.Parent;
             else
                 return GetRootParent(inNode.Parent);

@@ -7,332 +7,332 @@ namespace ChessCore.Tools
 
 
 
-    public static bool TargetIndexIsProteted(Board inBoard, string targetkingColor,int targetIndex)
-    {
-      try
-      {
-        //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
-        //     return false;
-
-        //var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var alliesIndex = inBoard.GetCasesIndexForColor(targetkingColor).ToList();
-        alliesIndex.Remove(targetIndex);
-        //var possibleMovesAllies = 
-        foreach (var alieFromIndex in alliesIndex)
+        public static bool TargetIndexIsProteted(Board inBoard, string targetkingColor, int targetIndex)
         {
-          var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.Index);
-          //il faut faire un copi du bord original en déplacent le roi vers le possible move
-          foreach (var alieToIndex in possibleMovesIndex)
-          {
-            var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
-            //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
-            var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, targetIndex);
-            if (!isMelaced)
-              return true;
+            try
+            {
+                //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
+                //     return false;
 
-          }
+                //var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+                var alliesIndex = inBoard.GetCasesIndexForColor(targetkingColor).ToList();
+                alliesIndex.Remove(targetIndex);
+                //var possibleMovesAllies = 
+                foreach (var alieFromIndex in alliesIndex)
+                {
+                    var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.Index);
+                    //il faut faire un copi du bord original en déplacent le roi vers le possible move
+                    foreach (var alieToIndex in possibleMovesIndex)
+                    {
+                        var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
+                        //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
+                        var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, targetIndex);
+                        if (!isMelaced)
+                            return true;
+
+                    }
+                }
+
+
+
+
+
+
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
 
 
-
-
-
-
-
-        return false;
-      }
-      catch (Exception ex)
-      {
-        return false;
-      }
-
-    }
-
-
-    public static bool TargetKingColorIsProteted(Board inBoard, string targetkingColor)
-    {
-      try
-      {
-     //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
-     //     return false;
-
-        var targetkingIndex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-      return TargetIndexIsProteted( inBoard, targetkingIndex,targetkingColor);
-        
-
-       
-
-      }
-      catch (Exception ex)
-      {
-        return false;
-      }
-
-    }
-     /// <summary>
-    /// tsiry;20-07-2022
-    /// </summary>
- public static bool TargetIndexIsProteted(Board inBoard, int targetIndex,string targetColor)
-    {
-      try
-      {
-    
-
-      //  var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var alliesIndex = inBoard.GetCasesIndexForColor(targetColor).ToList();
-        alliesIndex.Remove(targetIndex);
-        //var possibleMovesAllies = 
-        foreach (var alieFromIndex in alliesIndex)
+        public static bool TargetKingColorIsProteted(Board inBoard, string targetkingColor)
         {
-          var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x=>x.Index);
-          //il faut faire un copi du bord original en déplacent le roi vers le possible move
-          foreach (var alieToIndex in possibleMovesIndex)
-          {
-            var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
-            //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
-            var isMelaced = TargetIndexIsMenaced(copyBord, targetColor, targetIndex);
-            if (!isMelaced)
-              return true;
+            try
+            {
+                //   if (!TargetKingIsMenaced(inBoard, targetkingColor))
+                //     return false;
 
-          }
+                var targetkingIndex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+                return TargetIndexIsProteted(inBoard, targetkingIndex, targetkingColor);
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
-        
-
-       
-
-
-
-
-        return false;
-      }
-      catch (Exception ex)
-      {
-        return false;
-      }
-
-    }
-    
-
-    /// <summary>
-    /// tsiry;02-07-2022
-    /// </summary>
-
-    public static bool TargetColorIsInChess(Board inBoard, string targetkingColor)
-    {
-      try
-      {
-        if(!TargetKingIsMenaced( inBoard,targetkingColor))
-          return false;
-       
-
-        var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var possibleKingMoves = inBoard.GetKingPossiblesMoveIndex(targetkingColor);
-
-        //il faut faire un copi du bord original en déplacent le roi vers le possible move
-        foreach (var index in possibleKingMoves)
+        /// <summary>
+        /// tsiry;20-07-2022
+        /// </summary>
+        public static bool TargetIndexIsProteted(Board inBoard, int targetIndex, string targetColor)
         {
-          var copyBord = CloneAndMove(inBoard, targetkingindex, index,0);
-        //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
-          var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, index);
-          if (!isMelaced)
-            return false;
+            try
+            {
+
+
+                //  var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+                var alliesIndex = inBoard.GetCasesIndexForColor(targetColor).ToList();
+                alliesIndex.Remove(targetIndex);
+                //var possibleMovesAllies = 
+                foreach (var alieFromIndex in alliesIndex)
+                {
+                    var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.Index);
+                    //il faut faire un copi du bord original en déplacent le roi vers le possible move
+                    foreach (var alieToIndex in possibleMovesIndex)
+                    {
+                        var copyBord = CloneAndMove(inBoard, alieFromIndex, alieToIndex, 0);
+                        //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
+                        var isMelaced = TargetIndexIsMenaced(copyBord, targetColor, targetIndex);
+                        if (!isMelaced)
+                            return true;
+
+                    }
+                }
+
+
+
+
+
+
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
         }
 
-         if (TargetKingColorIsProteted(inBoard, targetkingColor))
-          return false;
 
+        /// <summary>
+        /// tsiry;02-07-2022
+        /// </summary>
 
-
-       
-        return true;
-      }
-      catch (Exception ex)
-      {
-        return false;
-      }
-      
-    }
-
-    /// <summary>
-    /// tsiry;20-07-2022
-    /// </summary>
-    public static int GetWeigtOpionionMenacedsByToIndex(Board inBoard, string opinionColorColor,int toIndex)
-    {
-      try
-      {
-        var weight = 0;
-        var opinionPawnIndex = inBoard.GetCasesIndexForColor(opinionColorColor);
-        foreach (var index in opinionPawnIndex)
+        public static bool TargetColorIsInChess(Board inBoard, string targetkingColor)
         {
-          
-          if (TargetIndexIsMenacedByToIndex(inBoard, opinionColorColor, index, toIndex))
-            weight+= inBoard.GetWeightInIndex(index);
+            try
+            {
+                if (!TargetKingIsMenaced(inBoard, targetkingColor))
+                    return false;
+
+
+                var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+                var possibleKingMoves = inBoard.GetKingPossiblesMoveIndex(targetkingColor);
+
+                //il faut faire un copi du bord original en déplacent le roi vers le possible move
+                foreach (var index in possibleKingMoves)
+                {
+                    var copyBord = CloneAndMove(inBoard, targetkingindex, index, 0);
+                    //  var possibleKingMovesCopy = copyBord.GetKingPossiblesMoveIndex(targetkingColor);
+                    var isMelaced = TargetIndexIsMenaced(copyBord, targetkingColor, index);
+                    if (!isMelaced)
+                        return false;
+
+                }
+
+                if (TargetKingColorIsProteted(inBoard, targetkingColor))
+                    return false;
+
+
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
-        return weight;
-      }
-      catch (Exception ex)
-      {
-        return 0;
 
-      }
-    }
-
-    /// <summary>
-    /// tsiry;19-07-2022
-    /// </summary>
-    public static int GetNumberOpionionMenaceds(Board inBoard, string opinionColorColor)
-    {
-      try
-      {
-        var number = 0;
-        var opinionPawnIndex = inBoard.GetCasesIndexForColor(opinionColorColor);
-        foreach (var index in opinionPawnIndex)
+        /// <summary>
+        /// tsiry;20-07-2022
+        /// </summary>
+        public static int GetWeigtOpionionMenacedsByToIndex(Board inBoard, string opinionColorColor, int toIndex)
         {
-          if (TargetIndexIsMenaced(inBoard, opinionColorColor, index))
-            inBoard.GetWeightInIndex(index);
+            try
+            {
+                var weight = 0;
+                var opinionPawnIndex = inBoard.GetCasesIndexForColor(opinionColorColor);
+                foreach (var index in opinionPawnIndex)
+                {
+
+                    if (TargetIndexIsMenacedByToIndex(inBoard, opinionColorColor, index, toIndex))
+                        weight += inBoard.GetWeightInIndex(index);
+                }
+                return weight;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+
+            }
         }
-        return number;
-      }
-      catch (Exception ex)
-      {
-        return 0;
 
-      }
-    }
+        /// <summary>
+        /// tsiry;19-07-2022
+        /// </summary>
+        public static int GetNumberOpionionMenaceds(Board inBoard, string opinionColorColor)
+        {
+            try
+            {
+                var number = 0;
+                var opinionPawnIndex = inBoard.GetCasesIndexForColor(opinionColorColor);
+                foreach (var index in opinionPawnIndex)
+                {
+                    if (TargetIndexIsMenaced(inBoard, opinionColorColor, index))
+                        inBoard.GetWeightInIndex(index);
+                }
+                return number;
+            }
+            catch (Exception ex)
+            {
+                return 0;
 
-    /* /// <summary>
-       /// tsiry;20-07-2022
-       /// </summary>
-       public static double GetComputerProtectedsWeight(Board inBoard)
-       {
-         try
-         {
-           var result = 0;
-           var opinionPawnIndex = inBoard.GetCasesIndexForColor(Utils.ComputerColor);
-           foreach (var index in opinionPawnIndex)
+            }
+        }
+
+        /* /// <summary>
+           /// tsiry;20-07-2022
+           /// </summary>
+           public static double GetComputerProtectedsWeight(Board inBoard)
            {
-             if (TargetIndexIsProteted(inBoard,index, Utils.ComputerColor))
+             try
              {
-               result+=inBoard.GetWeightInIndex(index);
+               var result = 0;
+               var opinionPawnIndex = inBoard.GetCasesIndexForColor(Utils.ComputerColor);
+               foreach (var index in opinionPawnIndex)
+               {
+                 if (TargetIndexIsProteted(inBoard,index, Utils.ComputerColor))
+                 {
+                   result+=inBoard.GetWeightInIndex(index);
+                 }
+
+               }
+               return result;
              }
+             catch (Exception ex)
+             {
+               return 0;
 
+             }
            }
-           return result;
-         }
-         catch (Exception ex)
-         {
-           return 0;
-
-         }
-       }
-   */
-    /// <summary>
-    /// tsiry;20-07-2022
-    /// </summary>
-    public static bool TargetIndexIsMenacedByToIndex(Board inBoard, string targetColor, int targetIndex,int toIndex)
-    {
-      try
-      {
-        var opinionColor = "W";
-        if (targetColor == "W")
-          opinionColor = "B";
-        var copyBoard = new Board(inBoard);
-        if (targetIndex != -1)
+       */
+        /// <summary>
+        /// tsiry;20-07-2022
+        /// </summary>
+        public static bool TargetIndexIsMenacedByToIndex(Board inBoard, string targetColor, int targetIndex, int toIndex)
         {
-          if (copyBoard.GetCases()[targetIndex].Contains($"|{opinionColor}"))//si la case contion un pion adverse, on le vide
-            copyBoard.GetCases()[targetIndex] = "__";
+            try
+            {
+                var opinionColor = "W";
+                if (targetColor == "W")
+                    opinionColor = "B";
+                var copyBoard = new Board(inBoard);
+                if (targetIndex != -1)
+                {
+                    if (copyBoard.GetCases()[targetIndex].Contains($"|{opinionColor}"))//si la case contion un pion adverse, on le vide
+                        copyBoard.GetCases()[targetIndex] = "__";
+                }
+
+
+                var opinionPossibleMoveIndexList = new List<int>();
+
+                opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(toIndex, 1, false).Select(x => x.Index));
+
+                if (opinionPossibleMoveIndexList.Contains(targetIndex))
+                    return true;
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+
+            }
         }
 
-      
-        var opinionPossibleMoveIndexList = new List<int>();
-       
-          opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(toIndex, 1, false).Select(x => x.Index));
-        
-        if (opinionPossibleMoveIndexList.Contains(targetIndex))
-          return true;
 
-        return false;
-      }
-      catch (Exception ex)
-      {
-        return false;
+        /// <summary>
+        /// tsiry;02-07-2022
+        /// </summary>
 
-      }
-    }
-
-
-    /// <summary>
-    /// tsiry;02-07-2022
-    /// </summary>
-
-    public static bool TargetIndexIsMenaced(Board inBoard, string targetColor, int targetIndex)
-    {
-      try
-      {
-        var opinionColor = "W";
-        if (targetColor == "W")
-          opinionColor = "B";
-        var index = 0;
-        var copyBoard = new Board(inBoard);
-        if (targetIndex != -1)
+        public static bool TargetIndexIsMenaced(Board inBoard, string targetColor, int targetIndex)
         {
-          if (copyBoard.GetCases()[targetIndex].Contains($"|{opinionColor}"))//si la case contion un pion adverse, on le vide
-            copyBoard.GetCases()[targetIndex] = "__";
+            try
+            {
+                var opinionColor = "W";
+                if (targetColor == "W")
+                    opinionColor = "B";
+                var index = 0;
+                var copyBoard = new Board(inBoard);
+                if (targetIndex != -1)
+                {
+                    if (copyBoard.GetCases()[targetIndex].Contains($"|{opinionColor}"))//si la case contion un pion adverse, on le vide
+                        copyBoard.GetCases()[targetIndex] = "__";
+                }
+
+                var opinionOfTargetColorIndexList = new List<int>();
+                foreach (var item in copyBoard.GetCases())
+                {
+                    if (item.Contains($"|{opinionColor}"))
+                    {
+                        opinionOfTargetColorIndexList.Add(index);
+                    }
+                    index++;
+                }
+                var opinionPossibleMoveIndexList = new List<int>();
+                foreach (var opibionIndex in opinionOfTargetColorIndexList)
+                {
+                    opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.Index));
+                }
+                if (opinionPossibleMoveIndexList.Contains(targetIndex))
+                    return true;
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+
+            }
         }
 
-        var opinionOfTargetColorIndexList = new List<int>();
-        foreach (var item in copyBoard.GetCases())
+
+
+
+
+        /// <summary>
+        /// tsiry;02-07-2022
+        /// </summary>
+
+        public static bool TargetKingIsMenaced(Board inBoard, string targetkingColor)
         {
-          if (item.Contains($"|{opinionColor}"))
-          {
-            opinionOfTargetColorIndexList.Add(index);
-          }
-          index++;
+            try
+            {
+                var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+
+
+                return TargetIndexIsMenaced(inBoard, targetkingColor, targetkingindex);
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+
+            }
         }
-        var opinionPossibleMoveIndexList = new List<int>();
-        foreach (var opibionIndex in opinionOfTargetColorIndexList)
-        {
-          opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.Index));
-        }
-        if (opinionPossibleMoveIndexList.Contains(targetIndex))
-          return true;
-
-        return false;
-      }
-      catch (Exception ex)
-      {
-        return false;
-
-      }
-    }
-
-
-
-
-
-    /// <summary>
-    /// tsiry;02-07-2022
-    /// </summary>
-
-    public static bool TargetKingIsMenaced(Board inBoard, string targetkingColor)
-    {
-      try
-      {
-        var targetkingindex = inBoard.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-    
-
-        return TargetIndexIsMenaced(inBoard, targetkingColor, targetkingindex);
-        
-
-      }
-      catch (Exception ex)
-      {
-        return false;
-
-      }
-    }
-    public static List<Pawn> LoadFromDirectorie(string dirLocation)
+        public static List<Pawn> LoadFromDirectorie(string dirLocation)
         {
             try
             {
@@ -354,7 +354,7 @@ namespace ChessCore.Tools
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        //Debug.WriteLine(line);
+
 
                         var datas = line.Split(';');
                         var newPawn = new Pawn(datas[0], datas[1], datas[2]);
@@ -375,7 +375,7 @@ namespace ChessCore.Tools
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        //Debug.WriteLine(line);
+
 
                         var datas = line.Split(';');
                         var newPawn = new Pawn(datas[0], datas[1], datas[2]);
@@ -391,7 +391,7 @@ namespace ChessCore.Tools
 
 
 
-                var pawnList= new List<Pawn>();
+                var pawnList = new List<Pawn>();
                 pawnList.AddRange(pawnListWhite);
                 pawnList.AddRange(pawnListBlack);
 
@@ -399,7 +399,7 @@ namespace ChessCore.Tools
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Utils.WritelineAsync(ex.Message);
                 return null;
             }
         }
@@ -414,8 +414,7 @@ namespace ChessCore.Tools
             {
                 // GC.Collect();
                 // {
-                Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
-                Console.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
+                Utils.WritelineAsync($"pawnIndex : {pawnIndex}, Thread Id= {Thread.CurrentThread.ManagedThreadId}");
 
                 var engine = new EngineMultiThreading(level, cpuColor, IsReprise, Utils.IsMenaced(pawnIndex, boarChess2, cpuColor), SpecifiBoardList);
 
@@ -490,8 +489,7 @@ namespace ChessCore.Tools
 
                         // }*/
 
-                        Debug.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
-                        Console.WriteLine($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                        Utils.WritelineAsync($"{bestNodeChess2.Weight}  {node.Location} =>  {node.BestChildPosition}");
                         bestNodList.Add(node);
                     }
 
@@ -515,9 +513,7 @@ namespace ChessCore.Tools
             var bestNode = new Node();
 
             // {
-            Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
-            Console.WriteLine("pawnIndex : {0}, Thread Id= {1}", pawnIndex, Thread.CurrentThread.ManagedThreadId);
-            //   EngineMultiThreading engine = null;
+            Utils.WritelineAsync($"pawnIndex : {pawnIndex}, Thread Id= {Thread.CurrentThread.ManagedThreadId}");
             var engine = new EngineMultiThreading(level, cpuColor, IsReprise, Utils.IsMenaced(pawnIndex, boarChess2, cpuColor), SpecifiBoardList);
 
 
@@ -567,8 +563,7 @@ namespace ChessCore.Tools
 
 
 
-                    Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
-                    Console.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                    Utils.WritelineAsync($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
                     bestNode = node;
                 }
 
@@ -589,7 +584,7 @@ namespace ChessCore.Tools
 
 
             // {
-            Debug.WriteLine("pawnIndex : {0}, Thread Id= {1}", fromIndex, Thread.CurrentThread.ManagedThreadId);
+            Utils.WritelineAsync($"pawnIndex : {fromIndex}, Thread Id= {Thread.CurrentThread.ManagedThreadId}");
             //var cpuColor = ComputerColore[0].ToString();
             var engine = new EngineMultiThreading(4, cpuColor, IsReprise, Utils.IsMenaced(fromIndex, boarChess2, cpuColor), SpecifiBoardList);
 
@@ -629,7 +624,7 @@ namespace ChessCore.Tools
 
 
 
-                    Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
+                    Utils.WritelineAsync($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
                     //bestNodList.Add(node);
                     return node;
                 }
@@ -689,312 +684,6 @@ namespace ChessCore.Tools
         }
 
 
-        public static Node GetBestPositionLocalUsingMiltiThreading(string colore, Board boarChess, bool IsReprise, List<SpecificBoard> SpecifiBoardList)
-        {
-            try
-            {
-                //Pour les BestsPosition
-                // GC.Collect();
-                Utils.ComputerColor = colore[0].ToString();
-                Console.WriteLine($"Computer color = {Utils.ComputerColor}");
-
-                /*//TODO A DECOMMENTER SpecificPositionsList
-                if (SpecificPositionsList != null)
-                {
-                  var specifiBoardList = new List<SpecificBoard>();
-                  foreach (var item in SpecificPositionsList)
-                  {
-                    var specificBoard = new SpecificBoard();
-
-                    specificBoard.Color = item.Color[0].ToString();
-                    specificBoard.Score = item.Score;
-                    specificBoard.SpecificsBoard = item.SpecificsBoard;
-                    specifiBoardList.Add(specificBoard);
-                  }
-                }
-                */
-                // var boarChess = Chess2Utils.GenerateBoardFormPawnList(this.PawnList);
-                var bestNodList = new List<Node>();
-
-                //TODO A DEPLACER
-                //Debug.WriteLine("L4------ a1 =>  a6");
-                //var fromIndex0 = Utils.GetIndexFromLocation("a1");
-                //var toIndex0 = Utils.GetIndexFromLocation("a6");
-                //var bestNodeL3One0 = GetOneNodeLevel3Node(boarChess2, fromIndex0, toIndex0);
-
-
-
-
-
-                Debug.WriteLine("L4--------------------");
-                Console.WriteLine("L4--------------------");
-                var maxBestNodListLevel4 = new List<Node>();
-                var maxBestNodListLevel3 = new List<Node>();
-                var maxBestNodListLevel2 = new List<Node>();
-                var bestNodListLevel4 = GetBestNodeListFromLevel(boarChess, 4, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-                var maxWeithLevel4 = -1111.0;
-                var maxWeithLevel3 = -1111.0;
-                if (bestNodListLevel4 != null)
-                {
-                    if (bestNodListLevel4.Count > 0)
-                    {
-                        maxWeithLevel4 = bestNodListLevel4.Max(x => x.Weight);
-                        maxBestNodListLevel4 = bestNodListLevel4.Where(x => x.Weight == maxWeithLevel4).ToList();
-                    }
-                }
-
-
-
-                //Pour T87 Win
-                //si pour L4 il y a un noeud de 999
-                //on ne passe plus par L3 et L2
-                var isNeedL3L2 = true;
-                if (maxBestNodListLevel4.Count > 0)
-                {
-                    if (maxBestNodListLevel4.Max(x => x.Weight) >= 999)
-                    {
-                        isNeedL3L2 = false;
-                    }
-                }
-
-                //Pour T87 protect Win
-                //si pour L4 il y plus des 1/2 des noeuds qui ont -999
-                //on ne passe plus par L3 et L2
-
-                if (bestNodListLevel4.Count > 0)
-                {
-                    // var t_3 = bestNodListLevel4.Count;
-                    var inChessNumber = bestNodListLevel4.Where(x => x.Weight == -999).ToList().Count;
-                    var half = bestNodListLevel4.Count / 2;
-                    if (inChessNumber >= half)
-                        isNeedL3L2 = false;
-
-                }
-
-
-                if (isNeedL3L2)
-                {
-                    Debug.WriteLine("L3--------------------");
-                    Console.WriteLine("L3--------------------");
-                    var bestNodListLevel3 = new List<Node>();
-                    bestNodListLevel3 = GetBestNodeListFromLevel(boarChess, 3, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-                    if (bestNodListLevel3.Count > 0)
-                    {
-
-
-                        maxWeithLevel3 = bestNodListLevel3.Max(x => x.Weight);
-                        maxBestNodListLevel3 = bestNodListLevel3.Where(x => x.Weight == maxWeithLevel3).ToList();
-
-
-                        //pour T78
-                        //si maxBestNodListLevel3 count ==1
-                        //si maxBestNodListLevel3 se trouve dans maxBestNodListLevel4
-                        /* if (maxBestNodListLevel3.Count == 1)
-                         {
-                           var bestNodeInlevel3 = maxBestNodListLevel3.First();
-                           var equivalentInLevel4 = bestNodListLevel4.FirstOrDefault(x => x.Location == bestNodeInlevel3.Location && x.BestChildPosition == bestNodeInlevel3.BestChildPosition);
-                           if (equivalentInLevel4 != null)
-                           {
-                             var diff = bestNodeInlevel3.Weight - equivalentInLevel4.Weight;
-                             //si diff positif, on ajout bestNodeInlevel3 dans maxBestNodListLevel4
-                             if (diff > 0)
-                             {
-                               maxBestNodListLevel4.Add(bestNodeInlevel3);
-                             }
-                           }
-
-                         }
-                         */
-                    }
-
-
-
-
-                    Debug.WriteLine("L2--------------------");
-                    Console.WriteLine("L2--------------------");
-                    var bestNodListLevel2 = new List<Node>();
-                    bestNodListLevel2 = GetBestNodeListFromLevel(boarChess, 2, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-
-
-                    var toDeleteForL3L2Node = bestNodListLevel4.Where(x => x.Weight <= -900);
-                    //pour T29 on enleve de bestNodListLevel3 et de bestNodListLevel2
-                    //des noeuds -999 de bestNodListLevel4
-                    foreach (var toDeleteNode in toDeleteForL3L2Node)
-                    {
-                        bestNodListLevel3.RemoveAll(x => x.Location == toDeleteNode.Location && x.BestChildPosition == toDeleteNode.BestChildPosition);
-                    }
-
-                    //pour T88
-                    //on supprime aussi de l3 les eches en l2
-                    //-998  e5 =>  c7
-                    /* var toDeleteForL3NodeFromL2 = bestNodListLevel2.Where(x => x.Weight <= -900);
-                     foreach (var toDeleteNode in toDeleteForL3NodeFromL2)
-                     {
-                       bestNodListLevel3.RemoveAll(x => x.Location == toDeleteNode.Location && x.BestChildPosition == toDeleteNode.BestChildPosition);
-                     }*/
-
-
-
-
-
-
-
-                    //pour T29 on enleve de bestNodListLevel3 et de bestNodListLevel2
-                    //des noeuds -999 de bestNodListLevel4
-                    foreach (var toDeleteNode in toDeleteForL3L2Node)
-                    {
-                        bestNodListLevel2.RemoveAll(x => x.Location == toDeleteNode.Location && x.BestChildPosition == toDeleteNode.BestChildPosition);
-                    }
-                    var maxWeithLevel2 = -1111.0;
-
-                    if (bestNodListLevel2.Count > 0)
-                    {
-                        maxWeithLevel2 = bestNodListLevel2.Max(x => x.Weight);
-                        maxBestNodListLevel2 = bestNodListLevel2.Where(x => x.Weight == maxWeithLevel2).ToList();
-                    }
-
-
-                }
-
-                var maxWeithList = new List<Node>();
-                maxWeithList.AddRange(maxBestNodListLevel4);
-                ////Pour T
-
-                //Pour T32 et T33 si maxL4 == maxL2 et positive on ne prend plus L3 et L2
-                if (maxBestNodListLevel4.Count == 1 && maxBestNodListLevel2.Count == 1)
-                {
-                    var firstL4 = maxBestNodListLevel4.First();
-                    var firstL2 = maxBestNodListLevel2.First();
-                    if (firstL4.Weight > 0 && (firstL4.Location == firstL2.Location && firstL4.BestChildPosition == firstL2.BestChildPosition))
-                    {
-                        isNeedL3L2 = false;
-                    }
-                }
-
-                if (isNeedL3L2)
-                {
-                    //Pour T49 on ajoute L3 si max L3 est suppérieur à maw L4
-                    if (maxWeithLevel3 > maxWeithLevel4)
-                    {
-                        maxWeithList.AddRange(maxBestNodListLevel3);
-                    }
-
-
-
-                    maxWeithList.AddRange(maxBestNodListLevel2);
-                }
-
-                /* var maxWeithIntList = new List<int>();
-                 maxWeithIntList.Add(maxWeithLevel4);
-                 maxWeithIntList.Add(maxWeithLevel3);
-                 maxWeithIntList.Add(maxWeithLevel2);
-
-                 var maxW = maxWeithIntList.Max();
-
-                 if (maxW == maxWeithLevel4 )
-                 {
-                   Debug.WriteLine("--Best in Level4--");
-                   maxWeithList = maxBestNodListLevel4;
-                 }
-                 else
-                 {
-                   if(maxW == maxWeithLevel3)
-                   {
-                     Debug.WriteLine("--Best in Level3--");
-                     maxWeithList = maxBestNodListLevel3;
-                   }
-                   else
-                   {
-                     if (maxW == maxWeithLevel2)
-                     {
-                       Debug.WriteLine("--Best in Level2--");
-                       maxWeithList = maxBestNodListLevel2;
-                     }
-                   }
-                 }
-                */
-
-                //T53 pour tous L3 dans L4, on modifie le poids dans L3
-                //foreach (var node in maxBestNodListLevel3)
-                for (int i = 0; i < maxWeithList.Count; i++)
-                {
-                    var node = maxWeithList[i];
-
-
-                    /* if (node.Location == "e7" && node.BestChildPosition == "e6")
-                     {
-                       var t_ = 54;
-                     }*/
-                    var nodeInL4 = bestNodListLevel4.FirstOrDefault(x => x.Location == node.Location && x.BestChildPosition == node.BestChildPosition);
-                    if (nodeInL4 != null)
-                    {
-
-
-                        Debug.WriteLine($"{node.Location} => {node.BestChildPosition}    {node.Weight} To {nodeInL4.Weight}");
-                        Console.WriteLine($"{node.Location} => {node.BestChildPosition}    {node.Weight} To {nodeInL4.Weight}");
-
-                        var diff = nodeInL4.Weight + node.Weight; //-4+1  -4 +3 
-                        if (diff < -1)
-                        {
-                            // -4  e7 => e6
-                            // Debug.WriteLine("To l4");
-                            // Console.WriteLine("To l4");
-                            node.Weight = nodeInL4.Weight;
-                        }
-                        //node.Weight = nodeInL4.Weight;
-                    }
-
-                }
-
-                var maxWeith = maxWeithList.Max(x => x.Weight);
-                maxWeithList = maxWeithList.Where(x => x.Weight == maxWeith).ToList();
-
-                Console.WriteLine("--Best for all Levels--");
-                Debug.WriteLine("--Best for all Levels--");
-                foreach (var node in maxWeithList)
-                {
-                    Debug.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
-                    Console.WriteLine($"{node.Weight}  {node.Location} =>  {node.BestChildPosition}");
-
-
-
-                }
-
-                var nodeResult = new Node();
-
-                if (maxWeithList.Count() > 1)
-                {
-                    foreach (var node2 in maxWeithList)
-                    {
-                        nodeResult.AsssociateNodeChess2.RandomEquivalentList.Add(node2.AsssociateNodeChess2);
-                    }
-                    //rondom
-                    var rand = new Random();
-                    nodeResult = maxWeithList.ToList()[rand.Next(maxWeithList.Count())];
-
-                }
-                else
-                    nodeResult = maxWeithList.First();
-
-
-
-                return nodeResult;
-
-
-            }
-            catch (Exception ex)
-            {
-                //WriteInLog(ex.ToString());
-                return null;
-                //return GetBestPositionLocalNotTaskUsingMiltiThreading(colore);
-
-            }
-
-
-
-        }
-
-
         public static string GetLocationFromIndex(int index)
         {
             return Coord[index];
@@ -1003,38 +692,6 @@ namespace ChessCore.Tools
         {
             return Coord.ToList().IndexOf(index);
         }
-
-        public static List<Pawn> GeneratePawnListFromBoard(Board inBoard)
-        {
-            try
-            {
-                var pawnList = new List<Pawn>();
-                foreach (var line in inBoard.GetCases())
-                {
-
-                    if (!line.Contains("|"))
-                        continue;
-                    var datas = line.Split(';');
-                    var newPawn = new Pawn(datas[0], datas[1], datas[2]);
-                    //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
-                    newPawn.IsFirstMove = true;
-                    newPawn.IsFirstMoveKing = true;
-                    newPawn.IsLeftRookFirstMove = true;
-                    newPawn.IsRightRookFirstMove = true;
-                    pawnList.Add(newPawn);
-
-                }
-
-                return pawnList;
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-                return null;
-            }
-        }
-
 
 
         public static Board GenerateBoardFormPawnList(List<Pawn> pawns)
@@ -1092,7 +749,7 @@ namespace ChessCore.Tools
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Utils.WritelineAsync(ex.ToString());
                 return null;
             }
 

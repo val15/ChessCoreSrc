@@ -1,0 +1,3 @@
+Bishop;c8;Black;False;False;False;False
+King;a5;Black;False;False;False;False
+Queen;d1;Black;False;False;False;False

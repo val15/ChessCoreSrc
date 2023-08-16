@@ -4,12 +4,16 @@ namespace ChessCore.Models
 {
     public class DetailsViewModel
     {
-        
+        public string StringWinnerColor { get; set; } = "";
+        public bool IsCHECKMATE  { get; set; } = false;
+        public string StringWhiteCPULevel { get; set; } = "L 0";
+        public string StringBlackCPULevel { get; set; } = "L 0";
+        public  int IsFullCPU { get; set; }
         public DateTime DateTimeNow { get; set; }
 
         public int InitialDuration { get; set; }
-        public int WhiteTimeInSecond { get; set; }
-        public int BlackTimeInSecond { get; set; }
+      //  public int WhiteTimeInSecond { get; set; }
+      //  public int BlackTimeInSecond { get; set; }
 
         public int FromGridIndex { get; set; }
 
@@ -26,46 +30,46 @@ namespace ChessCore.Models
 
         public string RevertWrapperClass { get; set; }
 
- private int _whiteScore; 
+        private int _whiteScore;
 
-         public int WhiteScore
-         {
-            get {return _whiteScore;}
+        public int WhiteScore
+        {
+            get { return _whiteScore; }
             set
             {
-                _whiteScore = value/10;
+                _whiteScore = value / 10;
             }
-         }
+        }
 
-          public string GetWhiteScoreString()
-          {
-            if(WhiteScore>0)
+        public string GetWhiteScoreString()
+        {
+            if (WhiteScore > 0)
                 return $"+ {WhiteScore}";
             else
                 return " ";
 
-           }
-   
+        }
 
-        private int _blackScore; 
 
-         public int BlackScore
-         {
-            get {return _blackScore;}
+        private int _blackScore;
+
+        public int BlackScore
+        {
+            get { return _blackScore; }
             set
             {
-                _blackScore = value/10;
+                _blackScore = value / 10;
             }
-         }
+        }
 
-          public string GetBlackScoreString()
-          {
-            if(BlackScore>0)
+        public string GetBlackScoreString()
+        {
+            if (BlackScore > 0)
                 return $"+ {BlackScore}";
             else
                 return " ";
 
-           }
+        }
 
         public List<string> HuntingBoardWhiteImageList { get; set; }
         public List<string> HuntingBoardBlackImageList { get; set; }
@@ -92,6 +96,8 @@ namespace ChessCore.Models
 
         public Pawn GetPawn(int index)
         {
+            if (PawnCases == null)
+                return null;
             return PawnCases[index];
         }
 
@@ -162,11 +168,13 @@ namespace ChessCore.Models
 
         }
 
-        public DetailsViewModel(Board board, int whiteTimeInSecond, int blackTimeInSecond, int fromGridIndex = -1, List<int> posiblesMoveListSelectedPawn = null, int oldLocationIndex = -1, int newLocationIndex = -1)
+        public DetailsViewModel()
         {
-            WhiteTimeInSecond = whiteTimeInSecond;
-            BlackTimeInSecond = blackTimeInSecond;
 
+        }
+
+        public DetailsViewModel(Board board, int fromGridIndex = -1, List<int> posiblesMoveListSelectedPawn = null, int oldLocationIndex = -1, int newLocationIndex = -1)
+        {
             HuntingBoardWhiteImageList = board.HuntingBoardWhiteImageList;
             HuntingBoardBlackImageList = board.HuntingBoardBlackImageList;
             MainUtils.HuntingBoardWhiteImageList = HuntingBoardWhiteImageList;

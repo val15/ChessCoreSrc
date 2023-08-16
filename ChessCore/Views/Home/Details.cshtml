@@ -1,4 +1,5 @@
-﻿@model ChessCore.Models.DetailsViewModel
+﻿@using Newtonsoft.Json;
+@model ChessCore.Models.DetailsViewModel
 @*<p>@Model.DateTimeNow </p>*@
 
 
@@ -6,18 +7,28 @@
 </script>
 <script type="text/javascript">
 
+
+    // Pour obtenir la valeur
+    //var maValeur = sessionStorage.getItem('maVariable');
+
+   // alert(maValeur);
+    //var winnerColor = @Model.StringWinnerColor;
+   if (!typeof '@Model.StringWinnerColor' === "string" && !'@Model.StringWinnerColor'.length === 0) {
+        alert('@Model.StringWinnerColor');
+    } 
+  
     var initialSeconde = @Model.InitialDuration;
     //alert(initialSeconde);
     var isComputerTurn = @Model.GetIsComputerTurn();
+    var isFullCPU = @Model.IsFullCPU;
+    //alert(isFullCPU);
 
     //pour les timers des joeurs
 
     var blackTimeLabel = document.getElementById("blackTimeLabel");
     var whiteTimeLabel = document.getElementById("whiteTimeLabel");
-    var totalSecondsWhite = @Model.WhiteTimeInSecond;
-    var totalSecondsBlack = @Model.BlackTimeInSecond;
-    //alert(@Model.WhiteTimeInSecond);
-    //alert(totalSecondsWhite);
+    var totalSecondsWhite = sessionStorage.getItem('totalSecondsWhite');
+    var totalSecondsBlack = sessionStorage.getItem('totalSecondsBlack');
     var currentColor = '@Model.CurrentTurn';
 
     printTimes();
@@ -31,11 +42,11 @@
 
 
 
-        var mn = pad(parseInt((initialSeconde - totalSecondsWhite) / 60));
-        var s = pad((initialSeconde - totalSecondsWhite) % 60);
+        var mn = pad(parseInt((initialSeconde + totalSecondsWhite) / 60));
+        var s = pad((initialSeconde + totalSecondsWhite) % 60);
         whiteTimeLabel.innerHTML = mn + " : " + s;
-        mn = pad(parseInt((initialSeconde - totalSecondsBlack) / 60));
-        s = pad((initialSeconde - totalSecondsBlack) % 60);
+        mn = pad(parseInt((initialSeconde + totalSecondsBlack) / 60));
+        s = pad((initialSeconde + totalSecondsBlack) % 60);
 
         blackTimeLabel.innerHTML = mn + " : " + s;
 
@@ -55,8 +66,10 @@
 
 
     $(function () {
-        setInterval(BindPartialView, 1000);
-        setInterval(timerCount, 50);
+        if (typeof '@Model.StringWinnerColor' === "string" && '@Model.StringWinnerColor'.length === 0) {
+            setInterval(BindPartialView, 1000);
+            setInterval(timerCount, 50);
+        }
     });
 
 
@@ -71,13 +84,12 @@
 
             if (currentColor == "W") {
                 ++totalSecondsWhite;
+                sessionStorage.setItem('totalSecondsWhite', totalSecondsWhite);
             }
             else {
                 ++totalSecondsBlack;
+                sessionStorage.setItem('totalSecondsBlack', totalSecondsBlack);
             }
-
-
-
             printTimes();
         }
 
@@ -88,14 +100,17 @@
         var objDiv = document.getElementById("history_div");
         objDiv.scrollTop = objDiv.scrollHeight;
 
-
-        var data = { whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack };
+        //alert(isFullCPU);
+        var data = { };
+        var urlValue = "/Home/DetailsTimer";
+        if (isFullCPU == "1")
+            urlValue = "/Home/DetailsTimerFULLCPU";
         if (isComputerTurn == "1") {
             //alert(isComputerTurn);
             isComputerTurn = "0";
             $.ajax({
                 type: "POST",
-                url: "/Home/DetailsTimer",
+                url: urlValue, //DetailsTimer pour le mode normal
                 data: data,
                 contentType: 'application/x-www-form-urlencoded',
                 dataType: "html",
@@ -104,6 +119,8 @@
                 },
                 failure: function (response) {
                     // alert(response.responseText);
+                    if (isFullCPU == "1")
+                        isComputerTurn = "1";//Mode FULL CPU à commenter si mode normal
                 },
                 error: function (response) {
                     //  alert(response.responseText);
@@ -117,7 +134,7 @@
         document.getElementById(index).style.backgroundColor = 'yellow';
         document.getElementById(index);
 
-        var data = { objId: index, whiteTimeInSecond: totalSecondsWhite, blackTimeInSecond: totalSecondsBlack, selectedLevel: -1 };
+        var data = { objId: index, selectedLevel: -1 };
         $.ajax({
             type: "POST",
             url: "/Home/Details",
@@ -148,6 +165,7 @@
 
             // Get base64URL
             var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
+            var casesJSON = JSON.stringify(@Html.Raw(JsonConvert.SerializeObject(Model.Cases)));
 
 
             // alert(base64URL);
@@ -155,7 +173,7 @@
             $.ajax({
                 url: '/Home/SavePrintScreen',
                 type: 'post',
-                data: { image: base64URL },
+                data: { image: base64URL, cases: casesJSON },
                 success: function (data) {
 
                     window.location.href = '@Url.Action("SaveBoard", "Home")';
@@ -163,11 +181,14 @@
                 }
             });
         });
+
+
+
     }
 
 
 </script>
-<h8 class="d-inline-block inline">
+<h5 class="d-inline-block inline">
     <span class="informationFont">Current turn :</span>
     @if (@Model.CurrentTurn == "W")
     {
@@ -186,166 +207,201 @@
     {
         <span class="blackFont">Black</span>
     }
-    &emsp;
     <label id="whiteTimeLabel" class="whiteFont"></label>
-    &ensp;
     <label id="blackTimeLabel" class="blackFont"></label>
     <button class="fa fa-camera" onclick="Print();">
         print
     </button>
     <b style='color:red;'>@Model.GetMemoryUsed() </b>
-    <div class="d-flex">
-        <div class="d-inline-block">
-            <div id="history_div" class="history">
-                @if (Model.MovingList != null)
+    <b style='color:white;'>@Model.StringWhiteCPULevel </b>
+    <b style='color:black;'>@Model.StringBlackCPULevel </b>
+</h5>
+
+
+<br />
+
+
+
+@*<a href="@Url.Action("Home", "SaveHistory")" />*@
+@* @Html.ActionLink("print", "SaveHistory")*@
+@* <i class="fa fa-save"></i>*@
+<hr />
+
+
+@*<button onclick="RunEngine()">run engine</button>*@
+<div class="d-flex">
+
+    <div class="d-inline-block">
+        @if (@Model.MovingList!=null)
+        {
+            <p>Turn : @Model.MovingList.Count</p>
+        }
+        
+        <div id="history_div" style="width: 150px; height: 575px; overflow-y: scroll;">
+            @if (Model.MovingList != null)
+            {
+                foreach (var line in Model.MovingList)
                 {
-                    @Model.MovingList.Count
-                    foreach (var line in Model.MovingList)
-                    {
-                        @line
-                        <br />
-                    }
+                    @ChessCore.Tools.Utils.LineToSymbol(line)
+                    <br />
                 }
-            </div>
-            <a href="@Url.Action("SaveHistory", "Home")">
-                <button type="button">
-                    @*<i class="bi bi-camera"></i>*@
-                    save
-                </button>
-            </a>
-        </div>
-        <div class="d-inline-block" style="margin-top: 43px;">
-            @{
-                if (Model.RevertWrapperClass == "revertWrapper")
-                {
-                    string[] coordYArray = { "1", "2", "3", "4", "5", "6", "7", "8" };
-
-                    foreach (var coordY in coordYArray)
-                    {
-                        <div class="coordY">
-                            <label style="font-weight: bold; margin-top: 1vh;"> @coordY &nbsp;</label>
-                        </div>
-
-                    }
-                }
-                else
-                {
-                    string[] coordYArray = { "8", "7", "6", "5", "4", "3", "2", "1" };
-                    foreach (var coordY in coordYArray)
-                    {
-                        <div class="coordY">
-                            <label class="@Model.RevertWrapperClass" style="font-weight: bold;"> @coordY &nbsp</label>
-                        </div>
-
-                    }
-                }
-
             }
         </div>
-        <div class="d-inline-block" style="width: 40.5;">
 
-            <div class="wrapper @Model.RevertWrapperClass">
+        <a href="@Url.Action("Preview", "Home")">
+            <button type="button">
+                @*<i class="bi bi-camera"></i>*@
+                Preview
+            </button>
+        </a>
+        <a href="@Url.Action("SaveHistory", "Home")">
+            <button type="button">
+                @*<i class="bi bi-camera"></i>*@
+                save
+            </button>
+        </a>
+    </div>
 
-                <div class="top">
+    <div class="d-inline-block" style="margin-top: 43px;">
+        @{
+            if (Model.RevertWrapperClass == "revertWrapper")
+            {
+                string[] coordYArray = { "1", "2", "3", "4", "5", "6", "7", "8" };
 
-                    <div class="wrapper-inner">
-                        <div align="left">
-                            <label class="@Model.RevertWrapperClass">@Model.GetBlackScoreString() </label>
-                        </div>
+                foreach (var coordY in coordYArray)
+                {
+                    <div style="height:70px; background-color: #04AA6D;">
+                        <label style="font-weight: bold; margin-top: 25px"> @coordY &nbsp;</label>
+                    </div>
 
-                        <div align="right">
+                }
+            }
+            else
+            {
+                string[] coordYArray = { "8", "7", "6", "5", "4", "3", "2", "1" };
 
-                            @if (Model.HuntingBoardWhiteImageList != null)
+                foreach (var coordY in coordYArray)
+                {
+                    <div style="height:70px; background-color: #04AA6D;">
+                        <label class="@Model.RevertWrapperClass" style="font-weight: bold; margin-top: 25px"> @coordY &nbsp</label>
+                    </div>
+
+                }
+            }
+
+        }
+    </div>
+    <div class="d-inline-block" style="width: 500px;">
+
+        <div class="wrapper @Model.RevertWrapperClass">
+
+            <div class="top">
+
+                <div class="wrapper-inner">
+                    <div align="left">
+                        <label style="color:black;font-size:25px;" class="@Model.RevertWrapperClass">@Model.GetBlackScoreString() </label>
+                    </div>
+
+                    <div align="right">
+
+                        @if (Model.HuntingBoardWhiteImageList != null)
+                        {
+                            foreach (var imageSrc in Model.HuntingBoardWhiteImageList)
                             {
-                                foreach (var imageSrc in Model.HuntingBoardWhiteImageList)
-                                {
-                                    <img src=@imageSrc width="25" height="25"
-                                 class="@Model.RevertWrapperClass" />
+                                <img src=@imageSrc width="25" height="25"
+                                     class="@Model.RevertWrapperClass" />
 
-                                }
                             }
-
-                        </div>
+                        }
 
                     </div>
-                </div>
 
-                @for (int i = 0; i < 8; i++)
+                </div>
+            </div>
+
+            @try
+            {
+                for (int i = 0; i < 8; i++)
                 {
 
                     for (int j = 0; j < 8; j++)
                     {
 
                         <div id="@Model.GetPawn(j + (8 * i)).Index"
-                     class="box"
-                     onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
+                        class="box"
+                        onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
                             @* <p>@Model.GetPawn(j + (8 * i)).Index</p>*@
 
 
                             @if (@Model.GetPawn(j + (8 * i)).ImageIsExist)
                             {
-                                <img src=@Model.GetPawn(j + (8 * i)).PawnImageSrc width="35vw" height="35vw"
-                         class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+                                <img src=@Model.GetPawn(j + (8 * i)).PawnImageSrc width="50" height="50"
+                                class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
                             }
                             else
                             {
                                 <img src="" width="5" height="5"
-                         class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+                                class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
                             }
                             @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
-                            <div class="caseNumber" style=" font-size: 10px; "><p class="@Model.RevertWrapperClass">@(j + (i * 8))</p></div>
+                            <div class="caseNumber" style=" font-size: 10px;"><p class="@Model.RevertWrapperClass">@(
+                        j + (i * 8)
+                        )</p></div>
 
 
                         </div>
 
                     }
-
-
-
                 }
+            }
+            catch (Exception ex)
+            {
+                <H1>
+                   '@Model.StringWinnerColor';
+                </H1>
+                
+           }
 
+            <div class="bottom">
+                <div>
+                    @{
+                        string[] coordXArray = { "A", "B", "C", "D", "E", "F", "G", "H" };
 
-                <div class="bottom">
-                    <div>
-                        @{
-                            string[] coordXArray = { "A", "B", "C", "D", "E", "F", "G", "H" };
+                        foreach (var coordX in coordXArray)
+                        {
+                            <label class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
+                        }
 
-                            foreach (var coordX in coordXArray)
-                            {
-
-                                <label class="coordXArray @Model.RevertWrapperClass">@coordX</label>
-                            }
-
-                            <div class="wrapper-inner">
-                                <div align="left">
-                                    <label class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
-                                </div>
-
-                                <div align="right">
-                                    @if (Model.HuntingBoardBlackImageList != null)
-                                    {
-                                        foreach (var imageSrc in Model.HuntingBoardBlackImageList)
-                                        {
-                                            <img src=@imageSrc width="25" height="25"
-                                         class="@Model.RevertWrapperClass" />
-
-                                        }
-                                    }
-                                </div>
-
-
+                        <div class="wrapper-inner">
+                            <div align="left">
+                                <label style="color:white;font-size:25px;" class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
                             </div>
 
-                        }
-                    </div>
+                            <div align="right">
+                                @if (Model.HuntingBoardBlackImageList != null)
+                                {
+                                    foreach (var imageSrc in Model.HuntingBoardBlackImageList)
+                                    {
+                                        <img src=@imageSrc width="25" height="25"
+                                             class="@Model.RevertWrapperClass" />
+
+                                    }
+                                }
+                            </div>
+
+
+                        </div>
+
+                    }
                 </div>
-
-
             </div>
+
+
         </div>
+    </div>
 
 
 
 
-        <br />
+    <br />
 

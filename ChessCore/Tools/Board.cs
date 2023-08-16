@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace ChessCore.Tools
 {
@@ -64,41 +65,41 @@ namespace ChessCore.Tools
         public int BlackScore { get; set; }
         public int Level { get; set; }
 
-    /// <summary>
-    /// retourne tous les index de la couleur
-    /// </summary>
-    public List<int> GetCasesIndexForColor (string colore)
+        /// <summary>
+        /// retourne tous les index de la couleur
+        /// </summary>
+        public List<int> GetCasesIndexForColor(string colore)
         {
             var indexAndCaseList = new List<IndexAndCase>();
 
-      for (int i = 0; i < _cases.Count(); i++)
-      {
+            for (int i = 0; i < _cases.Count(); i++)
+            {
 
-        indexAndCaseList.Add(new IndexAndCase { Index = i, CaseContain = _cases[i] });
-      }
+                indexAndCaseList.Add(new IndexAndCase { Index = i, CaseContain = _cases[i] });
+            }
 
-      //on ordone les pieces celont leur rang
-      var caseInOrder = indexAndCaseList.Where(x=>x.CaseContain.Contains($"|{colore}") ).ToList().OrderByDescending(x => this.GetValue(x.CaseContain));
-      //foreach (var item in _cases)
+            //on ordone les pieces celont leur rang
+            var caseInOrder = indexAndCaseList.Where(x => x.CaseContain.Contains($"|{colore}")).ToList().OrderByDescending(x => this.GetValue(x.CaseContain));
+            //foreach (var item in _cases)
 
-      return caseInOrder.Select(x=>x.Index).ToList();
-    
+            return caseInOrder.Select(x => x.Index).ToList();
+
         }
-    /// <summary>
-    /// tsiry;16-07-2022
-    /// cette classe n'est util que dans la methode GetCasesIndex
-    /// pour ordoner les cases selont les rang des pieces
-    /// </summary>
-    class IndexAndCase
-    {
-      public int Index { get; set; }
-      public string CaseContain { get; set; }
-    }
+        /// <summary>
+        /// tsiry;16-07-2022
+        /// cette classe n'est util que dans la methode GetCasesIndex
+        /// pour ordoner les cases selont les rang des pieces
+        /// </summary>
+        class IndexAndCase
+        {
+            public int Index { get; set; }
+            public string CaseContain { get; set; }
+        }
 
-    /*tsiry;07-01-2022
-    * returne tout les index sauf 
-    * */
-    public int[] GetCasesAllIndexExcept(string colore, string exceptPawnName)
+        /*tsiry;07-01-2022
+        * returne tout les index sauf 
+        * */
+        public int[] GetCasesAllIndexExcept(string colore, string exceptPawnName)
         {
             List<int> results = new List<int>();
             //foreach (var item in _cases)
@@ -175,7 +176,7 @@ namespace ChessCore.Tools
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        //Debug.WriteLine(line);
+
                         //  public Pawn(string name, string location, Button associateButton, string colore, MainWindow mainWindowParent)
 
 
@@ -210,36 +211,46 @@ namespace ChessCore.Tools
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Utils.WritelineAsync(ex.Message);
                 return;
             }
 
         }
 
-        public void CalculeScores()
+        public void CalculeScoresOld()
         {
             var blackBonus = 0;
             var whiteBonus = 0;
-            foreach (var evolutionPawnIndex in Utils.GetEvolutionPawnIndexWhite())
+
+            //  int whiteBonus = 0;
+            object lockObject = new object(); // Verrou pour synchroniser l'accès à la variable whiteBonus
+
+            Parallel.ForEach(Utils.GetEvolutionPawnIndexWhite(), (evolutionPawnIndex, state) =>
             {
                 var contains = _cases[evolutionPawnIndex];
                 if (contains.Contains("P"))
                 {
-                    whiteBonus = 90;
-                    break;
+                    lock (lockObject) // Verrouillage de la section critique pour éviter les accès concurrents à la variable whiteBonus
+                    {
+                        whiteBonus = 90;
+                    }
+                    state.Break(); // Sortie du Parallel.ForEach dès qu'un pion blanc est trouvé
                 }
-            }
+            });
+            lockObject = new object(); // Verrou pour synchroniser l'accès à la variable blackBonus
 
-            foreach (var evolutionPawnIndex in Utils.GetEvolutionPawnIndexBlack())
+            Parallel.ForEach(Utils.GetEvolutionPawnIndexBlack(), (evolutionPawnIndex, state) =>
             {
                 var contains = _cases[evolutionPawnIndex];
                 if (contains.Contains("P"))
                 {
-                    blackBonus = 90;
-                    break;
+                    lock (lockObject) // Verrouillage de la section critique pour éviter les accès concurrents à la variable blackBonus
+                    {
+                        blackBonus = 90;
+                    }
+                    state.Break(); // Sortie du Parallel.ForEach dès qu'un pion noir est trouvé
                 }
-            }
-
+            });
             var whitePawnNumber = _cases.Count(x => x == "P|W");
             var blackPawnNumber = _cases.Count(x => x == "P|B");
             var whiteBishopNumber = _cases.Count(x => x == "B|W");
@@ -253,19 +264,17 @@ namespace ChessCore.Tools
             var whiteKingNumber = _cases.Count(x => x == "K|W");
             var blackKingNumber = _cases.Count(x => x == "K|B");
 
-
-
             WhiteScore =
-                 whitePawnNumber*10
-                 + whiteBishopNumber*30
+                 whitePawnNumber * 10
+                 + whiteBishopNumber * 30
                   + whiteKnightNumber * 30
                  + whiteRookNumber * 50
                  + whiteQueenNumber * 90
              + whiteKingNumber * 100
             + whiteBonus;
             BlackScore =
-              blackPawnNumber*10
-              + blackBishopNumber *30
+              blackPawnNumber * 10
+              + blackBishopNumber * 30
               + blackKnightNumber * 30
               + blackRooktNumber * 50
               + blackQueenNumber * 90
@@ -273,13 +282,107 @@ namespace ChessCore.Tools
               + blackBonus;
 
 
-           
-            Diff = Math.Abs(WhiteScore -BlackScore);
+
+            Diff = Math.Abs(WhiteScore - BlackScore);
             if (Utils.ComputerColor == "B")
                 Weight = BlackScore - WhiteScore;
             else
                 Weight = WhiteScore - BlackScore;
         }
+
+        public void CalculeScores(NodeChess2 node = null)
+        {
+            int whiteBonus = 0;
+            int blackBonus = 0;
+
+            // Vérifie la présence de pions blancs évolutifs
+            bool hasWhiteEvolutionPawn = Utils.GetEvolutionPawnIndexWhite().Any(evolutionPawnIndex => _cases[evolutionPawnIndex].Contains("P"));
+            if (hasWhiteEvolutionPawn)
+                whiteBonus = 90;
+
+            // Vérifie la présence de pions noirs évolutifs
+            bool hasBlackEvolutionPawn = Utils.GetEvolutionPawnIndexBlack().Any(evolutionPawnIndex => _cases[evolutionPawnIndex].Contains("P"));
+            if (hasBlackEvolutionPawn)
+                blackBonus = 90;
+
+            // Compte des pièces
+            int whitePawnNumber = _cases.Count(x => x == "P|W");
+            int blackPawnNumber = _cases.Count(x => x == "P|B");
+            int whiteBishopNumber = _cases.Count(x => x == "B|W");
+            int blackBishopNumber = _cases.Count(x => x == "B|B");
+            int whiteKnightNumber = _cases.Count(x => x == "C|W");
+            int blackKnightNumber = _cases.Count(x => x == "C|B");
+            int whiteRookNumber = _cases.Count(x => x == "T|W");
+            int blackRookNumber = _cases.Count(x => x == "T|B");
+            int whiteQueenNumber = _cases.Count(x => x == "Q|W");
+            int blackQueenNumber = _cases.Count(x => x == "Q|B");
+            int whiteKingNumber = _cases.Count(x => x == "K|W");
+            int blackKingNumber = _cases.Count(x => x == "K|B");
+
+            // Calcule les scores
+
+            WhiteScore = whitePawnNumber * 10
+                         + whiteBishopNumber * 30
+                         + whiteKnightNumber * 30
+                         + whiteRookNumber * 50
+                         + whiteQueenNumber * 90
+                         + whiteKingNumber * 100
+                         + whiteBonus;
+
+            BlackScore = blackPawnNumber * 10
+                         + blackBishopNumber * 30
+                         + blackKnightNumber * 30
+                         + blackRookNumber * 50
+                         + blackQueenNumber * 90
+                         + blackKingNumber * 100
+                         + blackBonus;
+
+            Diff = Math.Abs(WhiteScore - BlackScore);
+
+            //les manaces 
+            //on prend les nenacées blancs
+          /*  if (node != null)
+            {
+                if (node.Level % 2 != 0)
+                {
+                    var opinionColor = "W";
+                    if (node.Color == "W")
+                        opinionColor = "B";
+                    if (node.GetIsLocationIsProtected(node.ToIndex, node.Color, opinionColor))
+                    {
+
+                        var whiteIndexList = GetCasesIndexForColor("W");
+                        foreach (var index in whiteIndexList)
+                        {
+                            if (node.TargetIndexIsMenaced(this, "W", "B", index))
+                            {
+                                var panwValue = GetValue(GetCaseInIndex(index));
+                                BlackScore += panwValue / 10;
+                            }
+                        }
+                        //on prend les nenacées blancs
+                        var blackIndexList = GetCasesIndexForColor("B");
+                        foreach (var index in blackIndexList)
+                        {
+                            if (node.TargetIndexIsMenaced(this, "B", "W", index))
+                            {
+                                var panwValue = GetValue(GetCaseInIndex(index));
+                                WhiteScore += panwValue / 10;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            */
+
+            if (Utils.ComputerColor == "B")
+                Weight = BlackScore - WhiteScore;
+            else
+                Weight = WhiteScore - BlackScore;
+        }
+
 
         public int GetValue(string caseContaint)
         {
@@ -402,7 +505,7 @@ namespace ChessCore.Tools
         }
         public void PrintInDebug()
         {
-            Debug.WriteLine("_____________________________________________________________________");
+            Utils.WritelineAsync("_____________________________________________________________________");
             for (int y = 0; y < 8; y++)
             {
                 var line = "";
@@ -412,9 +515,9 @@ namespace ChessCore.Tools
                     var data = _cases[index];
                     line += $"{data}\t";
                 }
-                Debug.WriteLine(line);
+                Utils.WritelineAsync(line);
             }
-            Debug.WriteLine("_____________________________________________________________________");
+            Utils.WritelineAsync("_____________________________________________________________________");
         }
 
         public void InsertPawn(int index, string pawnName, string color)
@@ -425,45 +528,47 @@ namespace ChessCore.Tools
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Utils.WritelineAsync(ex.ToString());
                 return;
             }
         }
 
 
-          /// <summary>
-    /// tsiry;07-07-2022
-    /// pour les mouvements preview et next
-    /// on revien en arrier
-    /// </summary>
-        public void NavigationMove(string initialStr, string destinationStr,bool isNext = false)
+        /// <summary>
+        /// tsiry;07-07-2022
+        /// pour les mouvements preview et next
+        /// on revien en arrier
+        /// </summary>
+        public void NavigationMove(string initialStr, string destinationStr, bool isNext = false)
         {
-            try{
+            try
+            {
 
-                  var fromSrtData = initialStr.Split("(");
+                var fromSrtData = initialStr.Split("(");
                 var fromIndex = Int32.Parse(fromSrtData[0]);
-                
-                 var toSrtData = destinationStr.Split("(");
+
+                var toSrtData = destinationStr.Split("(");
                 var toIndex = Int32.Parse(toSrtData[0]);
-                var fromContain = fromSrtData[1].Substring(0,fromSrtData[1].Count()-1);
-                var toContain = toSrtData[1].Substring(0,toSrtData[1].Count()-1);
-                if(!isNext)
+                var fromContain = fromSrtData[1].Substring(0, fromSrtData[1].Count() - 1);
+                var toContain = toSrtData[1].Substring(0, toSrtData[1].Count() - 1);
+                if (!isNext)
                 {
-                      _cases[fromIndex] = fromContain;
-                    _cases[toIndex] =  toContain;
+                    _cases[fromIndex] = fromContain;
+                    _cases[toIndex] = toContain;
                 }
                 else
                 {
-                      _cases[fromIndex] = "__";
-                    _cases[toIndex] = fromContain ;
+                    _cases[fromIndex] = "__";
+                    _cases[toIndex] = fromContain;
                 }
-              
-               
+
+
                 PrintInDebug();
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Utils.WritelineAsync(ex.ToString());
             }
         }
 
@@ -521,7 +626,7 @@ namespace ChessCore.Tools
 
                 //  / BishopBlack.png
 
-              //  var imageSrc = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", $"{pawnName}{caseColor}.png");
+                //  var imageSrc = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", $"{pawnName}{caseColor}.png");
 
                 var imageSrc = $"../../Images/{pawnName}{caseColor}.png";
 
@@ -556,7 +661,9 @@ namespace ChessCore.Tools
             if (MovingList == null)
                 MovingList = new List<string>();
 
+            // MovingList.Add($"{Utils.ToSympbol(initialCase)}({initialIndex.ToString()}) > {Utils.ToSympbol(destinationCase)}({destinationIndex})");//pour l'affichage
             MovingList.Add($"{initialIndex.ToString()}({initialCase})>{destinationIndex.ToString()}({destinationCase})");
+
 
             //GestionDes roc
             // si le point de depar et le rois : 60 et point d'arriver est 62 
@@ -605,9 +712,6 @@ namespace ChessCore.Tools
 
                 }
             }
-
-
-
         }
 
         //verifie si la case contien un pion
@@ -639,48 +743,7 @@ namespace ChessCore.Tools
         }
 
 
-        /*tsiry;18-10-2021
-        * verifie si en echec en fonction du couleur
-        * */
-        /*  public bool IsInChessInNextLevel(string color)
-          {
 
-            try
-            {
-              var kingIndex = _cases.ToList().IndexOf($"K|{color}");
-
-              var opinionColor = "W";
-              if (color == "W")
-                opinionColor = "B";
-              var opinionPawns = GetCasesIndex(opinionColor);
-
-              var possiblesMovesOpinionIndex = new List<int>();
-              foreach (var index in opinionPawns)
-              {
-
-                var possiblesMoves = GetPossibleMoves(index);
-                foreach (var movedIndex in possiblesMoves)
-                {
-                  ////Console.WriteLine($"{index} => {movedIndex}");
-                  ////Console.WriteLine($"\t L : {level}");
-                  var copyAndMovingBord = Utils.CloneAndMove(this, index, movedIndex);
-                  /////copyAndMovingBord.Print();
-                  if (copyAndMovingBord.IsInChess(color))
-                    return true;
-                  //si Board est menacer et copyAndMovingBord aussi mencer, on ne l'éxpoite plus
-
-                }
-              }
-              return false;
-            }
-            catch (Exception ex)
-            {
-
-              return false;
-            }
-
-          }
-      */
         /*tsiry;18-10-2021
          * verifie si en echec en fonction du couleur
          * */
@@ -710,7 +773,7 @@ namespace ChessCore.Tools
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Utils.WritelineAsync(ex.ToString());
                 return false;
             }
 
@@ -718,21 +781,11 @@ namespace ChessCore.Tools
 
         public List<PossibleMove> GetPossibleMoves(int index, int level, bool isForKing = true)
         {
-      /*if(Utils(this,Utils.OpinionColor))
-      {
-        var t_hh = this;
-      }*/
             if (index == -1)
                 return null;
-            //var t_index64 = Utils.Tab64[50];
 
-            //// var t_toAdd = ((9 / 9) * 10) + 1;
-            //var t_index120 = Utils.Tab120[t_index64-14];
             var indexInTab64 = Utils.Tab64[index];
             var results = new List<PossibleMove>();
-
-
-
             var currentCase = _cases[index];
             if (!currentCase.Contains("|"))
             {
@@ -864,15 +917,7 @@ namespace ChessCore.Tools
                     if (pawnName == "K")
                         break;
                 }
-
-
-
-
             }
-
-
-
-
             if (pawnName == "B" || pawnName == "Q" || pawnName == "K")//Bishop ou Reine ou Roi
             {
 
@@ -907,8 +952,6 @@ namespace ChessCore.Tools
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
-
-
                 }
 
 
@@ -929,10 +972,10 @@ namespace ChessCore.Tools
                     {
                         //Pour T71
                         //if (pawnName != "K")
-                            //results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
-                       // else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
-                            // results.Add(destinationIndex);
+                        //results.Add(destinationIndex);
+                        results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                        // else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
+                        // results.Add(destinationIndex);
                         //    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
                         break;
                     }
@@ -1015,7 +1058,6 @@ namespace ChessCore.Tools
 
 
             }
-
 
             //gestion du roc
             if (pawnName == "K")
@@ -1281,39 +1323,35 @@ namespace ChessCore.Tools
 
 
             }
-
-
-
-
             return results;
 
         }
 
-    /// <summary>
-    /// tsiry;02-07-2022
-    /// pour determiner les mouvement possibles du rois si ce dérnier est menacé
-    /// </summary>
-    public List<int> GetKingPossiblesMoveIndex(string targetkingColor)
-    {
-      try
-      {
-        
-        var targetkingindex = this.GetCases().ToList().IndexOf($"K|{targetkingColor}");
-        var indexInTab64 = Utils.Tab64[targetkingindex];
-        var results = new List<int>();
-        var toAddList = new List<int>();
-        toAddList.Add(-11);
-        toAddList.Add(-10);
-        toAddList.Add(-9);
-        toAddList.Add(+1);
-        toAddList.Add(+11);
-        toAddList.Add(10);
-        toAddList.Add(9);
-        toAddList.Add(-1);
+        /// <summary>
+        /// tsiry;02-07-2022
+        /// pour determiner les mouvement possibles du rois si ce dérnier est menacé
+        /// </summary>
+        public List<int> GetKingPossiblesMoveIndex(string targetkingColor)
+        {
+            try
+            {
 
-        
+                var targetkingindex = this.GetCases().ToList().IndexOf($"K|{targetkingColor}");
+                var indexInTab64 = Utils.Tab64[targetkingindex];
+                var results = new List<int>();
+                var toAddList = new List<int>();
+                toAddList.Add(-11);
+                toAddList.Add(-10);
+                toAddList.Add(-9);
+                toAddList.Add(+1);
+                toAddList.Add(+11);
+                toAddList.Add(10);
+                toAddList.Add(9);
+                toAddList.Add(-1);
 
-        foreach (var toAdd in toAddList)
+
+
+                foreach (var toAdd in toAddList)
                 {
 
                     var destinationIndexInTab64 = indexInTab64 + toAdd;
@@ -1332,17 +1370,17 @@ namespace ChessCore.Tools
 
 
                 }
-     
-        return results;
 
-      }
-      catch (Exception ex)
-      {
+                return results;
 
-        return null;
-      }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        #endregion
     }
-
-    #endregion
-  }
 }

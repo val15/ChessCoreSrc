@@ -5,51 +5,76 @@ namespace ChessCore.Tools
     public static class Utils
     {
 
-    #region CG and memories
+        #region CG and memories
 
-    public static void GCColect()
-    {
-      Debug.WriteLine($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
-      Console.WriteLine($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
-      GC.Collect();
-      Debug.WriteLine($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
-      Console.WriteLine($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
+        public static void GCColect()
+        {
+            WritelineAsync($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
+            GC.Collect();
+            WritelineAsync($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
+        }
+        public static async Task WritelineAsync(string text)
+        {
+            try
+            {
+                Debug.WriteLine(text);
+                Console.WriteLine(text);
 
-    }
 
-    static readonly string[] SizeSuffixes =
+                //using (StreamWriter w = File.AppendText("log.txt"))
+                //{
+
+                //    await w.WriteLineAsync(text);
+
+                //    w.Flush();
+                //    Thread.Sleep(100);
+                //}
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
+
+
+        static readonly string[] SizeSuffixes =
              { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
-    public static string SizeSuffix(Int64 value, int decimalPlaces = 1)
-    {
-      if (value < 0) { return "-" + SizeSuffix(-value, decimalPlaces); }
+        public static string SizeSuffix(Int64 value, int decimalPlaces = 1)
+        {
+            if (value < 0) { return "-" + SizeSuffix(-value, decimalPlaces); }
 
-      int i = 0;
-      decimal dValue = (decimal)value;
-      while (Math.Round(dValue, decimalPlaces) >= 1000)
-      {
-        dValue /= 1024;
-        i++;
-      }
+            int i = 0;
+            decimal dValue = (decimal)value;
+            while (Math.Round(dValue, decimalPlaces) >= 1000)
+            {
+                dValue /= 1024;
+                i++;
+            }
 
-      return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
-    }
-    #endregion
+            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
+        }
+        #endregion
 
+        public static int DeepLevel { get; set; } = 4;
 
-    public static DateTime StartedProcessTime { get; set; }
+        public static DateTime StartedProcessTime { get; set; }
         //Pour T41, on limite le temps de reflection, si le temps depasse le seul, on ne fait plus de verification, in Chess2Utils.TargetColorIsInChess() au niveau 4
-        public static double LimitationForT41InMn { get; set; }=1.5;
+        public static double LimitationForT41InMn { get; set; } = 1.5;
 
 
-        public static string NavigationStoryCursor { get; set; }="-";//07-07-2022
-    //pour T07a et T07b
-    public static Board MainBoard { get; set; }
+        public static string NavigationStoryCursor { get; set; } = "-";//07-07-2022
+                                                                       //pour T07a et T07b
+        public static Board MainBoard { get; set; }
 
-        public static List<NodeChess2> NodeLoseList {get;set;} = new List<NodeChess2>();
-      //  public static List<NodeChess2> NodeLoseList2 {get;set;} = new List<NodeChess2>();
-       //  public static List<NodeChess2> NodeLoseList3 {get;set;} = new List<NodeChess2>();
-       // public static NodeChess2 BestNode {get;set;} 
+        public static List<NodeChess2> NodeLoseList { get; set; } = new List<NodeChess2>();
+        //  public static List<NodeChess2> NodeLoseList2 {get;set;} = new List<NodeChess2>();
+        //  public static List<NodeChess2> NodeLoseList3 {get;set;} = new List<NodeChess2>();
+        // public static NodeChess2 BestNode {get;set;} 
         private static int[] _evolutionPawnIndexBlack =
        {
       56,57,58,59,60,61,62,63
@@ -67,6 +92,81 @@ namespace ChessCore.Tools
             return _evolutionPawnIndexBlack;
         }
 
+        /// <summary>
+        /// Pour l'affichage dans l'historique
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public static string LineToSymbol(string line)
+        {
+            try
+            {
+                //51(P|W)>35(__) => symbole(index)>symbole(destIndex)
+                var data = line.Split('>');
+                var from = indexPanwToSymboleIndex(data[0]);
+                var to = indexPanwToSymboleIndex(data[1]);
+                return $"{from} > {to}";
+            }
+            catch (Exception ex)
+            {
+
+                WritelineAsync(ex.Message);
+                return "ERROR";
+            }
+        }
+        public static string indexPanwToSymboleIndex(string inText)//ex: 51(P|W) => ♙(51)
+        {
+            var data = inText.Split('(');
+            var index = data[0];
+            var panw = data[1];
+            panw = panw.Replace(")", "");
+            return $"{ToSympbol(panw)}({index})";
+        }
+
+        public static char ToSympbol(string inText)
+        {
+            try
+            {
+                switch (inText)
+                {
+                    case "P|W":
+                        return '♙'; // Pion blanc
+                    case "P|B":
+                        return '♟'; // Pion noir
+                    case "T|W":
+                        return '♖'; // Tour blanche
+                    case "T|B":
+                        return '♜'; // Tour noire
+                    case "C|W":
+                        return '♘'; // Cavalier blanc
+                    case "C|B":
+                        return '♞'; // Cavalier noir
+                    case "B|W":
+                        return '♗'; // Fou blanc
+                    case "B|B":
+                        return '♝'; // Fou noir
+                    case "Q|W":
+                        return '♕'; // Reine blanche
+                    case "Q|B":
+                        return '♛'; // Reine noire
+                    case "K|W":
+                        return '♔'; // Roi blanc
+                    case "K|B":
+                        return '♚'; // Roi noir
+                    default:
+                        return ' '; // Case vide
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Utils.WritelineAsync(ex.Message);
+                return ' ';
+            }
+        }
+
+
 
         private static string[] _coord = {
 "a8","b8","c8","d8","e8","f8","g8","h8",
@@ -79,7 +179,7 @@ namespace ChessCore.Tools
 "a1","b1","c1","d1","e1","f1","g1","h1"
     };
 
-    public static string ChangeLongNameToShortName(string longName)
+        public static string ChangeLongNameToShortName(string longName)
         {
             var name = "P";
             //Pawn
@@ -206,7 +306,7 @@ namespace ChessCore.Tools
             return false;
         }
 
-       
+
         /*12-11-2021
          * pour T80
          * */
@@ -345,6 +445,8 @@ namespace ChessCore.Tools
                 //  var opinionColor = "W";
                 if (value == "W")
                     OpinionColor = "B";
+                if (value == "B")
+                    OpinionColor = "W";
             }  // set method
         }
 
