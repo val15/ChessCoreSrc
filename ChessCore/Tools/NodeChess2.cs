@@ -62,21 +62,32 @@ namespace ChessCore.Tools
             return 0;
         }
 
-        public bool TargetIndexIsMenaced(Board board, string curentColor, string opinionColor, int targetIndex)
+        public int TargetIndexIsMenaced(Board board, string curentColor, string opinionColor, int targetIndex)
         {
 
             var opinionListIndex = board.GetCasesIndexForColor(opinionColor);
-
+            var opinionMinWeight = 0;
 
             foreach (var index in opinionListIndex)
             {
                 if (targetIndex == -1)
-                    return false;
+                    return 0;
                 var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
-                if (possiblesMoves.Contains(targetIndex))
-                {
-                    return true;
-                }
+                //if (possiblesMoves.Contains(targetIndex))
+                //{
+                //    //return 1;
+                //    var tdsd = "d";
+                //}
+                 if (possiblesMoves.Contains(targetIndex))
+                 {
+                     var curentWeight = board.GetValue(board.GetCases()[index]);
+                    ////si le roi est menacé, on retourne 100
+                    //if (curentWeight == 100)
+                    //    return 100;
+                    if (opinionMinWeight == 0 || curentWeight < opinionMinWeight)
+                        opinionMinWeight = curentWeight;
+                    //return 1;
+                 }
                 else
                 {
                     var cloneBoad = Utils.CloneBoad(board);
@@ -86,13 +97,24 @@ namespace ChessCore.Tools
 
                     possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
 
+
+                    //if (possiblesMoves.Contains(targetIndex))
+                    //{
+                    //    var t =  1;
+                    //}
                     if (possiblesMoves.Contains(targetIndex))
                     {
-                        return true;
+                        var curentWeight = cloneBoad.GetValue(cloneBoad.GetCases()[index]);
+                        // si le roi est menacé, on retourne 100
+                        //if (curentWeight == 100)
+                        //    return 100;
+                        if (opinionMinWeight == 0 || curentWeight < opinionMinWeight)
+                            opinionMinWeight = curentWeight;
+                        /// return 1;
                     }
                 }
             }
-            return false;
+            return opinionMinWeight;
         }
 
         public bool TargetIndexIsMenacedMT(Board board, string curentColor, string opinionColor, int targetIndex)
@@ -204,7 +226,7 @@ namespace ChessCore.Tools
 
             }
 
-            return TargetIndexIsMenaced(board, curentColor, opinionColor, kingIndex);
+            return TargetIndexIsMenaced(board, curentColor, opinionColor, kingIndex) > 0;
 
         }
 
@@ -229,17 +251,17 @@ namespace ChessCore.Tools
                 copyBoard.GetCases()[locationIndex] = currentCase;
                 //si apres changement de couleur, la position est menacer
                 //=> c'est que la position est protégée
-                if (TargetIndexIsMenaced(copyBoard, $"{opinionColor}", $"{currentColor}", locationIndex))
+                if (TargetIndexIsMenaced(copyBoard, $"{opinionColor}", $"{currentColor}", locationIndex) > 0)
                     return true;
 
                 return false;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 return false;
             }
 
-          
+
         }
 
 
@@ -332,7 +354,7 @@ namespace ChessCore.Tools
                     //T97A
                     if (Chess2Utils.TargetColorIsInChess(Board, Utils.ComputerColor))
                     {
-                        if(Parent!=null)
+                        if (Parent != null)
                             Parent.Parent.Weight--;//+= -99;//Poure que T97A marche avec T37
                         return;
                     }
@@ -343,20 +365,20 @@ namespace ChessCore.Tools
 
             //if(level==4)
             //if (level == Utils.DeepLevel)//TODO POUR L5
-                CalculeScores();
+            CalculeScores();
             // if(Utils.DeepLevel<=4 || Utils.DeepLevel == level)
             //        CalculeScores();
 
-            
+
 
             if (toIndex == -1)
                 return;
-           //T108
-           // test
-           /* if (toIndex == 37 /*&& level == 1)*/
-           try
+            //T108
+            // test
+            /* if (toIndex == 37 /*&& level == 1)*/
+            try
             {
-               if(level % 2 !=0)
+                if (level % 2 != 0)
                 {
                     // var t_fd = index;
                     var menaceds = new List<string>();
@@ -366,16 +388,33 @@ namespace ChessCore.Tools
                     var opinionColor = "W";
                     if (Color == "W")
                         opinionColor = "B";
-                    if (TargetIndexIsMenaced(Board, Color,opinionColor, toIndex) && !GetIsLocationIsProtected(toIndex, Color, opinionColor))
+                    var isProtected = GetIsLocationIsProtected(toIndex, Color, opinionColor);
+                    //pour T109: si le poid minimum de celui qui menace est inférier au poid du poin,on ne fait rien
+                    var minOpinionMenacedWeight = TargetIndexIsMenaced(Board, Color, opinionColor, toIndex);
+                    //if (toIndex == 17)
+                    //{
+                    //    var t_ = panwValue;
+                    //}
+                    //if (minOpinionMenacedWeight == 100)
+                    //{
+                    //    var t_ = panwValue;
+                    //}
+                    //if ( ((minOpinionMenacedWeight > panwValue) || minOpinionMenacedWeight == 100) && !isProtected)
+                    if (minOpinionMenacedWeight> 1 && !isProtected)
                     {
                         Weight -= panwValue;
                         return;
                     }
-                       
-                    if (GetIsLocationIsProtected(toIndex,Color, opinionColor))
+                    if (minOpinionMenacedWeight>0 && minOpinionMenacedWeight < panwValue )
+                    {
+                        Weight -= panwValue;
+                        return;
+                    }
+
+                    if (isProtected)
                     {
                         // board.PrintInDebug();
-                       
+
                         var possiblesMovesIndex = board.GetPossibleMoves(toIndex, 1).Select(x => x.Index);
                         foreach (var targetIndex in possiblesMovesIndex)
                         {
@@ -383,7 +422,7 @@ namespace ChessCore.Tools
                             if (caseInIndex != "__")
                             {
                                 menaceds.Add(caseInIndex);
-                                if (TargetIndexIsMenaced(board, Color, computeurColor, targetIndex))
+                                if (TargetIndexIsMenaced(board, Color, computeurColor, targetIndex) > 0)
                                 {
                                     var targetValue = board.GetValue(caseInIndex);
                                     totalValue += targetValue;
@@ -398,24 +437,24 @@ namespace ChessCore.Tools
                         //  on ajoute le bonnus
                         if ((panwValue * 2) < totalValue / 2)
                         {
-                            var t_ = menaceds;
-                            var t_df = totalValue;
+                         //   var t_ = menaceds;
+                          //  var t_df = totalValue;
                             Weight += totalValue / 10;
                         }
 
 
                     }
-               }
-               
+                }
+
 
             }
-            catch(Exception ex)  
-            { 
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.ToString());
             }
 
 
-            
+
 
         }
 

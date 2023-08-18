@@ -209,11 +209,13 @@ namespace ChessCore.Controllers
                     {
                         chess2UtilsNotStatic.DeepLevel = _whiteCPULevel;
                         Utils.DeepLevel = _whiteCPULevel;
+                        
                     }
                     else
                     {
                         chess2UtilsNotStatic.DeepLevel = _blackCPULevel;
                         Utils.DeepLevel = _blackCPULevel;
+                      //  Utils.DeepLevelPrime = false;
 
                     }
                     Utils.WritelineAsync($"DeepLevel = {chess2UtilsNotStatic.DeepLevel}");

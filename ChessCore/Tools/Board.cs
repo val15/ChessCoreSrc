@@ -341,9 +341,9 @@ namespace ChessCore.Tools
 
             //les manaces 
             //on prend les nenacées blancs
-          /*  if (node != null)
+            if (node != null)
             {
-                if (node.Level % 2 != 0)
+                if (node.Level < Utils.DeepLevel && Utils.DeepLevelPrime)
                 {
                     var opinionColor = "W";
                     if (node.Color == "W")
@@ -354,7 +354,7 @@ namespace ChessCore.Tools
                         var whiteIndexList = GetCasesIndexForColor("W");
                         foreach (var index in whiteIndexList)
                         {
-                            if (node.TargetIndexIsMenaced(this, "W", "B", index))
+                            if (node.TargetIndexIsMenaced(this, "W", "B", index) > 0)
                             {
                                 var panwValue = GetValue(GetCaseInIndex(index));
                                 BlackScore += panwValue / 10;
@@ -364,7 +364,7 @@ namespace ChessCore.Tools
                         var blackIndexList = GetCasesIndexForColor("B");
                         foreach (var index in blackIndexList)
                         {
-                            if (node.TargetIndexIsMenaced(this, "B", "W", index))
+                            if (node.TargetIndexIsMenaced(this, "B", "W", index) > 0)
                             {
                                 var panwValue = GetValue(GetCaseInIndex(index));
                                 WhiteScore += panwValue / 10;
@@ -375,7 +375,7 @@ namespace ChessCore.Tools
 
             }
 
-            */
+
 
             if (Utils.ComputerColor == "B")
                 Weight = BlackScore - WhiteScore;

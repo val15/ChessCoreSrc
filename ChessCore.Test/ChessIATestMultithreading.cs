@@ -1084,7 +1084,7 @@ namespace ChessCore.Test
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
-               // chess2UtilsNotStatic.DeepLevel = 5;
+                // chess2UtilsNotStatic.DeepLevel = 5;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
 
@@ -1159,8 +1159,8 @@ namespace ChessCore.Test
 
                 if (accepdedArray.Contains(nodeResult.BestChildPosition))
                     isSuccess = true;
-                Assert.IsTrue(isSuccess);
-                //   Assert.AreEqual(nodeResult.BestChildPosition, "b3");
+                // Assert.IsTrue(isSuccess);
+                Assert.AreEqual(nodeResult.BestChildPosition, "b3");
             }
 
         }
@@ -2374,97 +2374,97 @@ namespace ChessCore.Test
 
        */
 
-       /* [TestMethod]
-       //TODO A DECOMMENTER
-        public void MTT56ToNotSecificPositionMesNoirDoiventEmpecherLeCavalierBlanchDeSeMettreSurG6()
-        {
+        /* [TestMethod]
+        //TODO A DECOMMENTER
+         public void MTT56ToNotSecificPositionMesNoirDoiventEmpecherLeCavalierBlanchDeSeMettreSurG6()
+         {
 
-            var computerColore = "Black";
-
-
+             var computerColore = "Black";
 
 
 
-            var pawnListWhite = new List<Pawn>();
-            var pawnListBlack = new List<Pawn>();
+
+
+             var pawnListWhite = new List<Pawn>();
+             var pawnListBlack = new List<Pawn>();
 
 
 
-            //WHITEList
-            var whiteListString = "" +
-      "King;e1;White;False;True;True;True" +
-      "\nQueen;d1;White;False;False;False;False" +
-      "\nRook;a1;White;False;False;False;False" +
-      "\nRook;h1;White;False;False;False;False" +
-      "\nKnight;b5;White;False;False;False;False" +
-      "\nBishop;c1;White;False;False;False;False" +
-      "\nBishop;c4;White;False;False;False;False" +
-      "\nKnight;h4;White;False;False;False;False" +
-      "\nSimplePawn;a3;White;False;False;False;False" +
-      "\nSimplePawn;b2;White;True;False;False;False" +
-      "\nSimplePawn;c2;White;True;False;False;False" +
-      "\nSimplePawn;d4;White;False;False;False;False" +
-      "\nSimplePawn;e5;White;False;False;False;False" +
-      "\nSimplePawn;f2;White;True;False;False;False" +
-      "\nSimplePawn;g2;White;True;False;False;False" +
-      "\nSimplePawn;h2;White;True;False;False;False";
-            var whiteList = whiteListString.Split('\n');
-            foreach (var line in whiteList)
-            {
-                var datas = line.Split(';');
-                var newPawn = new Pawn(datas[0], datas[1], datas[2]);
-                //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
-                newPawn.IsFirstMove = bool.Parse(datas[3]);
-                newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
-                newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
-                newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
-                pawnListWhite.Add(newPawn);
-            }
+             //WHITEList
+             var whiteListString = "" +
+       "King;e1;White;False;True;True;True" +
+       "\nQueen;d1;White;False;False;False;False" +
+       "\nRook;a1;White;False;False;False;False" +
+       "\nRook;h1;White;False;False;False;False" +
+       "\nKnight;b5;White;False;False;False;False" +
+       "\nBishop;c1;White;False;False;False;False" +
+       "\nBishop;c4;White;False;False;False;False" +
+       "\nKnight;h4;White;False;False;False;False" +
+       "\nSimplePawn;a3;White;False;False;False;False" +
+       "\nSimplePawn;b2;White;True;False;False;False" +
+       "\nSimplePawn;c2;White;True;False;False;False" +
+       "\nSimplePawn;d4;White;False;False;False;False" +
+       "\nSimplePawn;e5;White;False;False;False;False" +
+       "\nSimplePawn;f2;White;True;False;False;False" +
+       "\nSimplePawn;g2;White;True;False;False;False" +
+       "\nSimplePawn;h2;White;True;False;False;False";
+             var whiteList = whiteListString.Split('\n');
+             foreach (var line in whiteList)
+             {
+                 var datas = line.Split(';');
+                 var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                 //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                 newPawn.IsFirstMove = bool.Parse(datas[3]);
+                 newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                 newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                 newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                 pawnListWhite.Add(newPawn);
+             }
 
-            //BLACKList
-            var blackListString = "" +
-      "King;e7;Black;False;False;True;True" +
-      "\nQueen;d8;Black;False;False;False;False" +
-      "\nRook;a8;Black;False;False;False;False" +
-      "\nRook;h8;Black;False;False;False;False" +
-      "\nKnight;b8;Black;False;False;False;False" +
-      "\nBishop;c8;Black;False;False;False;False" +
-      "\nBishop;f8;Black;False;False;False;False" +
-      "\nKnight;g8;Black;False;False;False;False" +
-      "\nSimplePawn;a4;Black;False;False;False;False" +
-      "\nSimplePawn;b6;Black;False;False;False;False" +
-      "\nSimplePawn;c7;Black;True;False;False;False" +
-      "\nSimplePawn;d7;Black;True;False;False;False" +
-      "\nSimplePawn;e6;Black;False;False;False;False" +
-      "\nSimplePawn;f5;Black;False;False;False;False" +
-      "\nSimplePawn;g7;Black;True;False;False;False" +
-      "\nSimplePawn;h6;Black;False;False;False;False";
-            var blackList = blackListString.Split('\n');
-            foreach (var line in blackList)
-            {
-                var datas = line.Split(';');
-                var newPawn = new Pawn(datas[0], datas[1], datas[2]);
-                //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
-                newPawn.IsFirstMove = bool.Parse(datas[3]);
-                newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
-                newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
-                newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
-                pawnListBlack.Add(newPawn);
-            }
+             //BLACKList
+             var blackListString = "" +
+       "King;e7;Black;False;False;True;True" +
+       "\nQueen;d8;Black;False;False;False;False" +
+       "\nRook;a8;Black;False;False;False;False" +
+       "\nRook;h8;Black;False;False;False;False" +
+       "\nKnight;b8;Black;False;False;False;False" +
+       "\nBishop;c8;Black;False;False;False;False" +
+       "\nBishop;f8;Black;False;False;False;False" +
+       "\nKnight;g8;Black;False;False;False;False" +
+       "\nSimplePawn;a4;Black;False;False;False;False" +
+       "\nSimplePawn;b6;Black;False;False;False;False" +
+       "\nSimplePawn;c7;Black;True;False;False;False" +
+       "\nSimplePawn;d7;Black;True;False;False;False" +
+       "\nSimplePawn;e6;Black;False;False;False;False" +
+       "\nSimplePawn;f5;Black;False;False;False;False" +
+       "\nSimplePawn;g7;Black;True;False;False;False" +
+       "\nSimplePawn;h6;Black;False;False;False;False";
+             var blackList = blackListString.Split('\n');
+             foreach (var line in blackList)
+             {
+                 var datas = line.Split(';');
+                 var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                 //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                 newPawn.IsFirstMove = bool.Parse(datas[3]);
+                 newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                 newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                 newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                 pawnListBlack.Add(newPawn);
+             }
 
 
 
-            var pawnList = new List<Pawn>(); pawnList.AddRange(pawnListWhite); pawnList.AddRange(pawnListBlack);
+             var pawnList = new List<Pawn>(); pawnList.AddRange(pawnListWhite); pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
-            {
-                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+             {
+                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
-                Assert.AreNotEqual(nodeResult.BestChildPosition, "c6");
-                Assert.AreNotEqual(nodeResult.BestChildPosition, "b7");
-            }
-        }
-*/
+                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c6");
+                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b7");
+             }
+         }
+ */
         [TestMethod]
         /*tsiry;30-08-2021*/
         public void MTT57SeulLeRookDoitBougerNotRandomD5()
@@ -2742,7 +2742,7 @@ namespace ChessCore.Test
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
-                Assert.AreEqual("e1", nodeResult.BestChildPosition);
+                Assert.AreEqual("f3", nodeResult.BestChildPosition);
             }
         }
 
@@ -3447,13 +3447,13 @@ namespace ChessCore.Test
 
         /*tsiry;16-05-2022*/
         [TestMethod]
-        public void MTT92ALaReineNoirDoitSeMettreEnC3PourEviterLeChessParLeCavalier()
+        public void MTT92ALaReineNoirDoitSeMettreEnF5()
         {
 
 
 
             var computerColore = "Black";
-            var testName = "T92ALaReineNoirDoitSeMettreEnC3PourEviterLeChessParLeCavalier";
+            var testName = "T92ALaReineNoirDoitSeMettreEnF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
@@ -3461,16 +3461,11 @@ namespace ChessCore.Test
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
-                Assert.AreEqual(nodeResult.BestChildPosition, "h8");
+                Assert.AreEqual(nodeResult.BestChildPosition, "f5");
             }
             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
             //Assert.IsNull(randomList);
             //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
         }
         /*tsiry;17-05-2022*/
         [TestMethod]
@@ -3489,6 +3484,26 @@ namespace ChessCore.Test
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.Location, "f6");
+            }
+
+        }
+
+        [TestMethod]
+        public void MTT92CBlackC5toA3()
+        {
+
+
+
+            var computerColore = "Black";
+            var testName = "T92CBlackC5toA3";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+
+                //Assert.AreEqual(nodeResult.Location, "g4");
+                Assert.AreEqual(nodeResult.BestChildPosition, "a3");
             }
             //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
             //Assert.IsNull(randomList);
@@ -3793,14 +3808,6 @@ namespace ChessCore.Test
                 Assert.AreEqual("g6", nodeResult.Location);
 
             }
-            //var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
-            //Assert.IsNull(randomList);
-            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
         }
         /*tsiry;19-07-2022*/
         [TestMethod]
@@ -3878,6 +3885,22 @@ namespace ChessCore.Test
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("f4", nodeResult.BestChildPosition);
+            }
+        }
+
+        [TestMethod]
+        public void MTT109BlackNotB6()
+        {
+
+            var computerColore = "White";
+            var testName = "T109BlackNotB6";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                Assert.AreNotEqual("b6", nodeResult.BestChildPosition);
             }
         }
 

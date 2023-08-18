@@ -61,7 +61,7 @@ namespace ChessCore.Tools
         #endregion
 
         public static int DeepLevel { get; set; } = 4;
-
+        public static bool DeepLevelPrime { get; set; } = true;
         public static DateTime StartedProcessTime { get; set; }
         //Pour T41, on limite le temps de reflection, si le temps depasse le seul, on ne fait plus de verification, in Chess2Utils.TargetColorIsInChess() au niveau 4
         public static double LimitationForT41InMn { get; set; } = 1.5;
