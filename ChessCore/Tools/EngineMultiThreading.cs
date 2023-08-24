@@ -202,7 +202,7 @@ namespace ChessCore.Tools
         {
 
 
-            var possiblesMoves = inBord.GetPossibleMoves(pawnIndex, 1).Select(x => x.Index);
+            var possiblesMoves = inBord.GetPossibleMoves(pawnIndex, 1).Select(x => x.ToIndex);
             foreach (var movedIndex in possiblesMoves)
             {
 
@@ -283,7 +283,7 @@ namespace ChessCore.Tools
             var index = currentPawnIndex;
 
             // _oldW = 9000;
-            var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+            var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.ToIndex);
 
             foreach (var movedIndex in possiblesMoves)
             {
@@ -402,7 +402,7 @@ namespace ChessCore.Tools
                     var elementInIndex = board.GetCases().ElementAt(index);
 
 
-                    var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+                    var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.ToIndex);
                     foreach (var movedIndex in possiblesMoves)
                     {
                         var copyAndMovingBord = Utils.CloneAndMove(board, index, movedIndex, level);
@@ -448,7 +448,7 @@ namespace ChessCore.Tools
                                 {
                                     if (Utils.MainBoard.GetCases()[newNode.Parent.FromIndex].Contains($"|{Utils.ComputerColor}"))//si from index n' est pas vide dans MainBoard 
                                     {
-                                        var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.Index);
+                                        var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.ToIndex);
                                         //si newNode.Parent.Toindex est dans possibleMovesofFromIndex
                                         if (possibleMovesofFromIndex.Contains(newNode.Parent.ToIndex))
                                         {
@@ -518,7 +518,7 @@ namespace ChessCore.Tools
                 Parallel.ForEach(pawns, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, index =>
                 {
                     var elementInIndex = board.GetCases().ElementAt(index);
-                    var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+                    var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.ToIndex);
 
                     foreach (var movedIndex in possiblesMoves)
                     {
@@ -551,7 +551,7 @@ namespace ChessCore.Tools
                             {
                                 if (Utils.MainBoard.GetCases()[newNode.Parent.FromIndex].Contains($"|{Utils.ComputerColor}"))
                                 {
-                                    var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.Index);
+                                    var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.ToIndex);
                                     if (possibleMovesofFromIndex.Contains(newNode.Parent.ToIndex))
                                     {
                                         //WIN Node
@@ -616,7 +616,7 @@ namespace ChessCore.Tools
 
                 Parallel.ForEach(localPawns, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, index =>
                 {
-                    var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+                    var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.ToIndex);
                     foreach (var movedIndex in possiblesMoves)
                     {
                         var copyAndMovingBord = Utils.CloneAndMove(board, index, movedIndex, level);
@@ -654,7 +654,7 @@ namespace ChessCore.Tools
                             {
                                 if (Utils.MainBoard.GetCases()[newNode.Parent.FromIndex].Contains($"|{Utils.ComputerColor}"))
                                 {
-                                    var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.Index);
+                                    var possibleMovesofFromIndex = Utils.MainBoard.GetPossibleMoves(newNode.Parent.FromIndex, 1, false).Select(x => x.ToIndex);
                                     if (possibleMovesofFromIndex.Contains(newNode.Parent.ToIndex))
                                     {
                                         BestNode = newNode.Parent;
@@ -705,7 +705,7 @@ namespace ChessCore.Tools
             {
 
                 // _oldW = -9000;
-                var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.Index);
+                var possiblesMoves = board.GetPossibleMoves(index, level).Select(x => x.ToIndex);
                 foreach (var movedIndex in possiblesMoves)
                 {
                     ////Console.WriteLine($"{index} => {movedIndex}");

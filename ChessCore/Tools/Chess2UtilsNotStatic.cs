@@ -204,7 +204,7 @@ namespace ChessCore.Tools
 
                 foreach (var index in computerPawnsIndex)
                 {
-                    var possiblesMoves = boarChess2.GetPossibleMoves(index, level).Select(x => x.Index);
+                    var possiblesMoves = boarChess2.GetPossibleMoves(index, level).Select(x => x.ToIndex);
 
 
                     foreach (var movedIndex in possiblesMoves)
@@ -315,15 +315,15 @@ namespace ChessCore.Tools
                 var maxWeithInLevel1 = bestNodeList1.Max(c => c.Weight);
                 bestNodeList1 = bestNodeList1.Where(x => x.Weight == maxWeithInLevel1).ToList();
 
-                var bestNodeList3 = new List<Node>();
-             /*   if (DeepLevel > 3)
-                {
-                    Utils.WritelineAsync($"L{3}--------------------");
-                    bestNodeList3 = GetBestNodeListFromLevel(boarChess, 3, Utils.ComputerColor, IsReprise, SpecifiBoardList);
-                    var maxWeithInLevel3 = bestNodeList3.Max(c => c.Weight);
-                    bestNodeList3 = bestNodeList3.Where(x => x.Weight == maxWeithInLevel1).ToList();
+                /* var bestNodeList3 = new List<Node>();
+                 if (DeepLevel > 3)
+                 {
+                     Utils.WritelineAsync($"L{3}--------------------");
+                     bestNodeList3 = GetBestNodeListFromLevel(boarChess, 3, Utils.ComputerColor, IsReprise, SpecifiBoardList);
+                     var maxWeithInLevel3 = bestNodeList3.Max(c => c.Weight);
+                     bestNodeList3 = bestNodeList3.Where(x => x.Weight == maxWeithInLevel1).ToList();
 
-                }*/
+                 }*/
 
                 Utils.WritelineAsync($"L{DeepLevel}--------------------");
                 var bestNodeList = GetBestNodeListFromLevel(boarChess, DeepLevel, Utils.ComputerColor, IsReprise, SpecifiBoardList);
@@ -338,18 +338,26 @@ namespace ChessCore.Tools
                     {
                         bestNodeList.Add(bestInL1);
                     }
+                    else// si la difference est > 50
+                    {
+                        var diff = bestInL1.Weight - bestNodeList.Max(x => x.Weight);
+                        if (diff > 50)
+                        {
+                            bestNodeList.Add(bestInL1);
+                        }
+                    }
 
                 }
 
-              /*  if (bestNodeList3.Count() == 1 && loosedNodes.Count() == 0 && DeepLevel > 3)
-                {
-                    var bestInL3 = bestNodeList3.First();
-                    var isInBestbestNodeList = bestNodeList.FirstOrDefault(x => x.Location == bestInL3.Location && x.BestChildPosition == bestInL3.BestChildPosition);
-                    if (isInBestbestNodeList == null)
-                    {
-                        bestNodeList.Add(bestInL3);
-                    }
-                }*/
+                /*  if (bestNodeList3.Count() == 1 && loosedNodes.Count() == 0 && DeepLevel > 3)
+                  {
+                      var bestInL3 = bestNodeList3.First();
+                      var isInBestbestNodeList = bestNodeList.FirstOrDefault(x => x.Location == bestInL3.Location && x.BestChildPosition == bestInL3.BestChildPosition);
+                      if (isInBestbestNodeList == null)
+                      {
+                          bestNodeList.Add(bestInL3);
+                      }
+                  }*/
 
 
 
@@ -493,32 +501,37 @@ namespace ChessCore.Tools
 
                 var nodeResult = new Node();
 
-                if (maxWeithList.Count() > 1)
+                if (maxWeithList.Count() >= 1)
                 {
                     //pour T94, on ajoute le nombre des pions protégers dans Weight
                     //on cherche ne nombre de protege
 
-                    foreach (var node in maxWeithList)
-                    {
+                    //foreach (var node in maxWeithList)
+                    //{
 
-                        var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
-                        node.Weight += protectedNumber;
+                    //    var protectedNumber = node.AsssociateNodeChess2.GetProtectedNumber();
+                    //    node.Weight += protectedNumber;
 
 
-                    }
+                    //}
                     maxWeith = maxWeithList.Max(x => x.Weight);
                     maxWeithList = maxWeithList.Where(x => x.Weight == maxWeith).ToList();
                     if (maxWeithList.Count() == 1)
+                    {
                         nodeResult = maxWeithList.First();
+                        nodeResult.AsssociateNodeChess2.RandomEquivalentList.Clear();
+                    }
+                        
                     else
                     {
+                        //random
+                        var rand = new Random();
+                        nodeResult = maxWeithList.ToList()[rand.Next(maxWeithList.Count())];
+                        nodeResult = maxWeithList.First();
                         foreach (var node2 in maxWeithList)
                         {
                             nodeResult.AsssociateNodeChess2.RandomEquivalentList.Add(node2.AsssociateNodeChess2);
                         }
-                        //rondom
-                        var rand = new Random();
-                        nodeResult = maxWeithList.ToList()[rand.Next(maxWeithList.Count())];
                     }
                 }
                 else

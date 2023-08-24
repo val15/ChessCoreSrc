@@ -826,7 +826,7 @@ namespace ChessCore.Controllers
             else if (MainUtils.FromGridIndex == -1)
             {
                 MainUtils.FromGridIndex = objId;
-                posiblesMoveListSelectedPawn = MainUtils.VM.MainBord.GetPossibleMoves(MainUtils.FromGridIndex, 0).Select(x => x.Index).ToList();
+                posiblesMoveListSelectedPawn = MainUtils.VM.MainBord.GetPossibleMoves(MainUtils.FromGridIndex, 0).Select(x => x.ToIndex).ToList();
 
 
             }
@@ -841,7 +841,7 @@ namespace ChessCore.Controllers
 
                 var selectedPawn = MainUtils.VM.GetPawn(MainUtils.FromGridIndex);
 
-                posiblesMoveListSelectedPawn = MainUtils.VM.MainBord.GetPossibleMoves(MainUtils.FromGridIndex, 0).Select(x => x.Index).ToList();
+                posiblesMoveListSelectedPawn = MainUtils.VM.MainBord.GetPossibleMoves(MainUtils.FromGridIndex, 0).Select(x => x.ToIndex).ToList();
                 if (!posiblesMoveListSelectedPawn.Contains(MainUtils.ToGridIndex) || (selectedPawn.PawnColor != MainUtils.CurrentTurnColor))
                 {
                     //si mouvement impossible, on ne fait rien

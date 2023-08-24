@@ -348,8 +348,8 @@ namespace ChessCore.Tools
                     var opinionColor = "W";
                     if (node.Color == "W")
                         opinionColor = "B";
-                    if (node.GetIsLocationIsProtected(node.ToIndex, node.Color, opinionColor))
-                    {
+                    /*if (node.GetIsLocationIsProtected(node.ToIndex, node.Color, opinionColor))
+                    {*/
 
                         var whiteIndexList = GetCasesIndexForColor("W");
                         foreach (var index in whiteIndexList)
@@ -370,7 +370,7 @@ namespace ChessCore.Tools
                                 WhiteScore += panwValue / 10;
                             }
                         }
-                    }
+                   // }
                 }
 
             }
@@ -763,7 +763,7 @@ namespace ChessCore.Tools
                 foreach (var index in opinionPawns)
                 {
                     //var t_ = GetPossibleMoves(index);
-                    possiblesMovesOpinionIndex.AddRange(GetPossibleMoves(index, 1).Select(x => x.Index));
+                    possiblesMovesOpinionIndex.AddRange(GetPossibleMoves(index, 1).Select(x => x.ToIndex));
                 }
 
 
@@ -795,6 +795,9 @@ namespace ChessCore.Tools
             var caseDatas = currentCase.Split('|');
             var pawnName = caseDatas[0];
             var caseColor = caseDatas[1];
+            var opinionColorcaseColor = "W";
+            if (caseColor == "W")
+                opinionColorcaseColor = "B";
             if (pawnName == "T" || pawnName == "Q" || pawnName == "K")//Rook ou Reine ou Roi
             {
 
@@ -813,13 +816,13 @@ namespace ChessCore.Tools
                     {
                         //Pour T71
                         if (pawnName != "K")
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -843,14 +846,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         if (pawnName != "K")
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -874,14 +877,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         if (pawnName != "K")
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             //results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -905,14 +908,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         if (pawnName != "K")
                             //results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -940,14 +943,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         if (pawnName != "K")
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             //results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
 
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
@@ -973,14 +976,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         //if (pawnName != "K")
                         //results.Add(destinationIndex);
-                        results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                        results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         // else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                         // results.Add(destinationIndex);
                         //    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -1006,14 +1009,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         if (pawnName != "K")
                             //results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -1039,14 +1042,14 @@ namespace ChessCore.Tools
                         //Pour T71
                         if (pawnName != "K")
                             // results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         else if (!(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)))
                             //results.Add(destinationIndex);
-                            results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                         break;
                     }
                     //results.Add(destinationIndex);
-                    results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                    results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     //si  roi, une seule déplacement
                     if (pawnName == "K")
                         break;
@@ -1107,7 +1110,7 @@ namespace ChessCore.Tools
                                 }
                                 if (rookRightIsAsBeenMoved)
                                     //results.Add(62);
-                                    results.Add(new PossibleMove { FromIndex = index, Index = 62, IsContainOpinion = false });
+                                    results.Add(new PossibleMove { FromIndex = index, ToIndex = 62, IsContainOpinion = false });
                             }
                         }
 
@@ -1139,7 +1142,7 @@ namespace ChessCore.Tools
                                 }
                                 if (rookLeftIsAsBeenMoved)
                                     //results.Add(58);
-                                    results.Add(new PossibleMove { FromIndex = index, Index = 58, IsContainOpinion = false });
+                                    results.Add(new PossibleMove { FromIndex = index, ToIndex = 58, IsContainOpinion = false });
                             }
                         }
 
@@ -1182,7 +1185,7 @@ namespace ChessCore.Tools
                                 }
                                 if (rookRightIsAsBeenMoved)
                                     //results.Add(6);
-                                    results.Add(new PossibleMove { FromIndex = index, Index = 6, IsContainOpinion = false });
+                                    results.Add(new PossibleMove { FromIndex = index, ToIndex = 6, IsContainOpinion = false });
                             }
                         }
 
@@ -1214,7 +1217,7 @@ namespace ChessCore.Tools
                                 }
                                 if (rookLeftIsAsBeenMoved)
                                     //results.Add(2);
-                                    results.Add(new PossibleMove { FromIndex = index, Index = 2, IsContainOpinion = false });
+                                    results.Add(new PossibleMove { FromIndex = index, ToIndex = 2, IsContainOpinion = false });
                             }
                         }
 
@@ -1249,12 +1252,17 @@ namespace ChessCore.Tools
                     if (destinationIndex < 0 || destinationIndex > 63)
                         continue;
                     var isContent = GetIsContent(destinationIndex, caseColor);
-                    if (isContent == -1)
-                        results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
-                    if (isContent == 0)
+                    if (isContent == -1 /*&& !(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)*/)
+                    {
+                       // f(!Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(caseColor) && Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(opinionColorcaseColor))
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
+
+                    }
+                    if (isContent == 0 /*&& !(Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(Utils.ComputerColor)*/)
                     {
                         //results.Add(destinationIndex);
-                        results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                       // if(!Utils.CloneAndMove(this, index, destinationIndex, level).IsInChess(caseColor))
+                            results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
 
                     }
 
@@ -1294,7 +1302,7 @@ namespace ChessCore.Tools
                     if (isContent == 0)
                     {
                         // results.Add(destinationIndex);
-                        results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = false });
+                        results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = false });
                     }
                     else
                         break;
@@ -1313,7 +1321,7 @@ namespace ChessCore.Tools
                     if (isContent == -1)
                     {
                         //results.Add(destinationIndex);
-                        results.Add(new PossibleMove { FromIndex = index, Index = destinationIndex, IsContainOpinion = true });
+                        results.Add(new PossibleMove { FromIndex = index, ToIndex = destinationIndex, IsContainOpinion = true });
                     }
 
 
@@ -1323,6 +1331,8 @@ namespace ChessCore.Tools
 
 
             }
+
+           
             return results;
 
         }

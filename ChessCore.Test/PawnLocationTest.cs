@@ -105,6 +105,17 @@ namespace ChessCore.Test
         }
 
         [TestMethod]
+        public void WhiteIsInChessT95SuiteSuiteSuiteWhiteIsInChess()
+        {
+            var testName = "T95SuiteSuiteSuiteWhiteIsNotInChess";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            var board = Chess2Utils.GenerateBoardFormPawnList(pawnList);
+            var result = Chess2Utils.TargetColorIsInChess(board, "W");
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
         public void WhiteIsNotInChessT87WhiteIsNotInChess1()
         {
             var testName = "T87WhiteIsNotInChess1";

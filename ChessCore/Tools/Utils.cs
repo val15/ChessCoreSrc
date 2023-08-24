@@ -353,7 +353,7 @@ namespace ChessCore.Tools
                 var pawnName = cloneBoard.GetPawnShortNameInIndex(index);
                 if (pawnName != "P")
                 {
-                    var possibleMoves = cloneBoard.GetPossibleMoves(index, 0).Select(x => x.Index);
+                    var possibleMoves = cloneBoard.GetPossibleMoves(index, 0).Select(x => x.ToIndex);
                     if (possibleMoves.Contains(toIndex))
                         return true;
                 }
@@ -424,7 +424,7 @@ namespace ChessCore.Tools
             var opinionIndexs = board.GetCasesIndexForColor(opinionColor);
             foreach (var item in opinionIndexs)
             {
-                var possibleMove = board.GetPossibleMoves(item, 0).Select(x => x.Index);
+                var possibleMove = board.GetPossibleMoves(item, 0).Select(x => x.ToIndex);
                 if (possibleMove.Contains(toIndex))
                     return true;
             }
@@ -460,14 +460,24 @@ namespace ChessCore.Tools
         // public static string ComputerColor { get; set; }
         public static Board CloneAndMove(Board originalBord, int initialIndex, int destinationIndex, int level)
         {
-            var resultBorad = new Board(originalBord);
+            try
+            {
+                var resultBorad = new Board(originalBord);
 
-            resultBorad.Move(initialIndex, destinationIndex, level);
+                resultBorad.Move(initialIndex, destinationIndex, level);
 
-            resultBorad.CalculeScores();
+                resultBorad.CalculeScores();
 
 
-            return resultBorad;
+                return resultBorad;
+            }
+            catch (Exception ex)
+            {
+
+                Utils.WritelineAsync(ex.Message);
+                return null;
+            }
+          
         }
 
         /*tsiry;24-12-2021

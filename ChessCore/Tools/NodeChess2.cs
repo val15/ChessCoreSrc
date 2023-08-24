@@ -72,22 +72,22 @@ namespace ChessCore.Tools
             {
                 if (targetIndex == -1)
                     return 0;
-                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
+                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.ToIndex);
                 //if (possiblesMoves.Contains(targetIndex))
                 //{
                 //    //return 1;
                 //    var tdsd = "d";
                 //}
-                 if (possiblesMoves.Contains(targetIndex))
-                 {
-                     var curentWeight = board.GetValue(board.GetCases()[index]);
+                if (possiblesMoves.Contains(targetIndex))
+                {
+                    var curentWeight = board.GetValue(board.GetCases()[index]);
                     ////si le roi est menacé, on retourne 100
                     //if (curentWeight == 100)
                     //    return 100;
                     if (opinionMinWeight == 0 || curentWeight < opinionMinWeight)
                         opinionMinWeight = curentWeight;
                     //return 1;
-                 }
+                }
                 else
                 {
                     var cloneBoad = Utils.CloneBoad(board);
@@ -95,7 +95,7 @@ namespace ChessCore.Tools
                     cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
                     // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
 
-                    possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+                    possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.ToIndex);
 
 
                     //if (possiblesMoves.Contains(targetIndex))
@@ -131,7 +131,7 @@ namespace ChessCore.Tools
                     return;
                 }
 
-                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.Index);
+                var possiblesMoves = board.GetPossibleMoves(index, 1).Select(x => x.ToIndex);
                 if (possiblesMoves.Contains(targetIndex))
                 {
                     isTargetMenaced = true;
@@ -144,7 +144,7 @@ namespace ChessCore.Tools
 
                     cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
 
-                    possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+                    possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.ToIndex);
 
                     if (possiblesMoves.Contains(targetIndex))
                     {
@@ -183,7 +183,7 @@ namespace ChessCore.Tools
                 cloneBoad.SetCases(targetIndex, cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}"));
                 // cloneBoad = cloneBoad.GetCases()[targetIndex].Replace($"{opinionColor}", $"{curentColor}");
 
-                var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.Index);
+                var possiblesMoves = cloneBoad.GetPossibleMoves(index, 1).Select(x => x.ToIndex);
 
                 if (possiblesMoves.Contains(targetIndex))
                 {
@@ -373,7 +373,7 @@ namespace ChessCore.Tools
 
             if (toIndex == -1)
                 return;
-            //T108
+            //T108 et T110
             // test
             /* if (toIndex == 37 /*&& level == 1)*/
             try
@@ -400,12 +400,12 @@ namespace ChessCore.Tools
                     //    var t_ = panwValue;
                     //}
                     //if ( ((minOpinionMenacedWeight > panwValue) || minOpinionMenacedWeight == 100) && !isProtected)
-                    if (minOpinionMenacedWeight> 1 && !isProtected)
+                    if (minOpinionMenacedWeight > 1 && !isProtected)
                     {
                         Weight -= panwValue;
                         return;
                     }
-                    if (minOpinionMenacedWeight>0 && minOpinionMenacedWeight < panwValue )
+                    if (minOpinionMenacedWeight > 0 && minOpinionMenacedWeight < panwValue)
                     {
                         Weight -= panwValue;
                         return;
@@ -415,7 +415,7 @@ namespace ChessCore.Tools
                     {
                         // board.PrintInDebug();
 
-                        var possiblesMovesIndex = board.GetPossibleMoves(toIndex, 1).Select(x => x.Index);
+                        var possiblesMovesIndex = board.GetPossibleMoves(toIndex, 1).Select(x => x.ToIndex);
                         foreach (var targetIndex in possiblesMovesIndex)
                         {
                             var caseInIndex = board.GetCaseInIndex(targetIndex);
@@ -437,8 +437,8 @@ namespace ChessCore.Tools
                         //  on ajoute le bonnus
                         if ((panwValue * 2) < totalValue / 2)
                         {
-                         //   var t_ = menaceds;
-                          //  var t_df = totalValue;
+                            //   var t_ = menaceds;
+                            //  var t_df = totalValue;
                             Weight += totalValue / 10;
                         }
 

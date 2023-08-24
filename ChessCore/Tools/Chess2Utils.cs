@@ -20,7 +20,7 @@ namespace ChessCore.Tools
                 //var possibleMovesAllies = 
                 foreach (var alieFromIndex in alliesIndex)
                 {
-                    var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.Index);
+                    var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.ToIndex);
                     //il faut faire un copi du bord original en déplacent le roi vers le possible move
                     foreach (var alieToIndex in possibleMovesIndex)
                     {
@@ -84,7 +84,7 @@ namespace ChessCore.Tools
                 //var possibleMovesAllies = 
                 foreach (var alieFromIndex in alliesIndex)
                 {
-                    var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.Index);
+                    var possibleMovesIndex = inBoard.GetPossibleMoves(alieFromIndex, 1, false).Select(x => x.ToIndex);
                     //il faut faire un copi du bord original en déplacent le roi vers le possible move
                     foreach (var alieToIndex in possibleMovesIndex)
                     {
@@ -247,7 +247,7 @@ namespace ChessCore.Tools
 
                 var opinionPossibleMoveIndexList = new List<int>();
 
-                opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(toIndex, 1, false).Select(x => x.Index));
+                opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(toIndex, 1, false).Select(x => x.ToIndex));
 
                 if (opinionPossibleMoveIndexList.Contains(targetIndex))
                     return true;
@@ -293,7 +293,7 @@ namespace ChessCore.Tools
                 var opinionPossibleMoveIndexList = new List<int>();
                 foreach (var opibionIndex in opinionOfTargetColorIndexList)
                 {
-                    opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.Index));
+                    opinionPossibleMoveIndexList.AddRange(copyBoard.GetPossibleMoves(opibionIndex, 1, false).Select(x => x.ToIndex));
                 }
                 if (opinionPossibleMoveIndexList.Contains(targetIndex))
                     return true;
