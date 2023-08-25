@@ -61,7 +61,14 @@ namespace ChessCore.Tools
             }
             return 0;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="curentColor"></param>
+        /// <param name="opinionColor"></param>
+        /// <param name="targetIndex"></param>
+        /// <returns>Retourne le poid du pion lenacé</returns>
         public int TargetIndexIsMenaced(Board board, string curentColor, string opinionColor, int targetIndex)
         {
 
@@ -422,9 +429,10 @@ namespace ChessCore.Tools
                             if (caseInIndex != "__")
                             {
                                 menaceds.Add(caseInIndex);
-                                if (TargetIndexIsMenaced(board, Color, computeurColor, targetIndex) > 0)
+                                if (TargetIndexIsMenaced(board, Color, computeurColor, targetIndex) > 10)
                                 {
                                     var targetValue = board.GetValue(caseInIndex);
+                                   // if(targetValue>10)
                                     totalValue += targetValue;
                                 }
                             }

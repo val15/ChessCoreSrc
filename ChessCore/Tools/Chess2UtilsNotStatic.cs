@@ -348,7 +348,7 @@ namespace ChessCore.Tools
                     }
 
                 }
-
+                
                 /*  if (bestNodeList3.Count() == 1 && loosedNodes.Count() == 0 && DeepLevel > 3)
                   {
                       var bestInL3 = bestNodeList3.First();

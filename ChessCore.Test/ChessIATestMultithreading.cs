@@ -3929,6 +3929,23 @@ namespace ChessCore.Test
             }
         }
 
+        [TestMethod]
+        public void MTT111BlackNotToF5()
+        {
+
+            var computerColore = "Black";
+            var testName = "T111BlackNotToF5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            {
+                chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+               // Assert.AreEqual(nodeResult.AsssociateNodeChess2.RandomEquivalentList.Count, 0);
+                Assert.AreNotEqual("f5", nodeResult.BestChildPosition);
+            }
+        }
+
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]
