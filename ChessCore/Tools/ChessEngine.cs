@@ -20,9 +20,6 @@ namespace ChessCore.Tools
         {
             if (boardChess.IsGameOver())
                 return null;
-
-
-
             var totalStartTime = DateTime.UtcNow;
             Utils.WritelineAsync($"DEPTH LEVEL : {depthLevel}");
 
