@@ -22,7 +22,6 @@ namespace ChessCore.Tools
                 return null;
             var totalStartTime = DateTime.UtcNow;
             Utils.WritelineAsync($"DEPTH LEVEL : {depthLevel}");
-
             var checkIsInChessOnEnd=true;
             if (depthLevel == 5)
                 checkIsInChessOnEnd = false;
