@@ -40,7 +40,6 @@ namespace ChessCore.Tools
                 return r;
 
         }
-
         public NodeGPT GetBestPositionLocalUsingMiltiThreadingObtimize(string colore, BoardGPT boardChess, int depthLevel = 3)
         {
             if (boardChess.IsGameOver())
