@@ -8,7 +8,6 @@ namespace ChessCore.Tools
         //EMULER l1 ET L3 ET PRENDRE LE PLUS HAUT
         private bool _checkIsInChessOnEnd;
 
-
         public NodeGPT GetBestPositionLocalUsingMiltiThreading(string colore, BoardGPT boardChess, int depthLevel = 3)
         {
 
