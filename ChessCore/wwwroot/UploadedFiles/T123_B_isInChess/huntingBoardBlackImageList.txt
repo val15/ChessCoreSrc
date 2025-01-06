@@ -1,0 +1,3 @@
+../../Images/KnightBlack.png
+../../Images/KnightBlack.png
+../../Images/BishopBlack.png

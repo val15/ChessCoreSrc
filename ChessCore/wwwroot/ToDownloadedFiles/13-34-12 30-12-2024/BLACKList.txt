@@ -1,0 +1,2 @@
+King;e8;Black;False;False;False;False
+Queen;d4;Black;False;False;False;False

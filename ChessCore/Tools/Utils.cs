@@ -1,17 +1,46 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace ChessCore.Tools
 {
     public static class Utils
     {
+        public static DateTime EnginStartTime { get; set; }
+        public static int LimitOfReflectionTimeInSecond { get; set; } = 24 * 60 * 60;
+        public static bool LimitOfReflectionTimeIsShow { get; set; } = false;
+
+        public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
+        public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
+
+
+
+        public static string GenerateKeyForPossibleMoves(string casesToString, int fromIndex)
+        {
+            return $"{casesToString}-{fromIndex}";
+        }
+        public static string GenerateKeyForIsKingInCheck(string casesToString, string kingColor)
+        {
+            return $"{casesToString}-{kingColor}";
+        }
+
+        public static string CasesToCasesString(string[] cases)
+        {
+            var casesToString = string.Empty;
+            foreach (var item in cases)
+            {
+                casesToString += item;
+            }
+            return casesToString;
+        }
 
         #region CG and memories
+
 
         public static void GCColect()
         {
             WritelineAsync($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
             GC.Collect();
-            WritelineAsync($"Memory used before collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
+            WritelineAsync($"Memory used after collection: {Utils.SizeSuffix(GC.GetTotalMemory(false))}");
         }
         public static async Task WritelineAsync(string text)
         {
@@ -60,7 +89,7 @@ namespace ChessCore.Tools
         }
         #endregion
 
-        public static int DeepLevel { get; set; } = 4;
+        public static int DeepLevel { get; set; }
         public static bool DeepLevelPrime { get; set; } = true;
         public static DateTime StartedProcessTime { get; set; }
         //Pour T41, on limite le temps de reflection, si le temps depasse le seul, on ne fait plus de verification, in Chess2Utils.TargetColorIsInChess() au niveau 4
@@ -463,10 +492,9 @@ namespace ChessCore.Tools
             try
             {
                 var resultBorad = new Board(originalBord);
+                resultBorad.Move(initialIndex, destinationIndex);
 
-                resultBorad.Move(initialIndex, destinationIndex, level);
-
-                resultBorad.CalculeScores();
+                //resultBorad.CalculeScores(Utils.ComputerColor);
 
 
                 return resultBorad;
@@ -477,7 +505,7 @@ namespace ChessCore.Tools
                 Utils.WritelineAsync(ex.Message);
                 return null;
             }
-          
+
         }
 
         /*tsiry;24-12-2021

@@ -1,0 +1,4 @@
+Rook;d1;White;False;False;False;False
+Bishop;d2;White;False;False;False;False
+King;e1;White;False;False;False;False
+Rook;f1;White;False;False;False;False

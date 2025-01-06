@@ -87,7 +87,7 @@ namespace ChessCore.Tools
                 //}
                 if (possiblesMoves.Contains(targetIndex))
                 {
-                    var curentWeight = board.GetValue(board.GetCases()[index]);
+                    var curentWeight = board.GetValueOld(board.GetCases()[index]);
                     ////si le roi est menacé, on retourne 100
                     //if (curentWeight == 100)
                     //    return 100;
@@ -111,7 +111,7 @@ namespace ChessCore.Tools
                     //}
                     if (possiblesMoves.Contains(targetIndex))
                     {
-                        var curentWeight = cloneBoad.GetValue(cloneBoad.GetCases()[index]);
+                        var curentWeight = cloneBoad.GetValueOld(cloneBoad.GetCases()[index]);
                         // si le roi est menacé, on retourne 100
                         //if (curentWeight == 100)
                         //    return 100;
@@ -390,7 +390,7 @@ namespace ChessCore.Tools
                     // var t_fd = index;
                     var menaceds = new List<string>();
                     var totalValue = 0;
-                    var panwValue = board.GetValue(board.GetCaseInIndex(toIndex));
+                    var panwValue = board.GetValueOld(board.GetCaseInIndex(toIndex));
                     // on prend le total des poids des poins menacéer par toIndex
                     var opinionColor = "W";
                     if (Color == "W")
@@ -431,7 +431,7 @@ namespace ChessCore.Tools
                                 menaceds.Add(caseInIndex);
                                 if (TargetIndexIsMenaced(board, Color, computeurColor, targetIndex) > 10)
                                 {
-                                    var targetValue = board.GetValue(caseInIndex);
+                                    var targetValue = board.GetValueOld(caseInIndex);
                                    // if(targetValue>10)
                                     totalValue += targetValue;
                                 }
@@ -470,7 +470,7 @@ namespace ChessCore.Tools
         public void CalculeScores()
         {
 
-            Board.CalculeScores(this);
+            Board.CalculeScores(Utils.ComputerColor, this);
 
 
 

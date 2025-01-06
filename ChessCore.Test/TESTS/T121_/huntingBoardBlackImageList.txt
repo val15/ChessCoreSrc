@@ -1,0 +1,2 @@
+../../Images/BishopBlack.png
+../../Images/SimplePawnBlack.png

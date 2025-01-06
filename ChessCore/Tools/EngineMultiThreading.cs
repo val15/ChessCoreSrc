@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ChessCore.Tools
 {
@@ -28,9 +25,11 @@ namespace ChessCore.Tools
 
         //private int _oldW;
         private bool _isReprise = false;
-
-
-
+        private int level;
+        private string cpuColor;
+        private bool isReprise;
+        private bool v;
+        private List<Node> specifiBoardList;
 
         public List<NodeChess2> LastNodes { get; set; }
 
@@ -56,6 +55,15 @@ namespace ChessCore.Tools
                 OpinionrColore = "B";
             SpecifiBoardList = specifiBoardList;
             Utils.ComputerColor = computerColore;
+        }
+
+        public EngineMultiThreading(int level, string cpuColor, bool isReprise, bool v, List<Node> specifiBoardList)
+        {
+            this.level = level;
+            this.cpuColor = cpuColor;
+            this.isReprise = isReprise;
+            this.v = v;
+            this.specifiBoardList = specifiBoardList;
         }
 
         /*tsiry;27-09-2021

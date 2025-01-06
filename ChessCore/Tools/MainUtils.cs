@@ -7,6 +7,8 @@ namespace ChessCore.Tools
         //pour éviter le bug: le cpu bouge plusieurs foix d'affilé
 
         public static bool IsFullCPU { get; set; } = false;
+        public static int FullCPUWhiteLevel { get; set; }
+        public static int FullCPUBlackLevel { get; set; }
         public static int CpuCount { get; set; } = 0;
         public static int DeepLevel { get; set; }
         

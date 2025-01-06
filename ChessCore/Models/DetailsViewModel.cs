@@ -181,7 +181,7 @@ namespace ChessCore.Models
             MainUtils.HuntingBoardBlackImageList = HuntingBoardBlackImageList;
 
             MovingList = board.MovingList;
-            board.CalculeScores();
+            board.CalculeScores(Utils.ComputerColor);
             PawnCases = new List<Pawn>();
             MainBord = board;
             Cases = MainBord.GetCases();

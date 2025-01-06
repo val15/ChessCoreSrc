@@ -1,7 +1,7 @@
 ﻿using ChessCore.Models;
 using ChessCore.Tools;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO.Compression;
@@ -23,10 +23,10 @@ namespace ChessCore.Controllers
         {
             _logger = logger;
             _configuration = configuration;
-            _CPULevel = _configuration.GetValue<int>("CPUSettings:CPULevel");
-            _blackCPULevel = _configuration.GetValue<int>("CPUSettings:BlackCPULevel");
-            _whiteCPULevel = _configuration.GetValue<int>("CPUSettings:WhiteCPULevel");
-
+            //_CPULevel = _configuration.GetValue<int>("CPUSettings:CPULevel");
+            //_blackCPULevel = _configuration.GetValue<int>("CPUSettings:BlackCPULevel");
+            //_whiteCPULevel = _configuration.GetValue<int>("CPUSettings:WhiteCPULevel");
+            _CPULevel = Utils.DeepLevel;
         }
 
 
@@ -51,40 +51,44 @@ namespace ChessCore.Controllers
                 //pour le timer,
                 //il faut prendre l'intervale en seconde et l'ajouter à 
                 //computer timer
+
+
+                var currentBoard = new BoardGPT(MainUtils.VM.MainBord.GetCases());
+               
+                if(currentBoard.IsKingInCheck(MainUtils.CPUColor) || currentBoard.IsKingInCheck(MainUtils.CPUColor))
+                {
+                    Utils.WritelineAsync("CHECKMATE");
+                    _isCHECKMATE = true;
+                    var winVM = new DetailsViewModel();
+                    if (MainUtils.CPUColor == "W")
+                        winVM.StringWinnerColor = "Balck WIN";
+                    else
+                        winVM.StringWinnerColor = "White WIN";
+                    winVM.IsCHECKMATE = true;
+                    return PartialView("Details", winVM);
+
+                }
+                   
+
+                    //var winVM = new DetailsViewModel();
+                    //if (MainUtils.CPUColor == "W")
+                    //    return Content("<xml>Balck WIN</xml>");
+                    //else
+                    //    return Content("<xml>White WIN\"</xml>");
+                    // return PartialView("Details", winVM);
                 
 
-                //Méthode nonothread
-                // var engine = new Engine(MainUtils.DeepLevel, MainUtils.CPUColor, false, null);
-                //  var bestNodeChess2 = engine.Search(MainUtils.VM.MainBord, MainUtils.TurnNumber.ToString(), -1, -1);
-                //méthode multithreading
-                using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+
+                using (var engine = new ChessEngine())
                 {
-                    chess2UtilsNotStatic.DeepLevel = _CPULevel;
+                    
                     Utils.DeepLevel = _CPULevel;
 
-                    var bestNode = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(MainUtils.CPUColor, MainUtils.VM.MainBord, true, null);
-                    if (bestNode == null)//ECHES ET MATE
-                    {
-                        Utils.WritelineAsync("CHECKMATE");
-                        _isCHECKMATE = true;
-                        var winVM = new DetailsViewModel();
-                        if (MainUtils.CPUColor == "W")
-                            winVM.StringWinnerColor = "Balck WIN";
-                        else
-                            winVM.StringWinnerColor = "White WIN";
-                        winVM.IsCHECKMATE = true;
-                        return PartialView("Details", winVM);
+                    var bestNode = engine.GetBestPositionLocalUsingMiltiThreading(MainUtils.CPUColor, currentBoard, Utils.DeepLevel);
+                    
 
-                        //var winVM = new DetailsViewModel();
-                        //if (MainUtils.CPUColor == "W")
-                        //    return Content("<xml>Balck WIN</xml>");
-                        //else
-                        //    return Content("<xml>White WIN\"</xml>");
-                        // return PartialView("Details", winVM);
-                    }
-
-                    var fromIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.Location);//int
-                    var toIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.BestChildPosition);
+                    var fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
+                    var toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
 
                     //determination si attaque pour remplir le cimetiere
                     //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
@@ -93,11 +97,11 @@ namespace ChessCore.Controllers
                         return View("Losing");
 
 
-                    MainUtils.VM.MainBord.Move(fromIndex, toIndex, 0);
+                    MainUtils.VM.MainBord.Move(fromIndex, toIndex);
                     MainUtils.TurnNumber++;
                     MainUtils.VM.Refresh(MainUtils.VM.MainBord);
                     MainUtils.FromGridIndex = -1;
-                    
+
 
                     var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, null, fromIndex, toIndex);
                     //dans le cas de loaded
@@ -203,23 +207,26 @@ namespace ChessCore.Controllers
 
 
                 Utils.WritelineAsync($"Current turn = {MainUtils.CurrentTurnColor} => normlaEngine");
-                using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+                using (var chessEngine = new ChessEngine())
                 {
+                    var depthLevel = 3;
                     if (MainUtils.CPUColor == "W")
                     {
-                        chess2UtilsNotStatic.DeepLevel = _whiteCPULevel;
-                        Utils.DeepLevel = _whiteCPULevel;
-                        
+
+                        depthLevel = MainUtils.FullCPUWhiteLevel;
+
+
                     }
                     else
                     {
-                        chess2UtilsNotStatic.DeepLevel = _blackCPULevel;
-                        Utils.DeepLevel = _blackCPULevel;
-                      //  Utils.DeepLevelPrime = false;
+                        depthLevel = MainUtils.FullCPUBlackLevel;
 
                     }
-                    Utils.WritelineAsync($"DeepLevel = {chess2UtilsNotStatic.DeepLevel}");
-                    var bestNode = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(MainUtils.CurrentTurnColor, MainUtils.VM.MainBord, true, null);
+
+                    //chessEngine.DeepLevel = Utils.DeepLevel;
+                    // Utils.WritelineAsync($"DeepLevel = {chessEngine.DeepLevel}");
+                    // if(MainUtils.CPUColor == "W")
+                    var bestNode = chessEngine.GetBestPositionLocalUsingMiltiThreading(MainUtils.CurrentTurnColor, new BoardGPT(MainUtils.VM.MainBord.GetCases()), depthLevel);
                     if (bestNode == null)//ECHES ET MATE
                     {
                         Utils.WritelineAsync("CHECKMATE");
@@ -237,8 +244,8 @@ namespace ChessCore.Controllers
                         //    return Content("<xml>White WIN\"</xml>");
 
                     }
-                    fromIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.Location);//int
-                    toIndex = chess2UtilsNotStatic.GetIndexFromLocation(bestNode.BestChildPosition);
+                    fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
+                    toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
                 }
 
 
@@ -251,7 +258,7 @@ namespace ChessCore.Controllers
                     return View("Losing");
 
 
-                MainUtils.VM.MainBord.Move(fromIndex, toIndex, 0);
+                MainUtils.VM.MainBord.Move(fromIndex, toIndex);
                 MainUtils.TurnNumber++;
                 MainUtils.VM.Refresh(MainUtils.VM.MainBord);
                 MainUtils.FromGridIndex = -1;
@@ -306,8 +313,8 @@ namespace ChessCore.Controllers
                     vmEngine.IsFullCPU = 0;
 
 
-                vmEngine.StringBlackCPULevel = $"L {_blackCPULevel}";
-                vmEngine.StringWhiteCPULevel = $"L {_whiteCPULevel}";
+                vmEngine.StringBlackCPULevel = $"L {MainUtils.FullCPUBlackLevel}";
+                vmEngine.StringWhiteCPULevel = $"L {MainUtils.FullCPUWhiteLevel }";
                 return PartialView("Details", vmEngine);
 
 
@@ -457,7 +464,7 @@ namespace ChessCore.Controllers
                 MainUtils.VM.HuntingBoardWhiteImageList = huntingBoardWhiteImageList;
                 MainUtils.VM.HuntingBoardBlackImageList = huntingBoardBlackImageList;
                 MainUtils.VM.MovingList = historyList;
-                MainUtils.VM.MainBord.CalculeScores();
+                MainUtils.VM.MainBord.CalculeScores(Utils.ComputerColor);
                 //pour les scores
                 if (MainUtils.VM.MainBord.WhiteScore < MainUtils.VM.MainBord.BlackScore)
                     MainUtils.VM.BlackScore = (MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore);
@@ -605,7 +612,7 @@ namespace ChessCore.Controllers
             // MainUtils.VM.HuntingBoardWhiteImageList = huntingBoardWhiteImageList;
             //  MainUtils.VM.HuntingBoardBlackImageList = huntingBoardBlackImageList;
             //  MainUtils.VM.MovingList = historyList;
-            MainUtils.VM.MainBord.CalculeScores();
+            MainUtils.VM.MainBord.CalculeScores(Utils.ComputerColor);
             //pour les scores
             if (MainUtils.VM.MainBord.WhiteScore < MainUtils.VM.MainBord.BlackScore)
                 MainUtils.VM.BlackScore = (MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore);
@@ -739,14 +746,18 @@ namespace ChessCore.Controllers
 
 
         [HttpPost]
-        public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, string selectedDurationType, int selectedLevel, bool isFullCPU)
+        public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, string selectedDurationType, int selectedLevel, bool isFullCPU,int FullCPUWhiteLevel,int FullCPUBlackLevel)
         {
             ////  GC.Collect();
             //var t_ = selectionLevel;
             // var t_ = isFullCPU;
             MainUtils.IsFullCPU = isFullCPU;
+            MainUtils.FullCPUWhiteLevel = FullCPUWhiteLevel;
+            MainUtils.FullCPUBlackLevel = FullCPUBlackLevel;
+            
+
             if (selectedLevel != -1)
-                MainUtils.DeepLevel = selectedLevel;
+                _CPULevel = _whiteCPULevel= _blackCPULevel = MainUtils.DeepLevel = Utils.DeepLevel = selectedLevel;
             MainUtils.InitialDuration = 0;
             /*if (selectedDurationType != null)
             {
@@ -892,7 +903,7 @@ namespace ChessCore.Controllers
                     return PartialView("Details", vmOld);
 
                 }
-                MainUtils.VM.MainBord.Move(MainUtils.FromGridIndex, MainUtils.ToGridIndex, 0);
+                MainUtils.VM.MainBord.Move(MainUtils.FromGridIndex, MainUtils.ToGridIndex);
                 MainUtils.TurnNumber++;
                 MainUtils.VM.Refresh(MainUtils.VM.MainBord);
                 oldLocationIndex = MainUtils.FromGridIndex;
@@ -1024,7 +1035,9 @@ namespace ChessCore.Controllers
                 System.IO.File.WriteAllText($"{dirLocalPath}/BLACKList.txt", pawnStringBlack);
 
                 //historique
-                var movingListStr = String.Join("\n", MainUtils.MovingList); //MainUtils.MovingList.Join( ("\\n");
+                var movingListStr = string.Empty;
+                if(MainUtils.MovingList!=null)
+                    movingListStr = String.Join("\n", MainUtils.MovingList); //MainUtils.MovingList.Join( ("\\n");
                 var historyFileName = $"{dateTimeString}History.txt";
                 System.IO.File.WriteAllText($"{dirLocalPath}/History.txt", movingListStr);
 

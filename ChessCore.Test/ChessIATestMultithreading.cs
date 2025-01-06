@@ -1,12 +1,20 @@
+
+
 using ChessCore.Tools;
 
 namespace ChessCore.Test
 {
     [TestClass]
-    public class ChessIATestMultithreading
+    public class ChessIAClassicTestMultithreading
     {
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
 
+        public ChessIAClassicTestMultithreading()
+        {
+            Utils.DeepLevel = 3;
+        }
+            
+        
         [TestMethod]
         public void MTT00aLeKnigntBlanchNeDoitPasAttaquer()
         {
@@ -87,7 +95,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
@@ -181,7 +189,7 @@ namespace ChessCore.Test
             var pawnList = new List<Pawn>();
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 // var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true,null);
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -275,7 +283,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
 
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -367,7 +375,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
@@ -390,7 +398,7 @@ namespace ChessCore.Test
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final de la reine Noir ne doit pas etre "g5"
@@ -477,7 +485,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final du rook blanch  ne doit pas etre "a7"
@@ -563,7 +571,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final du rook blanch  ne doit pas etre "a7"
@@ -648,7 +656,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final du rook blanch  ne doit pas etre "a7"
@@ -676,7 +684,7 @@ namespace ChessCore.Test
             var testName = "T05LeFousBlacheDoitSeSaccrifierPourProtegerLeRook";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c4");
@@ -757,7 +765,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 // Assert.AreEqual(nodeResult.AsssociateNodeChess2.RandomEquivalentList.Count, 0);
@@ -835,7 +843,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Position final blanche  doit etre "d8" ou "e8"
@@ -866,7 +874,7 @@ namespace ChessCore.Test
             var testName = "T11LaReineBlancNeDoitPasAttaqueLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
@@ -883,15 +891,17 @@ namespace ChessCore.Test
             var testName = "T15LaReineBlanchNeDoitPasPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
-                chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
+                
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
             }
         }
+
+       
 
         [TestMethod]
         public void MTT16SeulLePionDoitProtegerLeRoiNoir()
@@ -902,7 +912,7 @@ namespace ChessCore.Test
             var testName = "T16SeulLePionDoitProtegerLeRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Assert.AreEqual(nodeResult.Location, "g4");
@@ -927,7 +937,7 @@ namespace ChessCore.Test
             var testName = "T17LeRoirNoirNeDoitPasAttaquer";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -958,7 +968,7 @@ namespace ChessCore.Test
             var testName = "T18suiteDe16LeCavalierNoirDoitPrendreLeFouBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -991,7 +1001,7 @@ namespace ChessCore.Test
             var testName = "T19bLeFouBlanchDoitnenacerLaReineOulePionDoitProtegerLeTour";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1032,7 +1042,7 @@ namespace ChessCore.Test
             var testName = "T20LePionDoitPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "d3");
@@ -1057,7 +1067,7 @@ namespace ChessCore.Test
             var testName = "T21LaNoirBlancheDoitSeMettreEnD3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1082,7 +1092,7 @@ namespace ChessCore.Test
             var testName = "T22LeBishopOuLeRoiNoirDoitPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 // chess2UtilsNotStatic.DeepLevel = 5;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -1107,7 +1117,7 @@ namespace ChessCore.Test
             var testName = "T23LeCavalierNoirNeDoitPasMenacerLeRoiBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b3");
@@ -1128,7 +1138,7 @@ namespace ChessCore.Test
             var testName = "T24LeCavalierNoirNeDoitPasBouger";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1148,7 +1158,7 @@ namespace ChessCore.Test
             var testName = "T25LeCavalierNoirDoitMenacerLeRoiBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1179,7 +1189,7 @@ namespace ChessCore.Test
             var testName = "T26LeCavalierNoirDoitBouger";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1196,7 +1206,7 @@ namespace ChessCore.Test
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1230,7 +1240,7 @@ namespace ChessCore.Test
             var testName = "T27LeBishopBlancDoitSeMettreEnA8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.IsTrue(nodeResult.BestChildPosition == "a8" || nodeResult.BestChildPosition == "g7");
@@ -1252,7 +1262,7 @@ namespace ChessCore.Test
             var testName = "T28LePionNoirDoitPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "d6");
@@ -1277,7 +1287,7 @@ namespace ChessCore.Test
             var testName = "T29PourProtegerDEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1308,7 +1318,7 @@ namespace ChessCore.Test
             var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g4");
@@ -1331,7 +1341,7 @@ namespace ChessCore.Test
             var testName = "T31LaReineNoirDoitPrendreLaReineBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "a8");
@@ -1350,7 +1360,7 @@ namespace ChessCore.Test
             var testName = "T32LaReineBlanchDoitAttaquerEnB7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
@@ -1370,7 +1380,7 @@ namespace ChessCore.Test
             var testName = "T33LaReineBlanchDoitAttaquerEnB7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
@@ -1389,7 +1399,7 @@ namespace ChessCore.Test
             var testName = "T35LePoinNoirNeDoitPasSeMettreEnG5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
@@ -1414,7 +1424,7 @@ namespace ChessCore.Test
             var testName = "T36LePoinNoirNeDoitPasSeMettreEnD6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "d6");
@@ -1436,7 +1446,7 @@ namespace ChessCore.Test
             var testName = "T37LaTourDoitEtreProtegE";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "c6");
@@ -1454,7 +1464,7 @@ namespace ChessCore.Test
             var testName = "T38LePionNoirNeDoitPasSeMettreSurA3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1471,7 +1481,7 @@ namespace ChessCore.Test
             var testName = "T39LePionNoirNeDoitPasSeMettreSurC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1488,7 +1498,7 @@ namespace ChessCore.Test
             var testName = "T40LePionNoirNeDoitPasSeMettreSurA2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1505,7 +1515,7 @@ namespace ChessCore.Test
             var testName = "T41LaReineBlancheDoitMenacerLeRoiEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -1527,7 +1537,7 @@ namespace ChessCore.Test
             var testName = "T44LePionNoirPasRamdumeB5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2029,7 +2039,7 @@ namespace ChessCore.Test
             var testName = "T49LesNoirsDoiventprotegerLeRoiMenacE";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2051,7 +2061,7 @@ namespace ChessCore.Test
             var testName = "T50LaToureNoirDoitSeMettreEnA7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "a7");
@@ -2069,7 +2079,7 @@ namespace ChessCore.Test
             var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c2");
@@ -2087,7 +2097,7 @@ namespace ChessCore.Test
             var testName = "T53LaPositionFinalNoirNeDoitEtreE6OuE5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 //var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2112,7 +2122,7 @@ namespace ChessCore.Test
             var testName = "T54ALesBlanchDoiventEviterLEvolutionDuPion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 //var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2144,7 +2154,7 @@ namespace ChessCore.Test
             var testName = "T54BLaTourBlancDoitDoitSeMettreEnA2CarB1EstDejaMenaC";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2163,7 +2173,7 @@ namespace ChessCore.Test
             var testName = "T54CLePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
@@ -2180,7 +2190,7 @@ namespace ChessCore.Test
             var testName = "T54ELePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2196,7 +2206,7 @@ namespace ChessCore.Test
             var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2237,7 +2247,7 @@ namespace ChessCore.Test
             var testName = "T54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 //var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2262,7 +2272,7 @@ namespace ChessCore.Test
             var testName = "T54GLaReinneNoirDoitAttaquerEnC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 //var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2476,7 +2486,7 @@ namespace ChessCore.Test
             var testName = "T54GLaReinneNoirDoitAttaquerEnC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "d5");
@@ -2495,7 +2505,7 @@ namespace ChessCore.Test
             var testName = "T59FinDePartieEviterMortDuRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -2530,7 +2540,7 @@ namespace ChessCore.Test
             var testName = "T61aPourBestSpecificPosition3White";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2555,7 +2565,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2580,7 +2590,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("e6", nodeResult.Location);
@@ -2674,7 +2684,7 @@ namespace ChessCore.Test
 
 
             var pawnList = new List<Pawn>(); pawnList.AddRange(pawnListWhite); pawnList.AddRange(pawnListBlack);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g7");
@@ -2691,7 +2701,7 @@ namespace ChessCore.Test
             var testName = "T62LePionNoirDoitAttaqueLaReineBlancEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2715,7 +2725,7 @@ namespace ChessCore.Test
             var testName = "T65LeRookBlanchNeDoitPasSeMettreEnA6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
@@ -2739,7 +2749,7 @@ namespace ChessCore.Test
             var testName = "T67EchecBlancLeRoiDoitSeMettreEnE1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("e1", nodeResult.BestChildPosition);
@@ -2760,7 +2770,7 @@ namespace ChessCore.Test
             var testName = "T67SuiteLaReineNoirDoitSeMettreEnE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("h2", nodeResult.Location);
@@ -2783,7 +2793,7 @@ namespace ChessCore.Test
             var testName = "T68LeRoiBlanchNeDoitPasSeMettreEnG6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
@@ -2801,7 +2811,7 @@ namespace ChessCore.Test
             var testName = "T69LeRoiBanchNeDoitPasPrendreLePionEnG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2841,7 +2851,7 @@ namespace ChessCore.Test
             var testName = "T71LeRoisBlantNeDoitPasPrendreLeRookEnF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f5");
@@ -2859,7 +2869,7 @@ namespace ChessCore.Test
             var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2886,7 +2896,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2912,7 +2922,7 @@ namespace ChessCore.Test
             var testName = "T73LeFouNoirNeDoitPasPrendreLePionEnB2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2941,7 +2951,7 @@ namespace ChessCore.Test
             var testName = "T74LesBlanchsDoiventPrendreLePionEnD4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2964,7 +2974,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -2993,7 +3003,7 @@ namespace ChessCore.Test
             var testName = "T79LeRoisBlanchDoitSeMettreEnG1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -3019,7 +3029,7 @@ namespace ChessCore.Test
             var testName = "T80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3041,7 +3051,7 @@ namespace ChessCore.Test
             var testName = "T81LeCavalierBlanchNeDoitPasPrendreLaReinEtLesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3115,7 +3125,7 @@ namespace ChessCore.Test
             Utils.MovingList.Add("26(K|W)>34(__)");
             Utils.MovingList.Add("53(Q|B)>61(__)");
             Utils.MovingList.Add("34(K|W)>26(__)");
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3143,7 +3153,7 @@ namespace ChessCore.Test
             var testName = "T84EchecEtMatNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3167,7 +3177,7 @@ namespace ChessCore.Test
             var testName = "T84EchecEtMatNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //  var randomList = nodeResult.AsssociateNodeChess2.RandomEquivalentList;
@@ -3190,7 +3200,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3216,7 +3226,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3239,7 +3249,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "f2");
@@ -3269,7 +3279,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3292,7 +3302,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
 
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3316,7 +3326,7 @@ namespace ChessCore.Test
             var testName = "T88LesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3343,7 +3353,7 @@ namespace ChessCore.Test
             var testName = "T89LeFouNoirNeDoitPasSeMettreEnB4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3398,7 +3408,7 @@ namespace ChessCore.Test
             var testName = "T91LaReineNoirDoitSeMettreEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3429,7 +3439,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 //Le poin doit pas se mettre en d4
@@ -3453,7 +3463,7 @@ namespace ChessCore.Test
             var testName = "T92ABlackG8ToH8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3476,7 +3486,7 @@ namespace ChessCore.Test
             var testName = "T92BLeCavalierNoirDoitPartieDeF6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3496,7 +3506,7 @@ namespace ChessCore.Test
             var testName = "T92CBlackC5toA3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3522,7 +3532,7 @@ namespace ChessCore.Test
             var testName = "T93ALaReineNoirDoitSeMettreEnG3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3548,7 +3558,7 @@ namespace ChessCore.Test
             var testName = "T94LeCavalierNoirDoitPasPartirDeF3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
 
@@ -3572,7 +3582,7 @@ namespace ChessCore.Test
             var testName = "T95LaReineNoirDoitSeMettreEnH1PourGagnier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("f2", nodeResult.Location);//h1
@@ -3596,7 +3606,7 @@ namespace ChessCore.Test
             var testName = "T95SuiteWhiteE4ToG3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("g3", nodeResult.BestChildPosition);//h1
@@ -3637,7 +3647,7 @@ namespace ChessCore.Test
             var testName = "T95SuiteSuiteBlackWin";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual("h1", nodeResult.BestChildPosition);
@@ -3655,7 +3665,7 @@ namespace ChessCore.Test
             var testName = "T95BLeCavalierBlanchDoitAttaquerEnF2";//WHITE MUST LOSE
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 // Assert.AreEqual(nodeResult.BestChildPosition, "f2");
@@ -3680,7 +3690,7 @@ namespace ChessCore.Test
             var testName = "T96LeCavalierBlanchDoitSePettreEnC7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.BestChildPosition, "c7");
@@ -3706,7 +3716,7 @@ namespace ChessCore.Test
             var testName = "T97AWhitePourAviterT97WhiteNotF1ToG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g2");
@@ -3731,7 +3741,7 @@ namespace ChessCore.Test
             var testName = "T97BBlackWhinG4ToE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.Location, "g4");
@@ -3757,7 +3767,7 @@ namespace ChessCore.Test
             var testName = "T98BlackNotNullE8ToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 Assert.AreEqual(nodeResult.Location, "e8");
@@ -3782,7 +3792,7 @@ namespace ChessCore.Test
             var testName = "T99WhiteNotC7ToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
@@ -3809,7 +3819,7 @@ namespace ChessCore.Test
             var testName = "T100BlackG6ToF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
@@ -3826,7 +3836,7 @@ namespace ChessCore.Test
             var testName = "T105BlackC6ToD4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
@@ -3856,7 +3866,7 @@ namespace ChessCore.Test
             var testName = "T106LaCavalierNoirDoitPrendreLaReineEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -3872,7 +3882,7 @@ namespace ChessCore.Test
             var testName = "T107LaReinneNoirDoitPartirDeD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -3888,7 +3898,7 @@ namespace ChessCore.Test
             var testName = "T108WhiteF2ToF4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -3904,7 +3914,7 @@ namespace ChessCore.Test
             var testName = "T109BlackNotB6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -3920,7 +3930,7 @@ namespace ChessCore.Test
             var testName = "T110WhiteKingNoToE1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -3937,7 +3947,7 @@ namespace ChessCore.Test
             var testName = "T111BlackNotToF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chess2UtilsNotStatic = new Chess2UtilsNotStatic())
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
             {
                 chess2UtilsNotStatic.DeepLevel = 4; Utils.DeepLevel = 4;
                 var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
@@ -3946,6 +3956,22 @@ namespace ChessCore.Test
             }
         }
 
+
+        [TestMethod]
+        public void MTT112WhiteLePoinA3NeDoitPasPrendreLePionB4()
+        {
+
+            var computerColore = "White";
+            var testName = "T112WhiteLePoinA3NeDoitPasPrendreLePionB4";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chess2UtilsNotStatic = new Chess2UtilsNotStaticClassic())
+            {
+                var nodeResult = chess2UtilsNotStatic.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnList(pawnList), true, null);
+                // Assert.AreEqual(nodeResult.AsssociateNodeChess2.RandomEquivalentList.Count, 0);
+                Assert.AreNotEqual("b4", nodeResult.BestChildPosition);
+            }
+        }
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]

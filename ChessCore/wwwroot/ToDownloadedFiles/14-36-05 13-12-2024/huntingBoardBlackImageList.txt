@@ -1,0 +1,2 @@
+../../Images/QueenBlack.png
+../../Images/SimplePawnBlack.png

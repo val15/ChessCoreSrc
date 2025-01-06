@@ -22,9 +22,11 @@
         var duration = $('#duration').val();
         //var selectedLevel = $('#level').val();
         //TODO remmetre le leve
-        var selectedLevel = '4';
+        var selectedLevel = $('#level').val();
+        var FullCPUBlackLevel = $('#FullCPUBlackLevel').val();
+        var FullCPUWhiteLevel = $('#FullCPUWhiteLevel').val();
         //alert(computerColor);
-        var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0, CPUColor: computerColor, selectedDurationType: duration, selectedLevel: selectedLevel, isFullCPU: isFullCPU };
+        var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0, CPUColor: computerColor, selectedDurationType: duration, selectedLevel: selectedLevel, isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel };
         $.ajax({
             type: "POST",
             url: "/Home/Details",
@@ -294,11 +296,21 @@
     </select>*@
     <label for="duration">duration:</label>
     <select id="duration">
+        <option  value="24h">24h</option>
         <option selected value="1h">1h</option>
         <option value="30mn">30mn</option>
         <option value="15mn">15mn</option>
 
     </select>
+
+    <label for="level">level:</label>
+    <select id="level">
+        <option value="1">1</option>
+        <option selected value="3">3</option>
+        <option value="5">5</option>
+    </select>
+
+    
 
     <label for="color">Computer color:</label>
     <select id="computerColor">
@@ -308,7 +320,19 @@
     <input id="isActiveFullCPU"
            name="isActiveFullCPU"
            type="checkbox" />
-    <label>Full CPU </label>
+    <label>Full CPU : </label>
+    <label for="FullCPUWhiteLevel">White level:</label>
+    <select id="FullCPUWhiteLevel">
+        <option value="1">1</option>
+        <option selected value="3">3</option>
+        <option value="5">5</option>
+    </select>
+    <label for="FullCPUBlackLevel">Black level:</label>
+    <select id="FullCPUBlackLevel">
+        <option value="1">1</option>
+        <option selected value="3">3</option>
+        <option value="5">5</option>
+    </select>
     <button onclick="start()">play</button>
 </div>
 <div id="dvPartial"></div>

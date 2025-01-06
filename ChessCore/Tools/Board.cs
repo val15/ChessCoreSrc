@@ -70,6 +70,7 @@ namespace ChessCore.Tools
         /// </summary>
         public List<int> GetCasesIndexForColor(string colore)
         {
+            colore = colore.First().ToString();
             var indexAndCaseList = new List<IndexAndCase>();
 
             for (int i = 0; i < _cases.Count(); i++)
@@ -152,6 +153,60 @@ namespace ChessCore.Tools
 
         #region Methodes
 
+        /// <summary>
+        /// Vérifie si la partie est terminée (par exemple, un roi est capturé ou aucun coup n'est possible).
+        /// </summary>
+        public bool IsGameOver()
+        {
+            // Exemple simplifié : la partie est terminée si un des rois n'est plus sur le plateau.
+            var whiteKingIndex = Array.IndexOf(_cases, "K|W");
+            var blackKingIndex = Array.IndexOf(_cases, "K|B");
+
+            return whiteKingIndex == -1 || blackKingIndex == -1;
+        }
+
+        /// <summary>
+        /// Retourne tous les mouvements possibles pour une couleur donnée.
+        /// </summary>
+        public List<PossibleMove> GetPossibleMovesForColor(string color)
+        {
+            var moves = new List<PossibleMove>();
+            var indices = GetCasesIndexForColor(color);
+
+            foreach (var index in indices)
+            {
+                moves.AddRange(GetPossibleMoves(index, level: 1)); // Utilise la méthode existante pour obtenir les mouvements possibles.
+            }
+
+            return moves;
+        }
+
+        /// <summary>
+        /// Clone le plateau et effectue un mouvement donné.
+        /// </summary>
+        public Board CloneAndMove(int fromIndex, int toIndex, int depth)
+        {
+            var clonedBoard = new Board(this); // Clone le plateau.
+            clonedBoard.Move(fromIndex, toIndex); // Applique le mouvement.
+            return clonedBoard;
+        }
+
+        /// <summary>
+        /// Calcule le score du plateau pour une couleur donnée.
+        /// </summary>
+        public int CalculateBoardScore(string color, NodeChess2 node = null)
+        {
+            // Convertir la couleur en format court ("W" ou "B")
+            color = color.First().ToString();
+
+            // Appeler la méthode CalculeScores avec le nœud actuel
+            CalculeScores(color,node);
+
+            // Retourner la différence des scores en fonction de la couleur
+            return color == "W" ? WhiteScore - BlackScore : BlackScore - WhiteScore;
+        }
+
+
         /*tsiry;03-01-2022
          * */
         public void LoadFromDirectorie(string dirLocation)
@@ -217,80 +272,215 @@ namespace ChessCore.Tools
 
         }
 
-        public void CalculeScoresOld()
+        public void CalculeScoresERROR(string color,NodeChess2 node = null)
         {
-            var blackBonus = 0;
-            var whiteBonus = 0;
 
-            //  int whiteBonus = 0;
-            object lockObject = new object(); // Verrou pour synchroniser l'accès à la variable whiteBonus
+            color = color.First().ToString();
+            // Initialisation des scores
+            int whiteBonus = 0;
+            int blackBonus = 0;
 
-            Parallel.ForEach(Utils.GetEvolutionPawnIndexWhite(), (evolutionPawnIndex, state) =>
+            // Détection des pions évolutifs
+            if (Utils.GetEvolutionPawnIndexWhite().Any(index => _cases[index].Contains("P")))
+                whiteBonus += 90;
+
+            if (Utils.GetEvolutionPawnIndexBlack().Any(index => _cases[index].Contains("P")))
+                blackBonus += 90;
+
+            // Compte des pièces et calcul des scores
+            WhiteScore = CalculateScore("W") + whiteBonus;
+            BlackScore = CalculateScore("B") + blackBonus;
+
+            // Calcul des menaces si le nœud est fourni
+            if (node != null && node.Level < Utils.DeepLevel && Utils.DeepLevelPrime)
             {
-                var contains = _cases[evolutionPawnIndex];
-                if (contains.Contains("P"))
-                {
-                    lock (lockObject) // Verrouillage de la section critique pour éviter les accès concurrents à la variable whiteBonus
-                    {
-                        whiteBonus = 90;
-                    }
-                    state.Break(); // Sortie du Parallel.ForEach dès qu'un pion blanc est trouvé
-                }
-            });
-            lockObject = new object(); // Verrou pour synchroniser l'accès à la variable blackBonus
+                EvaluateThreats(node);
+            }
 
-            Parallel.ForEach(Utils.GetEvolutionPawnIndexBlack(), (evolutionPawnIndex, state) =>
-            {
-                var contains = _cases[evolutionPawnIndex];
-                if (contains.Contains("P"))
-                {
-                    lock (lockObject) // Verrouillage de la section critique pour éviter les accès concurrents à la variable blackBonus
-                    {
-                        blackBonus = 90;
-                    }
-                    state.Break(); // Sortie du Parallel.ForEach dès qu'un pion noir est trouvé
-                }
-            });
-            var whitePawnNumber = _cases.Count(x => x == "P|W");
-            var blackPawnNumber = _cases.Count(x => x == "P|B");
-            var whiteBishopNumber = _cases.Count(x => x == "B|W");
-            var blackBishopNumber = _cases.Count(x => x == "B|B");
-            var whiteKnightNumber = _cases.Count(x => x == "C|W");
-            var blackKnightNumber = _cases.Count(x => x == "C|B");
-            var whiteRookNumber = _cases.Count(x => x == "T|W");
-            var blackRooktNumber = _cases.Count(x => x == "T|B");
-            var whiteQueenNumber = _cases.Count(x => x == "Q|W");
-            var blackQueenNumber = _cases.Count(x => x == "Q|B");
-            var whiteKingNumber = _cases.Count(x => x == "K|W");
-            var blackKingNumber = _cases.Count(x => x == "K|B");
+            // Calcul du poids final
+            if (color == "B")
+                Weight = BlackScore - WhiteScore;
+            else
+                Weight = WhiteScore - BlackScore;
 
-            WhiteScore =
-                 whitePawnNumber * 10
-                 + whiteBishopNumber * 30
-                  + whiteKnightNumber * 30
-                 + whiteRookNumber * 50
-                 + whiteQueenNumber * 90
-             + whiteKingNumber * 100
-            + whiteBonus;
-            BlackScore =
-              blackPawnNumber * 10
-              + blackBishopNumber * 30
-              + blackKnightNumber * 30
-              + blackRooktNumber * 50
-              + blackQueenNumber * 90
-              + blackKingNumber * 100
-              + blackBonus;
-
-
-
+            // Différence absolue pour information
             Diff = Math.Abs(WhiteScore - BlackScore);
-            if (Utils.ComputerColor == "B")
+        }
+        public void CalculeScores(string color,NodeChess2 node = null)
+        {
+            int whiteBonus = 0;
+            int blackBonus = 0;
+
+            // Vérifie la présence de pions blancs évolutifs
+            bool hasWhiteEvolutionPawn = Utils.GetEvolutionPawnIndexWhite().Any(evolutionPawnIndex => _cases[evolutionPawnIndex].Contains("P"));
+            if (hasWhiteEvolutionPawn)
+                whiteBonus = 90;
+
+            // Vérifie la présence de pions noirs évolutifs
+            bool hasBlackEvolutionPawn = Utils.GetEvolutionPawnIndexBlack().Any(evolutionPawnIndex => _cases[evolutionPawnIndex].Contains("P"));
+            if (hasBlackEvolutionPawn)
+                blackBonus = 90;
+
+            // Compte des pièces
+            int whitePawnNumber = _cases.Count(x => x == "P|W");
+            int blackPawnNumber = _cases.Count(x => x == "P|B");
+            int whiteBishopNumber = _cases.Count(x => x == "B|W");
+            int blackBishopNumber = _cases.Count(x => x == "B|B");
+            int whiteKnightNumber = _cases.Count(x => x == "C|W");
+            int blackKnightNumber = _cases.Count(x => x == "C|B");
+            int whiteRookNumber = _cases.Count(x => x == "T|W");
+            int blackRookNumber = _cases.Count(x => x == "T|B");
+            int whiteQueenNumber = _cases.Count(x => x == "Q|W");
+            int blackQueenNumber = _cases.Count(x => x == "Q|B");
+            int whiteKingNumber = _cases.Count(x => x == "K|W");
+            int blackKingNumber = _cases.Count(x => x == "K|B");
+
+            // Calcul des scores basiques
+            WhiteScore = whitePawnNumber * 10
+                         + whiteBishopNumber * 30
+                         + whiteKnightNumber * 30
+                         + whiteRookNumber * 50
+                         + whiteQueenNumber * 90
+                         + whiteKingNumber * 100
+                         + whiteBonus;
+
+            BlackScore = blackPawnNumber * 10
+                         + blackBishopNumber * 30
+                         + blackKnightNumber * 30
+                         + blackRookNumber * 50
+                         + blackQueenNumber * 90
+                         + blackKingNumber * 100
+                         + blackBonus;
+
+            // Analyse des menaces (nœud fourni ou plateau actuel)
+            var allWhitePieces = GetCasesIndexForColor("W");
+            var allBlackPieces = GetCasesIndexForColor("B");
+
+            foreach (var whiteIndex in allWhitePieces)
+            {
+                if (TargetIndexIsMenaced(this, "W", "B", whiteIndex) > 0)
+                {
+                    int pieceValue = GetValue(GetCaseInIndex(whiteIndex));
+                    BlackScore += pieceValue / 2; // Les noirs profitent de la menace
+                    WhiteScore -= pieceValue / 2; // Les blancs sont pénalisés
+                }
+            }
+
+            foreach (var blackIndex in allBlackPieces)
+            {
+                if (TargetIndexIsMenaced(this, "B", "W", blackIndex) > 0)
+                {
+                    int pieceValue = GetValue(GetCaseInIndex(blackIndex));
+                    WhiteScore += pieceValue / 2; // Les blancs profitent de la menace
+                    BlackScore -= pieceValue / 2; // Les noirs sont pénalisés
+                }
+            }
+
+            // Calcul du poids final
+            if (color == "B")
                 Weight = BlackScore - WhiteScore;
             else
                 Weight = WhiteScore - BlackScore;
         }
+        public int TargetIndexIsMenaced(Board board, string targetColor, string opponentColor, int targetIndex)
+        {
+            // Récupérer toutes les positions des pièces de l'adversaire
+            var opponentPieces = board.GetCasesIndexForColor(opponentColor);
 
-        public void CalculeScores(NodeChess2 node = null)
+            int menaceScore = 0;
+
+            foreach (var opponentIndex in opponentPieces)
+            {
+                // Récupérer les mouvements possibles pour la pièce adverse
+                var possibleMoves = board.GetPossibleMoves(opponentIndex, 1);
+
+                foreach (var move in possibleMoves)
+                {
+                    // Vérifie si le mouvement menace la position cible
+                    if (move.ToIndex == targetIndex)
+                    {
+                        menaceScore += board.GetValue(board.GetCaseInIndex(opponentIndex));
+                        break; // Une seule menace par pièce suffit
+                    }
+                }
+            }
+
+            return menaceScore; // Retourne la somme des valeurs des pièces menaçant la cible
+        }
+
+
+        /// <summary>
+        /// Calcule le score d'une couleur donnée en fonction des pièces présentes sur le plateau.
+        /// </summary>
+        private int CalculateScore(string color)
+        {
+            int score = 0;
+            foreach (var piece in _cases)
+            {
+                if (!piece.Contains($"|{color}")) continue;
+
+                string pieceType = piece.Split('|')[0]; // Extrait le type de la pièce (P, T, B, etc.)
+                score += GetValue(pieceType);
+            }
+            return score;
+        }
+
+        /// <summary>
+        /// Évalue les menaces sur les pièces pour les deux couleurs.
+        /// </summary>
+        private void EvaluateThreats(NodeChess2 node)
+        {
+            var opponentColor = Utils.ComputerColor == "W" ? "B" : "W";
+
+            // Menaces sur les pièces blanches
+            foreach (var index in GetCasesIndexForColor("W"))
+            {
+                int threatLevel = node.TargetIndexIsMenaced(this, "W", "B", index);
+                if (threatLevel > 0)
+                {
+                    int pieceValue = GetValue(GetCaseInIndex(index));
+                    BlackScore += pieceValue / 10; // Ajustez le poids des menaces ici
+                }
+            }
+
+            // Menaces sur les pièces noires
+            foreach (var index in GetCasesIndexForColor("B"))
+            {
+                int threatLevel = node.TargetIndexIsMenaced(this, "B", "W", index);
+                if (threatLevel > 0)
+                {
+                    int pieceValue = GetValue(GetCaseInIndex(index));
+                    WhiteScore += pieceValue / 10; // Ajustez le poids des menaces ici
+                }
+            }
+        }
+
+        /// <summary>
+        /// Retourne la valeur d'une pièce donnée.
+        /// </summary>
+        private int GetValue(string piece)
+        {
+            return piece switch
+            {
+                "P" => 10, // Pion
+                "T" => 50, // Tour
+                "C" => 30, // Cavalier
+                "B" => 30, // Fou
+                "Q" => 90, // Reine
+                "K" => 100, // Roi
+                _ => 0
+            };
+        }
+
+
+
+
+
+
+
+
+
+        public void CalculeScoresOLD(NodeChess2 node = null)
         {
             int whiteBonus = 0;
             int blackBonus = 0;
@@ -384,7 +574,7 @@ namespace ChessCore.Tools
         }
 
 
-        public int GetValue(string caseContaint)
+        public int GetValueOld(string caseContaint)
         {
             if (caseContaint.Contains("P|"))
                 return 10;
@@ -572,7 +762,7 @@ namespace ChessCore.Tools
             }
         }
 
-        public void Move(int initialIndex, int destinationIndex, int level)
+        public void Move(int initialIndex, int destinationIndex)
         {
             var initialCase = _cases[initialIndex];
             var destinationCase = _cases[destinationIndex];
@@ -649,7 +839,7 @@ namespace ChessCore.Tools
             //}
             _cases[initialIndex] = "__";
 
-            Level = level;
+           // Level = level;
             //pour T35
             if (Level == 1)
                 if (Utils.IsMenaced(destinationIndex, this, Utils.ComputerColor))
@@ -671,24 +861,24 @@ namespace ChessCore.Tools
             //on depace aussi le rook en 63 ver 61
             if (initialIndex == 60 && destinationIndex == 62)
             {
-                Move(63, 61, 0);
+                Move(63, 61);
             }
             // si le point de depar et le rois : 60 et point d'arriver est 58 
             //=>roc court pour les blancs
             //on depace aussi le rook en 56 ver 59
             if (initialIndex == 60 && destinationIndex == 58)
             {
-                Move(56, 59, 0);
+                Move(56, 59);
             }
 
 
             if (initialIndex == 4 && destinationIndex == 6)
             {
-                Move(7, 5, 0);
+                Move(7, 5);
             }
             if (initialIndex == 4 && destinationIndex == 2)
             {
-                Move(0, 3, 0);
+                Move(0, 3);
             }
 
             //Evolution

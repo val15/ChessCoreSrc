@@ -754,6 +754,66 @@ namespace ChessCore.Tools
             }
 
         }
+        public static BoardGPT GenerateBoardFormPawnListGPT(List<Pawn> pawns)
+        {
+
+            try
+            {
+                var board = new BoardGPT();
+                foreach (var pawn in pawns)
+                {
+                    if (String.IsNullOrEmpty(pawn.Location))
+                        continue;
+                    var index = Coord.ToList().IndexOf(pawn.Location);
+                    if (index == -1)
+                        continue;
+                    var color = pawn.Colore[0].ToString();
+                    var name = "P";
+                    //Pawn
+                    //SimplePawn => P
+                    //Knight => C
+                    //Bishop => B
+                    //Rook => T
+                    //Queen => Q
+                    //King => K
+
+                    //Color
+                    //Black => B
+                    //White => W
+                    switch (pawn.Name)
+                    {
+                        case "Knight":
+                            name = "C";
+                            break;
+                        case "Bishop":
+                            name = "B";
+                            break;
+                        case "Rook":
+                            name = "T";
+                            break;
+                        case "Queen":
+                            name = "Q";
+                            break;
+                        case "King":
+                            name = "K";
+                            break;
+                    }
+
+
+
+                    board.InsertPawn(index, name, color);
+                }
+                //  board.CalculeScores();
+                board.Print();
+                return board;
+            }
+            catch (Exception ex)
+            {
+                Utils.WritelineAsync(ex.ToString());
+                return null;
+            }
+
+        }
 
         /*tsiry;19-11-2021
          * pour generer PawnList à part des caseList
@@ -826,7 +886,7 @@ namespace ChessCore.Tools
         {
             var resultBorad = new Board(originalBord);
 
-            resultBorad.Move(initialIndex, destinationIndex, level);
+            resultBorad.Move(initialIndex, destinationIndex);
 
             //évaluation des scores
             //resultBorad.CalculeScores();
