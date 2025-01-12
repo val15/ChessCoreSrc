@@ -1,0 +1,9 @@
+Bishop;c5;White;False;False;False;False
+SimplePawn;b4;White;False;False;False;False
+SimplePawn;d4;White;False;False;False;False
+SimplePawn;g4;White;False;False;False;False
+SimplePawn;h4;White;False;False;False;False
+SimplePawn;c3;White;False;False;False;False
+Queen;h3;White;False;False;False;False
+King;c1;White;False;False;False;False
+Knight;g1;White;False;False;False;False

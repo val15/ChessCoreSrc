@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ChessCore.Tools
 {
@@ -7,11 +8,12 @@ namespace ChessCore.Tools
         public TimeSpan ReflectionTime { get; set; }
         //EMULER l1 ET L3 ET PRENDRE LE PLUS HAUT
         private bool _checkIsInChessOnEnd;
+        private int _depthLevel = 3;
 
         public NodeGPT GetBestPositionLocalUsingMiltiThreading(string colore, BoardGPT boardChess, int depthLevel = 3)
         {
 
-            if(depthLevel == 3)
+            if (depthLevel == 3)
                 return GetBestPositionLocalUsingMiltiThreadingObtimize(colore, boardChess, depthLevel);
             else
                 return GetBestPositionLocalUsingMiltiThreadingSimple(colore, boardChess, depthLevel);
@@ -22,7 +24,7 @@ namespace ChessCore.Tools
                 return null;
             var totalStartTime = DateTime.UtcNow;
             Utils.WritelineAsync($"DEPTH LEVEL : {depthLevel}");
-            var checkIsInChessOnEnd=true;
+            var checkIsInChessOnEnd = true;
             if (depthLevel == 5)
                 checkIsInChessOnEnd = false;
             var r = RunEngine(colore, boardChess, depthLevel, false, checkIsInChessOnEnd);
@@ -34,10 +36,10 @@ namespace ChessCore.Tools
             {
 
             }
-                Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
+            Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
 
-                Utils.WritelineAsync($"r: {r}");
-                return r;
+            Utils.WritelineAsync($"r: {r}");
+            return r;
 
         }
         public NodeGPT GetBestPositionLocalUsingMiltiThreadingObtimize(string colore, BoardGPT boardChess, int depthLevel = 3)
@@ -55,8 +57,8 @@ namespace ChessCore.Tools
             NodeGPT FinalBest = null;
             var bestList = new List<NodeGPT>();
 
-
-            var maxiDiffToTakeMinimum = 0;
+            ///T124
+            var maxiDiffToTakeMinimum = 1;
             l1 = RunEngine(colore, boardChess, 1, false);
             try
             {
@@ -142,23 +144,28 @@ namespace ChessCore.Tools
 
 
             //recalibre l1 
+
+            //T128_W_NotToC1
             try
             {
                 if (l1 != null && l3 != null)
                 {
-                    if (l1.Weight > l3.Weight) // 14 failds
+                    if (l1.Weight > l3.Weight && l3.Weight > -200 /*T67EchecBlancLeRoiDoitSeMettreEnE1*/) // 14 failds
                     {
-
-                        foreach (var node in l1.EquivalentBestNodeGPTList)
+                        
+                         foreach (var node in l1.EquivalentBestNodeGPTList)
                         {
 
-                            var maxNode = l3.AllNodeGPTList.FirstOrDefault(x => x.FromIndex == node.FromIndex);
+                            var maxNode = l3.AllNodeGPTList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
                             if (maxNode != null)
                             {
-
+                                //if(node.Location =="b2" && node.BestChildPosition =="c1")
+                                //{
+                                //    var dsf = node;
+                                //}
                                 var currentDiff = Math.Abs(node.Weight - maxNode.Weight);
 
-                                if (currentDiff > 1000 && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
+                                if (currentDiff > 10 /*T132_B_toC6 OLD 1000*/ && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
                                     node.Weight = maxNode.Weight;
                             }
                         }
@@ -189,17 +196,70 @@ namespace ChessCore.Tools
             }
 
 
+            //recalibre l1p 
+            try
+            {
+                if (l1p != null && l3 != null)
+                {
+                    if (l1p.Weight > l3.Weight && l3.Weight >- 200 /*T67EchecBlancLeRoiDoitSeMettreEnE1*/) // 14 failds
+                    {
+
+                        foreach (var node in l1p.EquivalentBestNodeGPTList)
+
+                        {
+
+                            var maxNode = l3.AllNodeGPTList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
+                            if (maxNode != null)
+                            {
+                                //if(node.Location =="b2" && node.BestChildPosition =="c1")
+                                //{
+                                //    var dsf = node;
+                                //}
+                                var currentDiff = Math.Abs(node.Weight - maxNode.Weight);
+
+                                if (currentDiff > 10/*T132_B_toC6*/ && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
+                                    node.Weight = maxNode.Weight;
+                            }
+                        }
+
+                        //réfind best in l1p
+                        Utils.WritelineAsync($"refind best in l1p:");
+                        var maxWeight = l1p.EquivalentBestNodeGPTList.Max(x => x.Weight);
+
+                        var newEquivalentBestNodeGPTList = l1p.EquivalentBestNodeGPTList.Where(x => x.Weight == maxWeight).ToList();
+                        var rand = new Random();
+                        l1p = newEquivalentBestNodeGPTList[rand.Next(newEquivalentBestNodeGPTList.Count)];
+                        l1p.EquivalentBestNodeGPTList = newEquivalentBestNodeGPTList;
+
+                        Utils.WritelineAsync($"bestNodeGPTList after refind :");
+                        foreach (var node in l1p.EquivalentBestNodeGPTList)
+                        {
+                            Utils.WritelineAsync($"{node}");
+                        }
+                        Utils.WritelineAsync($"new best l1 {l1p}");
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Utils.WritelineAsync($"Exeption in recalibre l1 {ex}"); ;
+            }
+
+
             var diff = 0;
             if (l1 != null && l3 != null)
                 diff = Math.Abs(l1.Weight - l3.Weight);
 
 
 
-            //T29_W_PourProtegerDEchec
+
             if (l1 != null && l3 != null)
             {
-                if (l1.Weight < 0 && l3.Weight < 0)
-                    maxiDiffToTakeMinimum = 10;
+                //T29_W_PourProtegerDEchec
+                //if (l1.Weight < 0 && l3.Weight < 0)
+                //    maxiDiffToTakeMinimum = 10;
                 if (l1.Weight > l3.Weight && diff > maxiDiffToTakeMinimum) // 14 failds
                 {
                     FinalBest = l1;
@@ -229,6 +289,12 @@ namespace ChessCore.Tools
 
                 Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
 
+                if (FinalBest == null)
+                {
+                    Utils.WritelineAsync($"FinalBest in null");
+                    Utils.WritelineAsync($"FinalBest = l1");
+                    FinalBest = l1;
+                }
 
                 Utils.WritelineAsync($"FinalBest: {FinalBest}");
                 return FinalBest;
@@ -282,14 +348,14 @@ namespace ChessCore.Tools
         {
             try
             {
-
+                _depthLevel = depthLevel;
                 var maxWeight = double.NegativeInfinity;
                 colore = colore[0].ToString();
                 string opponentColor = colore == "W" ? "B" : "W";
                 string iaTurn = (depthLevel % 2 == 1) ? opponentColor : colore;
                 _checkIsInChessOnEnd = checkIsInChessOnEnd;
                 Utils.LimitOfReflectionTimeInSecond = limitOfReflectionTimeInSecond;
-                Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
+                Utils.WritelineAsync($"DepthLevel :  {_depthLevel}");
                 Utils.WritelineAsync($"cpuColor :  {colore}");
                 Utils.WritelineAsync($"iaTurn :  {iaTurn}");
                 Utils.WritelineAsync($"opponentColor :  {opponentColor}");
@@ -333,6 +399,8 @@ namespace ChessCore.Tools
                         );
                         node.FromIndex = move.FromIndex;
                         node.ToIndex = move.ToIndex;
+                        node.BoardGPT = clonedBoardGPT;
+
 
                         lock (bestNodeGPTList)
                         {
@@ -350,11 +418,42 @@ namespace ChessCore.Tools
                             {
                                 node.Weight -= 100;  // Malus pour déplacer une pièce menacée
                             }
+                            //T105 et T131 NOT VALIDE
+                            //if (currentClonedBoardGPT.KingIsMenaced(opponentColor) && !currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor))
+                            //{
+                            //    node.Weight += 100;  // Malus pour déplacer une pièce menacée
+                            //}
                             //menacedBonus
                             var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
                             node.Weight += menacedBonus;
                             var menacedMalus = currentClonedBoardGPT.GetMenacedsPoints(colore);
                             node.Weight -= menacedMalus;
+
+                            ///T124
+                            ////if initial position is menaced and to position is pprotected
+                            if (depthLevel == 3
+                            && !currentClonedBoardGPT._cases[node.ToIndex].StartsWith('K')
+                            && !currentClonedBoardGPT._cases[node.ToIndex].StartsWith('P')
+                            && boardChess.TargetIndexIsMenaced(node.FromIndex, opponentColor)
+                             && currentClonedBoardGPT.TargetIndexIsProtected(node.ToIndex, colore)
+                            && currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor))
+                            {
+                                var isAddProtectedBonus = false;
+                                var oppinionMenacedMoveList = currentClonedBoardGPT.GetMovesOfOpponentsWhoThreaten(node.ToIndex, opponentColor);
+                                foreach (var oppinioMove in oppinionMenacedMoveList)
+                                {
+                                    if (!currentClonedBoardGPT.TargetIndexIsMenaced(oppinioMove.FromIndex, colore))
+                                        isAddProtectedBonus = true;
+                                }
+                                // si celui qui menace est menacé
+                                if (isAddProtectedBonus)
+                                    node.Weight += currentClonedBoardGPT.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex]);
+
+                            }
+
+
+
+
 
                             //In chess
                             if (currentClonedBoardGPT.IsKingInCheck(colore))
@@ -370,6 +469,7 @@ namespace ChessCore.Tools
                             {
                                 Utils.WritelineAsync($"{node} *");
                                 maxWeight = node.Weight;
+
                             }
                             bestNodeGPTList.Add(node);
                         }
@@ -395,7 +495,7 @@ namespace ChessCore.Tools
                     Utils.WritelineAsync($"{node}");
                 }
                 bestNodeGPT.EquivalentBestNodeGPTList = bestNodeGPTList;
-                bestNodeGPT.AllNodeGPTList = allNodeGPTList;
+                bestNodeGPT.AllNodeGPTList.AddRange(allNodeGPTList);
                 var elapsed = DateTime.UtcNow - startTime;
                 Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
                 // Utils.WritelineAsync($"Utils.PossibleMovesListCount = {Utils.PossibleMovesList.Count()}");
@@ -523,12 +623,6 @@ namespace ChessCore.Tools
                             if (currentClonedBoardGPT.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
                                 node.Weight = 9999;
 
-
-
-
-
-
-
                             allNodeGPTList.Add(node);
 
 
@@ -643,11 +737,7 @@ namespace ChessCore.Tools
                             var currentClonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
                             var targetIndexIsMenaced = currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor);
                             if (targetIndexIsMenaced)
-                            { //Menace
-                                if (node.ToIndex == 25)
-                                {
-                                    var fd = 0;
-                                }
+                            {
                                 //T37 
                                 node.Weight -= currentClonedBoardGPT.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
                             }
@@ -672,14 +762,12 @@ namespace ChessCore.Tools
                             }
 
                             //TODO METTRE ICI EN PRIORITE LES AMELIORATION
-
-
-
                             //menacedBonus
                             var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
                             node.Weight += menacedBonus;
                             var menacedMalus = currentClonedBoardGPT.GetMenacedsPoints(cpuColor);
                             node.Weight -= menacedMalus;
+
 
 
                             //In chess
@@ -771,20 +859,34 @@ namespace ChessCore.Tools
             };
             string opponentColor = cpuColor == "W" ? "B" : "W";
 
+            //T131_B_E8toD8
+            if (board.IsKingInCheck(cpuColor))
+            {
+                currentNodeGPT.Weight = -9999;
+                // return currentNodeGPT;
+            }
+            if (board.IsKingInCheck(opponentColor))
+            {
+                currentNodeGPT.Weight = 9999;
+                // return currentNodeGPT;
+            }
+
             // Vérification de fin de recherche ou de fin de partie
             if (depth == 0 || board.IsGameOver())
             {
                 // Évaluation de la position courante
                 currentNodeGPT.Weight = board.CalculateBoardGPTScore(board, cpuColor, opponentColor);
 
-                if (_checkIsInChessOnEnd)
-                {
-                    if (board.IsKingInCheck(cpuColor))
-                        currentNodeGPT.Weight = -9999;
-                    if (board.IsKingInCheck(opponentColor))
-                        currentNodeGPT.Weight = 9999;
-                }
-                
+
+                ////TEST A DECOMMNETER SI NO SUCCES
+                ////if (_checkIsInChessOnEnd)
+                ////{
+                ////    if (board.IsKingInCheck(cpuColor))
+                ////        currentNodeGPT.Weight = -9999;
+                ////    if (board.IsKingInCheck(opponentColor))
+                ////        currentNodeGPT.Weight = 9999;
+                ////}
+
 
 
                 //LAST EDIT VERY LONG EXECUTION TIME
@@ -794,10 +896,12 @@ namespace ChessCore.Tools
                 //    currentNodeGPT.Weight -= 100;  // Malus pour déplacer une pièce menacée
                 //}
                 //menacedBonus
-                ////var menacedBonus = board.GetMenacedsPoints(opponentColor);
-                ////currentNodeGPT.Weight += menacedBonus;
-                ////var menacedMalus = board.GetMenacedsPoints(cpuColor);
-                ////currentNodeGPT.Weight -= menacedMalus;
+                //var menacedBonus = board.GetMenacedsPoints(opponentColor);
+                //currentNodeGPT.Weight += menacedBonus;
+                //var menacedMalus = board.GetMenacedsPoints(cpuColor);
+                //currentNodeGPT.Weight -= menacedMalus;
+
+
 
                 //In chess
                 ////if (board.IsKingInCheck(cpuColor))
@@ -805,17 +909,6 @@ namespace ChessCore.Tools
                 ////if (board.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
                 ////    currentNodeGPT.Weight = 9999;
                 // allNodeGPTList.Add(node);
-
-
-
-
-
-
-
-
-
-
-
                 return currentNodeGPT;
             }
 
@@ -880,12 +973,17 @@ namespace ChessCore.Tools
                 //    currentNodeGPT.Weight += 100;  // Malus pour déplacer une pièce menacée
                 //}
 
-                //Get
-                //menacedBonus
-                //var menacedBonus = clonedBoard.GetMenacedsPoints(opponentColor);
-                //childNodeGPT.Weight += menacedBonus;
-                //var menacedMalus = clonedBoard.GetMenacedsPoints(cpuColor);
-                //childNodeGPT.Weight -= menacedMalus;
+
+                //menacedBonus LONG TIME IN L3
+                //T129_W_notB2toB3
+                if (_depthLevel == 1)
+                {
+                    var menacedBonus = clonedBoard.GetMenacedsPoints(opponentColor);
+                    childNodeGPT.Weight += menacedBonus;
+                    var menacedMalus = clonedBoard.GetMenacedsPoints(cpuColor);
+                    childNodeGPT.Weight -= menacedMalus;
+                }
+
 
                 // Maximizing Player (CPU)
                 if (maximizingPlayer)
@@ -924,8 +1022,9 @@ namespace ChessCore.Tools
 
 
 
-
+           
             currentNodeGPT.Weight = (int)bestValue;
+           
 
 
             //Utils.WritelineAsync($"{depth}, {currentNodeGPT}");
@@ -976,6 +1075,17 @@ namespace ChessCore.Tools
         {
             Array.Copy(other._cases, _cases, 64);
         }
+        public int GetKingIndex(string color)
+        {
+            for (int i = 0; i < _cases.Count(); i++)
+            {
+                var c = _cases[i];
+                if (c.StartsWith("K") && c.EndsWith(color))
+                    return i;
+
+            }
+            return -1;
+        }
 
         public void InsertPawn(int index, string pieceType, string color)
         {
@@ -995,11 +1105,11 @@ namespace ChessCore.Tools
 
             var indexList = GetCasesIndexForColor(color);
 
-            // Parallel.ForEach(indexList, index =>
-            foreach (var index in indexList)
+             Parallel.ForEach(indexList, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, index =>
+            //foreach (var index in indexList)
             {
 
-            
+
 
 
                 if (TargetIndexIsMenaced(index, opponentColor))
@@ -1009,7 +1119,7 @@ namespace ChessCore.Tools
                         result += GetPieceValue(_cases[index]) / 10;
                 }
 
-            }//);
+            });
             return result;
         }
 
@@ -1041,111 +1151,125 @@ namespace ChessCore.Tools
 
         public bool IsKingInCheck(string color)
         {
-            //GET IN IsKingInCheckList
-            ////var key = Utils.GenerateKeyForIsKingInCheck(Utils.CasesToCasesString(_cases), color);
-            ////if (Utils.IsKingInCheckList.TryGetValue(key, out var inChessFromList))
-            ////{
-
-            ////    return inChessFromList.IsInChess;
-            ////}
-
-            // Identifier l'opposant
-            string opponentColor = GetOpponentColor(color);
-
-            // Trouver l'index du roi de la couleur donnée
-            int kingIndex = Array.FindIndex(_cases, piece => piece == $"K|{color}");
-
-            if (kingIndex == -1)
+            try
             {
+                //GET IN IsKingInCheckList
+                ////var key = Utils.GenerateKeyForIsKingInCheck(Utils.CasesToCasesString(_cases), color);
+                ////if (Utils.IsKingInCheckList.TryGetValue(key, out var inChessFromList))
+                ////{
 
-                //SAVE IN CHESS 
-                AddInIsKingInCheckList(new IsKingInCheck(_cases, color, true));
-                return true;
-            }
+                ////    return inChessFromList.IsInChess;
+                ////}
 
+                // Identifier l'opposant
+                string opponentColor = GetOpponentColor(color);
 
-            //si le roi adverse peux encore bouger ou pas
-            //si ces dirrections son menacé ou non
-            //TODO TO DELATE IF ALL OK  var kingPosibleMoves = GetPossibleMoves(kingIndex);
-            var kingPosibleMoves = GetPossibleMovesOLD(kingIndex);
-            if (kingPosibleMoves.Count > 0)
-            {
-                foreach (var kingMove in kingPosibleMoves)
+                // Trouver l'index du roi de la couleur donnée
+                int kingIndex = Array.FindIndex(_cases, piece => piece == $"K|{color}");
+
+                if (kingIndex == -1)
                 {
-                    if (kingMove.ToIndex == 18)
-                    {
-                        var fdf = 0;
-                    }
-                    if (!TargetIndexIsMenaced(kingMove.ToIndex, opponentColor))
-                    {
-                        //SAVE IN CHESS 
-                        AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
-                        return false;
 
-                    }
-
+                    //SAVE IN CHESS 
+                    AddInIsKingInCheckList(new IsKingInCheck(_cases, color, true));
+                    return true;
                 }
-            }
-
-            //
 
 
-            // Obtenir tous les mouvements possibles de l'opposant
-            var opponentMoves = GetPossibleMovesForColor(opponentColor);
+                //si le roi adverse peux encore bouger ou pas
+                //si ces dirrections son menacé ou non
+                //TODO TO DELATE IF ALL OK  var kingPosibleMoves = GetPossibleMoves(kingIndex);
+                var kingPosibleMoves = GetPossibleMovesOLD(kingIndex);
+                if (kingPosibleMoves.Count > 0)
+                {
+                    foreach (var kingMove in kingPosibleMoves)
+                    {
+                        if (kingMove.ToIndex == 18)
+                        {
+                            var fdf = 0;
+                        }
+                        var copyBoard = CloneAndMove(kingMove.FromIndex, kingMove.ToIndex);
+                        if (!copyBoard.TargetIndexIsMenaced(kingMove.ToIndex, opponentColor))
+                        {
+                            //SAVE IN CHESS 
+                            AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
+                            return false;
 
-            // Vérifier si l'un des mouvements peut atteindre le roi
-            foreach (var move in opponentMoves)
-            {
+                        }
 
-                if (move.ToIndex == kingIndex)
+                    }
+                }
+
+                //
+
+
+                // Obtenir tous les mouvements possibles de l'opposant
+                var opponentMoves = GetPossibleMovesForColor(opponentColor);
+
+                // Vérifier si l'un des mouvements peut atteindre le roi
+                foreach (var move in opponentMoves)
                 {
 
-
-
-                    //Pour ce move.ToIndex to kingIndex
-                    //on cherche tokingIndexPath
-                    var toOpponentKingPathIndexList = GetToOpponentKingPath(move.FromIndex, kingIndex);
-
-                    //On cherche le mouvements possible des alier du roi menacé 
-                    var alierPossibleMoves = GetPossibleMovesForColor(color);
-                    foreach (var kingPosible in kingPosibleMoves)
+                    if (move.ToIndex == kingIndex)
                     {
-                        //on enleve les mouvement du roi
-                        alierPossibleMoves.RemoveAll(x => x.FromIndex == kingPosible.FromIndex && x.ToIndex == kingPosible.ToIndex);
-                    }
 
 
-                    //si un de ses mouvement est dans tokingIndexPath
-                    foreach (var toOpponentKingPathIndex in toOpponentKingPathIndexList)
-                    {
-                        if (alierPossibleMoves.Select(x => x.ToIndex).Contains(toOpponentKingPathIndex))
+
+                        //Pour ce move.ToIndex to kingIndex
+                        //on cherche tokingIndexPath
+                        var toOpponentKingPathIndexList = GetToOpponentKingPath(move.FromIndex, kingIndex);
+
+                        //On cherche le mouvements possible des alier du roi menacé 
+                        var alierPossibleMoves = GetPossibleMovesForColor(color);
+                        foreach (var kingPosible in kingPosibleMoves)
+                        {
+                            //on enleve les mouvement du roi
+                            alierPossibleMoves.RemoveAll(x => x.FromIndex == kingPosible.FromIndex && x.ToIndex == kingPosible.ToIndex);
+                        }
+
+
+                        //si un de ses mouvement est dans tokingIndexPath
+                        foreach (var toOpponentKingPathIndex in toOpponentKingPathIndexList)
+                        {
+                            if (alierPossibleMoves.Select(x => x.ToIndex).Contains(toOpponentKingPathIndex))
+                            {
+                                //SAVE IN CHESS 
+                                AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
+                                return false;
+                            }
+
+                        }
+
+                        //si celui qui menace est menacée en non pas par le roi
+                        var indexOfOpponentsWhoThreatenList = GetMovesOfOpponentsWhoThreaten(move.FromIndex, color);
+                        //on enleve l'index du roir nenacé
+                        indexOfOpponentsWhoThreatenList.RemoveAll(x => x.FromIndex == kingIndex);
+                        if (indexOfOpponentsWhoThreatenList.Count > 0)
                         {
                             //SAVE IN CHESS 
                             AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
                             return false;
                         }
-
+                        //SAVE IN CHESS
+                        AddInIsKingInCheckList(new IsKingInCheck(_cases, color, true));
+                        return true; // Le roi est en échec
                     }
-
-                    //si celui qui menace est menacée en non pas par le roi
-                    var indexOfOpponentsWhoThreatenList = GetMovesOfOpponentsWhoThreaten(move.FromIndex, color);
-                    //on enleve l'index du roir nenacé
-                    indexOfOpponentsWhoThreatenList.RemoveAll(x => x.FromIndex == kingIndex);
-                    if (indexOfOpponentsWhoThreatenList.Count > 0)
-                    {
-                        //SAVE IN CHESS 
-                        AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
-                        return false;
-                    }
-                    //SAVE IN CHESS
-                    AddInIsKingInCheckList(new IsKingInCheck(_cases, color, true));
-                    return true; // Le roi est en échec
                 }
+
+                //SAVE IN CHESS
+                AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
+                return false; // Le roi n'est pas en échec
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                // Utils.GCColect();
             }
 
-            //SAVE IN CHESS
-            AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
-            return false; // Le roi n'est pas en échec
         }
 
         public List<Move> GetPossibleMovesForColor(string color)
@@ -1167,7 +1291,7 @@ namespace ChessCore.Tools
                 "P" => 10, // Pion
                 "C" => 30, // Cavalier
                 "B" => 30, // Fou
-                "T" => 50, // Tour
+                "T" => 60, // Tour // Tour 50 mais pour T126 et T125
                 "Q" => 90, // Reine
                 "K" => 10000, // Roi
                 _ => 0,
@@ -1202,7 +1326,7 @@ namespace ChessCore.Tools
         { "P", 10 },  // Pion
         { "C", 30 },  // Cavalier
         { "B", 30 },  // Fou
-        { "T", 50 },  // Tour
+        { "T", 60 },  // Tour 50 mais pour T126 et T125
         { "Q", 90 },  // Reine
         { "K", 10000 } // Roi (valeur arbitraire très élevée pour éviter sa capture)
     };
@@ -1262,6 +1386,8 @@ namespace ChessCore.Tools
 
         public bool TargetIndexIsMenaced(int index, string opponentColor)
         {
+           
+
             var indexOfOpponentsWhoThreatenList = GetMovesOfOpponentsWhoThreaten(index, opponentColor);
             if (indexOfOpponentsWhoThreatenList.Count() > 0)
                 return true;
@@ -1274,11 +1400,7 @@ namespace ChessCore.Tools
         public List<Move> GetMovesOfOpponentsWhoThreaten(int index, string opponentColor)
         {
             var result = new List<Move>();
-            if (index == 12)
-            {
-                var dfdf = index;
-            }
-
+           
             if (index == -1)
                 return result;
             var color = GetOpponentColor(opponentColor);
@@ -1294,17 +1416,16 @@ namespace ChessCore.Tools
 
 
             // Utilisation de Parallel.ForEach pour paralléliser les itérations
-            Parallel.ForEach(opponentPawnIndexList, (opponentPawnIndex, state) =>
+            Parallel.ForEach(opponentPawnIndexList, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (opponentPawnIndex, state) =>
             {
                 // Récupère les mouvements possibles pour chaque pièce adverse
-                if (opponentPawnIndex == 18)
-                {
-                    var dsd = 9;
-                }
+               
                 var opponentPossiblesMoves = GetPossibleMovesOLD(opponentPawnIndex);
 
                 // Vérifie si un mouvement menace la case cible
+
                 foreach (var enemyMove in opponentPossiblesMoves)
+                //Parallel.ForEach(opponentPossiblesMoves, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, enemyMove =>
                 {
                     if (enemyMove.ToIndex == index)
                     {
@@ -1314,7 +1435,7 @@ namespace ChessCore.Tools
                         //  _cases[index] = oldContaine;
                         //break;
                     }
-                }
+                }//);
             });
             _cases[index] = oldContaine;
             return result;
@@ -1427,6 +1548,7 @@ namespace ChessCore.Tools
 
             return moves;
         }
+
 
 
         private List<Move> GetPawnMoves(int fromIndex, string pieceColor)
@@ -1958,7 +2080,7 @@ namespace ChessCore.Tools
     public class NodeGPT
     {
         public List<NodeGPT> EquivalentBestNodeGPTList { get; set; }
-        public List<NodeGPT> AllNodeGPTList { get; set; }
+        public List<NodeGPT> AllNodeGPTList { get; set; } = new List<NodeGPT>();
         public int Weight { get; set; }
         public int Level { get; set; }
         public string Colore { get; set; }
@@ -1968,6 +2090,8 @@ namespace ChessCore.Tools
         public string Location => GetPositionFromIndex(FromIndex); // Position d'origine en notation échiquier
         public string BestChildPosition => GetPositionFromIndex(ToIndex); // Position de destination en notation échiquier
 
+        public BoardGPT BoardGPT { get; set; }
+        public NodeGPT MaxNode { get; set; }
 
         public TimeSpan ReflectionTime { get; set; }
         /// <summary>

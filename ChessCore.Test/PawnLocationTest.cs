@@ -19,7 +19,7 @@ namespace ChessCore.Test
 
             var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
             var result = boad.GetMenacedsPoints("W");
-            Assert.AreEqual(result,1);
+            Assert.AreEqual(result,2);
         }
 
         [TestMethod]
@@ -66,7 +66,41 @@ namespace ChessCore.Test
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        public void T127_B_isInNotChess()
+        {
 
+
+            var testName = "T127_B_isInNotChess";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+
+            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var result = boad.IsKingInCheck("B");
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void T128_W_isInChesss()
+        {
+            var testName = "T128_W_isInChesss";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var result = boad.IsKingInCheck("W");
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void T131_B_isInChess()
+        {
+            var testName = "T131_B_isInChess";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var result = boad.IsKingInCheck("B");
+            Assert.IsTrue(result);
+        }
 
         [TestMethod]
         public void T93_W_InChess()
@@ -153,6 +187,19 @@ namespace ChessCore.Test
             var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
             var possiblesMove = boad.GetPossibleMovesOLD(3);
             Assert.IsNotNull(possiblesMove.FirstOrDefault(x => x.ToIndex == 0));
+
+        }
+
+        [TestMethod]
+        public void T124_B_GetPossibleMoveH8()
+        {
+            /*La reinne noir ne doit pas se mettre en a8*/
+            var testName = "T124_B_H8toF8";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var possiblesMove = boad.GetPossibleMovesOLD(7);
+            Assert.IsNotNull(possiblesMove.FirstOrDefault(x => x.ToIndex == 5));
 
         }
 

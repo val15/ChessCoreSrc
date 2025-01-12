@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="TESTS\**" />
-    <EmbeddedResource Remove="TESTS\**" />
-    <None Remove="TESTS\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="ChessIATestMultithreading.cs" />
   </ItemGroup>
 
