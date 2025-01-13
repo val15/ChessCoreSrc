@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ChessCore.Tools
 {
@@ -418,14 +419,27 @@ namespace ChessCore.Tools
                             {
                                 node.Weight -= 100;  // Malus pour déplacer une pièce menacée
                             }
-                            //T105 et T131 NOT VALIDE
+
                             //if (currentClonedBoardGPT.KingIsMenaced(opponentColor) && !currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor))
                             //{
                             //    node.Weight += 100;  // Malus pour déplacer une pièce menacée
                             //}
-                            //menacedBonus
-                            var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
-                            node.Weight += menacedBonus;
+                            //menacedBonus and menacedMalus
+                            //if(node.ToIndex == 51)
+                            //{
+                            //    var fd = node;
+                            //    var fromValue = boardChess.GetPieceValue(node.FromIndex);
+                            //    var toValue = boardChess.GetPieceValue(node.ToIndex);
+                            //}
+                            //T134_B_NotToD2 and T133_B_NotC5toE5AndNotC5toE7
+                            if (!currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor) 
+                            || (currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor) && ( boardChess.GetPieceValue(node.FromIndex) < boardChess.GetPieceValue(node.ToIndex))))
+                            {
+                                var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
+                                node.Weight += menacedBonus;
+                            }
+                            
+
                             var menacedMalus = currentClonedBoardGPT.GetMenacedsPoints(colore);
                             node.Weight -= menacedMalus;
 
@@ -1302,6 +1316,10 @@ namespace ChessCore.Tools
             };
         }
 
+        public int GetPieceValue(int index)
+        {
+           return GetPieceValue(_cases[index].First().ToString());
+        }
         public void AddInIsKingInCheckList(IsKingInCheck isKingInCheck)
         {
             //TODO A DECOMMENTER

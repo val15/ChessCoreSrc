@@ -4214,6 +4214,38 @@ namespace ChessCore.Test
             }
         }
 
+        [TestMethod]
+        public void T133_B_NotC5toE5AndNotC5toE7()
+        {
+
+            var computerColore = "Black";
+            var testName = "T133_B_NotC5toE5AndNotC5toE7";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine())
+            {
+                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListGPT(pawnList));
+                Assert.IsFalse(nodeResult.Location == "c5" && nodeResult.BestChildPosition == "e5");
+                Assert.IsFalse(nodeResult.Location == "c5" && nodeResult.BestChildPosition == "e7");
+            }
+        }
+
+        [TestMethod]
+        public void T134_B_NotToD2()
+        {
+
+            var computerColore = "Black";
+            var testName = "T134_B_NotToD2";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine())
+            {
+                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListGPT(pawnList));
+                Assert.IsFalse(nodeResult.Location == "g5" && nodeResult.BestChildPosition == "d2");
+                
+            }
+        }
+
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]
