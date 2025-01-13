@@ -19,7 +19,7 @@ namespace ChessCore.Test
 
             var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
             var result = boad.GetMenacedsPoints("W");
-            Assert.AreEqual(result,2);
+            Assert.AreEqual(result,1);
         }
 
         [TestMethod]

@@ -974,8 +974,11 @@ namespace ChessCore.Tools
                 //}
 
 
-                //menacedBonus LONG TIME IN L3
+                //menacedBonus
                 //T129_W_notB2toB3
+                //LONG TIME IN L3
+                //If l3 faild T129_W_notB2toB3
+                //
                 if (_depthLevel == 1)
                 {
                     var menacedBonus = clonedBoard.GetMenacedsPoints(opponentColor);
@@ -983,6 +986,7 @@ namespace ChessCore.Tools
                     var menacedMalus = clonedBoard.GetMenacedsPoints(cpuColor);
                     childNodeGPT.Weight -= menacedMalus;
                 }
+
 
 
                 // Maximizing Player (CPU)
