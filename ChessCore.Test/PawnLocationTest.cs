@@ -17,7 +17,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.GetMenacedsPoints("W");
             Assert.AreEqual(result,1);
         }
@@ -31,7 +31,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.IsKingInCheck("W");
             Assert.IsTrue(result);
         }
@@ -46,7 +46,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.IsKingInCheck("B");
             Assert.IsTrue(result);
         }
@@ -61,7 +61,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.IsKingInCheck("W");
             Assert.IsTrue(result);
         }
@@ -75,7 +75,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.IsKingInCheck("B");
             Assert.IsFalse(result);
         }
@@ -86,7 +86,7 @@ namespace ChessCore.Test
             var testName = "T128_W_isInChesss";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.IsKingInCheck("W");
             Assert.IsTrue(result);
         }
@@ -97,7 +97,7 @@ namespace ChessCore.Test
             var testName = "T131_B_isInChess";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var result = boad.IsKingInCheck("B");
             Assert.IsTrue(result);
         }
@@ -111,13 +111,31 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var isInChess = boardGPT.IsKingInCheck("W");
+            var isInChess = boardCE.IsKingInCheck("W");
             Assert.IsTrue(isInChess);
 
 
         }
+
+        [TestMethod]
+        public void T95SuiteSuiteB_W_InChess()
+        {
+
+
+            var testName = "T95SuiteSuiteB_W_InChess";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
+
+            var isInChess = boardCE.IsKingInCheck("W");
+            Assert.IsTrue(isInChess);
+
+
+        }
+
 
 
         [TestMethod]
@@ -129,9 +147,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var isInChess = boardGPT.IsKingInCheck("W");
+            var isInChess = boardCE.IsKingInCheck("W");
             Assert.IsTrue(isInChess);
 
 
@@ -146,9 +164,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var isInChess = boardGPT.IsKingInCheck("W");
+            var isInChess = boardCE.IsKingInCheck("W");
             Assert.IsFalse(isInChess);
 
 
@@ -163,9 +181,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var isInChess = boardGPT.IsKingInCheck("W");
+            var isInChess = boardCE.IsKingInCheck("W");
             Assert.IsFalse(isInChess);
 
 
@@ -184,7 +202,7 @@ namespace ChessCore.Test
             var testName = "T31LaReineNoirDoitPrendreLaReineBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var possiblesMove = boad.GetPossibleMovesOLD(3);
             Assert.IsNotNull(possiblesMove.FirstOrDefault(x => x.ToIndex == 0));
 
@@ -197,7 +215,7 @@ namespace ChessCore.Test
             var testName = "T124_B_H8toF8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            var boad = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
             var possiblesMove = boad.GetPossibleMovesOLD(7);
             Assert.IsNotNull(possiblesMove.FirstOrDefault(x => x.ToIndex == 5));
 
@@ -213,9 +231,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var isInChess = boardGPT.IsKingInCheck("B");
+            var isInChess = boardCE.IsKingInCheck("B");
             Assert.IsFalse(isInChess);
 
 
@@ -230,9 +248,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var toOpponentKingPathList = boardGPT.GetToOpponentKingPath(46, 60);
+            var toOpponentKingPathList = boardCE.GetToOpponentKingPath(46, 60);
             Assert.AreEqual(toOpponentKingPathList.Count, 1);
             Assert.IsTrue(toOpponentKingPathList.Contains(53));
 
@@ -248,9 +266,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var toOpponentKingPathList = boardGPT.GetToOpponentKingPath(32, 4);
+            var toOpponentKingPathList = boardCE.GetToOpponentKingPath(32, 4);
             Assert.AreEqual(toOpponentKingPathList.Count, 3);
             Assert.IsTrue(toOpponentKingPathList.Contains(25));
             Assert.IsTrue(toOpponentKingPathList.Contains(18));
@@ -268,9 +286,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            BoardGPT boardGPT = Chess2Utils.GenerateBoardFormPawnListGPT(pawnList);
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
 
-            var toOpponentKingPathList = boardGPT.GetToOpponentKingPath(36, 4);
+            var toOpponentKingPathList = boardCE.GetToOpponentKingPath(36, 4);
             Assert.AreEqual(toOpponentKingPathList.Count, 3);
             Assert.IsTrue(toOpponentKingPathList.Contains(28));
             Assert.IsTrue(toOpponentKingPathList.Contains(20));

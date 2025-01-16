@@ -10,7 +10,7 @@ namespace ChessCore.Models
 
         public string ToGridIndex { get; set; }
         public Board MainBord { get; set; }
-        public BoardGPT MainBordGPT { get; set; }
+        public BoardCE MainBordGPT { get; set; }
 
         public string[] Cases { get; set; }
 

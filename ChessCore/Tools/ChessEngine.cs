@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace ChessCore.Tools
+﻿namespace ChessCore.Tools
 {
     public class ChessEngine : IDisposable
     {
@@ -11,7 +7,7 @@ namespace ChessCore.Tools
         private bool _checkIsInChessOnEnd;
         private int _depthLevel = 3;
 
-        public NodeGPT GetBestPositionLocalUsingMiltiThreading(string colore, BoardGPT boardChess, int depthLevel = 3)
+        public NodeCE GetBestPositionLocalUsingMiltiThreading(string colore, BoardCE boardChess, int depthLevel = 3)
         {
 
             if (depthLevel == 3)
@@ -19,7 +15,7 @@ namespace ChessCore.Tools
             else
                 return GetBestPositionLocalUsingMiltiThreadingSimple(colore, boardChess, depthLevel);
         }
-        public NodeGPT GetBestPositionLocalUsingMiltiThreadingSimple(string colore, BoardGPT boardChess, int depthLevel = 3)
+        public NodeCE GetBestPositionLocalUsingMiltiThreadingSimple(string colore, BoardCE boardChess, int depthLevel = 3)
         {
             if (boardChess.IsGameOver())
                 return null;
@@ -28,7 +24,7 @@ namespace ChessCore.Tools
             var checkIsInChessOnEnd = true;
             if (depthLevel == 5)
                 checkIsInChessOnEnd = false;
-            var r = RunEngine(colore, boardChess, depthLevel, false, checkIsInChessOnEnd);
+            var r = RunEngine(colore, boardChess, depthLevel, false, null,checkIsInChessOnEnd);
             try
             {
                 r.ReflectionTime = ReflectionTime;
@@ -43,20 +39,20 @@ namespace ChessCore.Tools
             return r;
 
         }
-        public NodeGPT GetBestPositionLocalUsingMiltiThreadingObtimize(string colore, BoardGPT boardChess, int depthLevel = 3)
+        public NodeCE GetBestPositionLocalUsingMiltiThreadingObtimize(string colore, BoardCE boardChess, int depthLevel = 3)
         {
             if (boardChess.IsGameOver())
                 return null;
 
-            var l1 = new NodeGPT() { Weight = -9999, Colore = colore };
-            var l3 = new NodeGPT() { Weight = -9999, Colore = colore };
-            var l5 = new NodeGPT() { Weight = -9999, Colore = colore };
+            var l1 = new NodeCE() { Weight = -9999, Colore = colore };
+            var l3 = new NodeCE() { Weight = -9999, Colore = colore };
+            var l5 = new NodeCE() { Weight = -9999, Colore = colore };
 
             var totalStartTime = DateTime.UtcNow;
             Utils.WritelineAsync($"DEPTH LEVEL : {depthLevel}");
 
-            NodeGPT FinalBest = null;
-            var bestList = new List<NodeGPT>();
+            NodeCE FinalBest = null;
+            var bestList = new List<NodeCE>();
 
             ///T124
             var maxiDiffToTakeMinimum = 1;
@@ -71,7 +67,7 @@ namespace ChessCore.Tools
 
             }
 
-            var l1p = RunEngine(colore, boardChess, 1, false, false);
+            var l1p = RunEngine(colore, boardChess, 1, false, null,false);
             try
             {
                 l1p.ReflectionTime = ReflectionTime;
@@ -101,208 +97,224 @@ namespace ChessCore.Tools
                 return FinalBest;
             }
 
-
-
-
-            l3 = RunEngine(colore, boardChess, 3, false);
-            try
-            {
-                l3.ReflectionTime = ReflectionTime;
-            }
-            catch (Exception)
-            {
-
-
-            }
-
-            // var l3Odd = RunEngineOdd(colore, boardChess, 3, false);
-            // var l3p = RunEngine(colore, boardChess, isReprise, specificBoardGPTList, 3, false,false);
-
-            //  var l4Even = RunEngineEven(colore, boardChess, 4, false);
-
-
-
-            try
-            {
-                if (l1 != null && l3 != null)
-                {
-                    if (l1.Weight > -9000 && l3.Weight < -9000)
-                    {
-                        FinalBest = l1;
-                        Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
-
-                        Utils.WritelineAsync($"FinalBest: {FinalBest}");
-                        return FinalBest;
-                    }
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                Utils.WritelineAsync($"Exeption in l1.Weight > -9000 && l3.Weight < -9000 {ex}"); ;
-            }
-
-
-            //recalibre l1 
-
-            //T128_W_NotToC1
-            try
-            {
-                if (l1 != null && l3 != null)
-                {
-                    if (l1.Weight > l3.Weight && l3.Weight > -200 /*T67EchecBlancLeRoiDoitSeMettreEnE1*/) // 14 failds
-                    {
-                        
-                         foreach (var node in l1.EquivalentBestNodeGPTList)
-                        {
-
-                            var maxNode = l3.AllNodeGPTList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
-                            if (maxNode != null)
-                            {
-                                //if(node.Location =="b2" && node.BestChildPosition =="c1")
-                                //{
-                                //    var dsf = node;
-                                //}
-                                var currentDiff = Math.Abs(node.Weight - maxNode.Weight);
-
-                                if (currentDiff > 10 /*T132_B_toC6 OLD 1000*/ && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
-                                    node.Weight = maxNode.Weight;
-                            }
-                        }
-
-                        //réfind best in l1
-                        Utils.WritelineAsync($"refind best in l1:");
-                        var maxWeight = l1.EquivalentBestNodeGPTList.Max(x => x.Weight);
-
-                        var newEquivalentBestNodeGPTList = l1.EquivalentBestNodeGPTList.Where(x => x.Weight == maxWeight).ToList();
-                        var rand = new Random();
-                        l1 = newEquivalentBestNodeGPTList[rand.Next(newEquivalentBestNodeGPTList.Count)];
-                        l1.EquivalentBestNodeGPTList = newEquivalentBestNodeGPTList;
-
-                        Utils.WritelineAsync($"bestNodeGPTList after refind :");
-                        foreach (var node in l1.EquivalentBestNodeGPTList)
-                        {
-                            Utils.WritelineAsync($"{node}");
-                        }
-                        Utils.WritelineAsync($"new best l1 {l1}");
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Utils.WritelineAsync($"Exeption in recalibre l1 {ex}"); ;
-            }
-
-
-            //recalibre l1p 
-            try
-            {
-                if (l1p != null && l3 != null)
-                {
-                    if (l1p.Weight > l3.Weight && l3.Weight >- 200 /*T67EchecBlancLeRoiDoitSeMettreEnE1*/) // 14 failds
-                    {
-
-                        foreach (var node in l1p.EquivalentBestNodeGPTList)
-
-                        {
-
-                            var maxNode = l3.AllNodeGPTList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
-                            if (maxNode != null)
-                            {
-                                //if(node.Location =="b2" && node.BestChildPosition =="c1")
-                                //{
-                                //    var dsf = node;
-                                //}
-                                var currentDiff = Math.Abs(node.Weight - maxNode.Weight);
-
-                                if (currentDiff > 10/*T132_B_toC6*/ && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
-                                    node.Weight = maxNode.Weight;
-                            }
-                        }
-
-                        //réfind best in l1p
-                        Utils.WritelineAsync($"refind best in l1p:");
-                        var maxWeight = l1p.EquivalentBestNodeGPTList.Max(x => x.Weight);
-
-                        var newEquivalentBestNodeGPTList = l1p.EquivalentBestNodeGPTList.Where(x => x.Weight == maxWeight).ToList();
-                        var rand = new Random();
-                        l1p = newEquivalentBestNodeGPTList[rand.Next(newEquivalentBestNodeGPTList.Count)];
-                        l1p.EquivalentBestNodeGPTList = newEquivalentBestNodeGPTList;
-
-                        Utils.WritelineAsync($"bestNodeGPTList after refind :");
-                        foreach (var node in l1p.EquivalentBestNodeGPTList)
-                        {
-                            Utils.WritelineAsync($"{node}");
-                        }
-                        Utils.WritelineAsync($"new best l1 {l1p}");
-                    }
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Utils.WritelineAsync($"Exeption in recalibre l1 {ex}"); ;
-            }
-
-
-            var diff = 0;
-            if (l1 != null && l3 != null)
-                diff = Math.Abs(l1.Weight - l3.Weight);
-
-
-
-
-            if (l1 != null && l3 != null)
-            {
-                //T29_W_PourProtegerDEchec
-                //if (l1.Weight < 0 && l3.Weight < 0)
-                //    maxiDiffToTakeMinimum = 10;
-                if (l1.Weight > l3.Weight && diff > maxiDiffToTakeMinimum) // 14 failds
-                {
-                    FinalBest = l1;
-                }
-                else
-                    FinalBest = l3;
-            }
-
-
-
-            if (l1p != null && FinalBest != null)
-            {
-                if (l1p.Weight > FinalBest.Weight && FinalBest.Weight < -200)
-                {
-                    Utils.WritelineAsync($"l3 ({l3}) and l1 ({l1}) are in chess, take l1p ({l1p})");
-                    FinalBest = l1p;
-                }
-            }
-
-
+            var blackList = l1.AllNodeCEList.Where(x => x.Weight <= -9999).ToList();
+            Utils.WritelineAsync("BLACKLIST: ");
+            //foreach (var node in blackList)
+            //{
+            //    Utils.WritelineAsync($"{node}");
+            //}
+           
             if (depthLevel == 3)
             {
+               
 
-                Utils.WritelineAsync($"l1 : {l1}");
-                Utils.WritelineAsync($"l1p : {l1p}");
-                Utils.WritelineAsync($"l3 : {l3}");
 
-                Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
+                    l3 = RunEngine(colore, boardChess, 3, false, blackList);
+                    try
+                    {
+                        l3.ReflectionTime = ReflectionTime;
+                    }
+                    catch (Exception)
+                    {
 
-                if (FinalBest == null)
-                {
-                    Utils.WritelineAsync($"FinalBest in null");
-                    Utils.WritelineAsync($"FinalBest = l1");
+
+                    }
+
+                    // var l3Odd = RunEngineOdd(colore, boardChess, 3, false);
+                    // var l3p = RunEngine(colore, boardChess, isReprise, specificBoardCEList, 3, false,false);
+
+                    //  var l4Even = RunEngineEven(colore, boardChess, 4, false);
+
+
+
+                    try
+                    {
+                        if (l1 != null && l3 != null)
+                        {
+                            if (l1.Weight > -9000 && l3.Weight < -9000)
+                            {
+                                FinalBest = l1;
+                                Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
+
+                                Utils.WritelineAsync($"FinalBest: {FinalBest}");
+                                return FinalBest;
+                            }
+                        }
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Utils.WritelineAsync($"Exeption in l1.Weight > -9000 && l3.Weight < -9000 {ex}"); ;
+                    }
+
+
+                    //recalibre l1 
+
+                    //T128_W_NotToC1
+                    try
+                    {
+                        if (l1 != null && l3 != null)
+                        {
+                            if (l1.Weight > l3.Weight && l3.Weight > -200 /*T67EchecBlancLeRoiDoitSeMettreEnE1*/) // 14 failds
+                            {
+
+                                foreach (var node in l1.EquivalentBestNodeCEList)
+                                {
+
+                                    var maxNode = l3.AllNodeCEList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
+                                    if (maxNode != null)
+                                    {
+                                        //if(node.Location =="b2" && node.BestChildPosition =="c1")
+                                        //{
+                                        //    var dsf = node;
+                                        //}
+                                        var currentDiff = Math.Abs(node.Weight - maxNode.Weight);
+
+                                        if (currentDiff > 10 /*T132_B_toC6 OLD 1000*/ && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
+                                            node.Weight = maxNode.Weight;
+                                    }
+                                }
+
+                                //réfind best in l1
+                                Utils.WritelineAsync($"refind best in l1:");
+                                var maxWeight = l1.EquivalentBestNodeCEList.Max(x => x.Weight);
+
+                                var newEquivalentBestNodeCEList = l1.EquivalentBestNodeCEList.Where(x => x.Weight == maxWeight).ToList();
+                                var rand = new Random();
+                                l1 = newEquivalentBestNodeCEList[rand.Next(newEquivalentBestNodeCEList.Count)];
+                                l1.EquivalentBestNodeCEList = newEquivalentBestNodeCEList;
+
+                                Utils.WritelineAsync($"bestNodeCEList after refind :");
+                                foreach (var node in l1.EquivalentBestNodeCEList)
+                                {
+                                    Utils.WritelineAsync($"{node}");
+                                }
+                                Utils.WritelineAsync($"new best l1 {l1}");
+                            }
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Utils.WritelineAsync($"Exeption in recalibre l1 {ex}"); ;
+                    }
+
+
+                    //recalibre l1p 
+                    try
+                    {
+                        if (l1p != null && l3 != null)
+                        {
+                            if (l1p.Weight > l3.Weight && l3.Weight > -200 /*T67EchecBlancLeRoiDoitSeMettreEnE1*/) // 14 failds
+                            {
+
+                                foreach (var node in l1p.EquivalentBestNodeCEList)
+
+                                {
+
+                                    var maxNode = l3.AllNodeCEList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
+                                    if (maxNode != null)
+                                    {
+                                        //if(node.Location =="b2" && node.BestChildPosition =="c1")
+                                        //{
+                                        //    var dsf = node;
+                                        //}
+                                        var currentDiff = Math.Abs(node.Weight - maxNode.Weight);
+
+                                        if (currentDiff > 10/*T132_B_toC6*/ && node.Weight < 9000 && currentDiff < 20000/*T67EchecBlancLeRoiDoitSeMettreEnE1*/)
+                                            node.Weight = maxNode.Weight;
+                                    }
+                                }
+
+                                //réfind best in l1p
+                                Utils.WritelineAsync($"refind best in l1p:");
+                                var maxWeight = l1p.EquivalentBestNodeCEList.Max(x => x.Weight);
+
+                                var newEquivalentBestNodeCEList = l1p.EquivalentBestNodeCEList.Where(x => x.Weight == maxWeight).ToList();
+                                var rand = new Random();
+                                l1p = newEquivalentBestNodeCEList[rand.Next(newEquivalentBestNodeCEList.Count)];
+                                l1p.EquivalentBestNodeCEList = newEquivalentBestNodeCEList;
+
+                                Utils.WritelineAsync($"bestNodeCEList after refind :");
+                                foreach (var node in l1p.EquivalentBestNodeCEList)
+                                {
+                                    Utils.WritelineAsync($"{node}");
+                                }
+                                Utils.WritelineAsync($"new best l1 {l1p}");
+                            }
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Utils.WritelineAsync($"Exeption in recalibre l1 {ex}"); ;
+                    }
+
+
+                    var diff = 0;
+                    if (l1 != null && l3 != null)
+                        diff = Math.Abs(l1.Weight - l3.Weight);
+
+
+
+
+                    if (l1 != null && l3 != null)
+                    {
+                        //T29_W_PourProtegerDEchec
+                        //if (l1.Weight < 0 && l3.Weight < 0)
+                        //    maxiDiffToTakeMinimum = 10;
+                        if (l1.Weight > l3.Weight && diff > maxiDiffToTakeMinimum) // 14 failds
+                        {
+                            FinalBest = l1;
+                        }
+                        else
+                            FinalBest = l3;
+                    }
+
+
+
+                    if (l1p != null && FinalBest != null)
+                    {
+                        if (l1p.Weight > FinalBest.Weight && FinalBest.Weight < -200)
+                        {
+                            Utils.WritelineAsync($"l3 ({l3}) and l1 ({l1}) are in chess, take l1p ({l1p})");
+                            FinalBest = l1p;
+                        }
+                    }
+                    Utils.WritelineAsync($"l1 : {l1}");
+                    Utils.WritelineAsync($"l1p : {l1p}");
+                    Utils.WritelineAsync($"l3 : {l3}");
+
+                    Utils.WritelineAsync($"TOTAL REFLECTION TIME : {DateTime.UtcNow - totalStartTime}");
+
+
+                    if (FinalBest == null)
+                    {
+                    Utils.WritelineAsync($"FinalBest IS NULL RE RUN, FinalBest l1");
+
+
                     FinalBest = l1;
-                }
 
+
+
+                    }
                 Utils.WritelineAsync($"FinalBest: {FinalBest}");
                 return FinalBest;
             }
+            
 
 
-            l5 = RunEngine(colore, boardChess, 5, false, true);
+            blackList.AddRange(l3.AllNodeCEList.Where(x => x.Weight <= -9999).ToList());
+            Utils.WritelineAsync("BLACKLIST: ");
+            //foreach (var node in blackList)
+            //{
+            //    Utils.WritelineAsync($"{node}");
+            //}
+
+            l5 = RunEngine(colore, boardChess, 5, false, blackList, true);
             try
             {
                 l5.ReflectionTime = ReflectionTime;
@@ -345,7 +357,7 @@ namespace ChessCore.Tools
 
             return FinalBest;
         }
-        public NodeGPT RunEngine(string colore, BoardGPT boardChess, int depthLevel, bool isOppinionTurnInNext, bool checkIsInChessOnEnd = true, int limitOfReflectionTimeInSecond = 24 * 60 * 60)
+        public NodeCE RunEngine(string colore, BoardCE boardChess, int depthLevel, bool isOppinionTurnInNext,List<NodeCE> blackList= null ,  bool checkIsInChessOnEnd = true, int limitOfReflectionTimeInSecond = 24 * 60 * 60)
         {
             try
             {
@@ -364,8 +376,8 @@ namespace ChessCore.Tools
                 Utils.WritelineAsync($"LimitOfReflectionTimeInSecond :  {Utils.LimitOfReflectionTimeInSecond}");
                 Utils.WritelineAsync($"_checkIsInChessOnEnd :  {_checkIsInChessOnEnd}");
                 Utils.LimitOfReflectionTimeIsShow = false;
-                var bestNodeGPTList = new List<NodeGPT>();
-                var allNodeGPTList = new List<NodeGPT>();
+                var bestNodeCEList = new List<NodeCE>();
+                var allNodeCEList = new List<NodeCE>();
 
                 var startTime = DateTime.UtcNow;
                 Utils.EnginStartTime = startTime;
@@ -389,9 +401,9 @@ namespace ChessCore.Tools
                     // Parallel.ForEach(possibleMoves, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, move =>
 
                     {
-                        var clonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                        var clonedBoardCE = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
                         var node = MinMaxWithAlphaBeta(
-                            clonedBoardGPT,
+                            clonedBoardCE,
                             depthLevel,
                             double.NegativeInfinity,
                             double.PositiveInfinity,
@@ -400,27 +412,44 @@ namespace ChessCore.Tools
                         );
                         node.FromIndex = move.FromIndex;
                         node.ToIndex = move.ToIndex;
-                        node.BoardGPT = clonedBoardGPT;
+                        node.BoardCE = clonedBoardCE;
 
-
-                        lock (bestNodeGPTList)
+                        //T88LesBlanchDoiventEviterLEchec
+                        //T136B_W_D5toF6 
+                        //T136B_W_D5toF6
+                        if (blackList!=null)
                         {
-                            var currentClonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                            if (blackList.Count > 0)
+                            {
+                                var nodeInBlackList = blackList.FirstOrDefault(x => x.FromIndex == node.FromIndex && x.ToIndex == node.ToIndex);
+                                if(nodeInBlackList!=null)
+                                {
+                                    Utils.WritelineAsync($"{node} IS IN BLACKLIST");
+                                    continue;
+                                }
+                            }
+
+                        }
+
+
+                        lock (bestNodeCEList)
+                        {
+                            var currentClonedBoardCE = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
 
 
                             //TODO METTRE ICI EN PRIORITE LES AMELIORATION
-                            var targetIndexIsMenaced = currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor);
+                            var targetIndexIsMenaced = currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor);
                             if (targetIndexIsMenaced)
                             {
-                                node.Weight -= currentClonedBoardGPT.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
+                                node.Weight -= currentClonedBoardCE.GetPieceValue(currentClonedBoardCE._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
                             }
                             //king is menaced
-                            if (currentClonedBoardGPT.KingIsMenaced(colore))
+                            if (currentClonedBoardCE.KingIsMenaced(colore))
                             {
                                 node.Weight -= 100;  // Malus pour déplacer une pièce menacée
                             }
 
-                            //if (currentClonedBoardGPT.KingIsMenaced(opponentColor) && !currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor))
+                            //if (currentClonedBoardCE.KingIsMenaced(opponentColor) && !currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor))
                             //{
                             //    node.Weight += 100;  // Malus pour déplacer une pièce menacée
                             //}
@@ -432,36 +461,36 @@ namespace ChessCore.Tools
                             //    var toValue = boardChess.GetPieceValue(node.ToIndex);
                             //}
                             //T134_B_NotToD2 and T133_B_NotC5toE5AndNotC5toE7
-                            if (!currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor) 
-                            || (currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor) && ( boardChess.GetPieceValue(node.FromIndex) < boardChess.GetPieceValue(node.ToIndex))))
+                            if (!currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor) 
+                            || (currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor) && ( boardChess.GetPieceValue(node.FromIndex) < boardChess.GetPieceValue(node.ToIndex))))
                             {
-                                var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
+                                var menacedBonus = currentClonedBoardCE.GetMenacedsPoints(opponentColor);
                                 node.Weight += menacedBonus;
                             }
-                            
 
-                            var menacedMalus = currentClonedBoardGPT.GetMenacedsPoints(colore);
+                            
+                            var menacedMalus = currentClonedBoardCE.GetMenacedsPoints(colore);
                             node.Weight -= menacedMalus;
 
                             ///T124
                             ////if initial position is menaced and to position is pprotected
                             if (depthLevel == 3
-                            && !currentClonedBoardGPT._cases[node.ToIndex].StartsWith('K')
-                            && !currentClonedBoardGPT._cases[node.ToIndex].StartsWith('P')
+                            && !currentClonedBoardCE._cases[node.ToIndex].StartsWith('K')
+                            && !currentClonedBoardCE._cases[node.ToIndex].StartsWith('P')
                             && boardChess.TargetIndexIsMenaced(node.FromIndex, opponentColor)
-                             && currentClonedBoardGPT.TargetIndexIsProtected(node.ToIndex, colore)
-                            && currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor))
+                             && currentClonedBoardCE.TargetIndexIsProtected(node.ToIndex, colore)
+                            && currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor))
                             {
                                 var isAddProtectedBonus = false;
-                                var oppinionMenacedMoveList = currentClonedBoardGPT.GetMovesOfOpponentsWhoThreaten(node.ToIndex, opponentColor);
+                                var oppinionMenacedMoveList = currentClonedBoardCE.GetMovesOfOpponentsWhoThreaten(node.ToIndex, opponentColor);
                                 foreach (var oppinioMove in oppinionMenacedMoveList)
                                 {
-                                    if (!currentClonedBoardGPT.TargetIndexIsMenaced(oppinioMove.FromIndex, colore))
+                                    if (!currentClonedBoardCE.TargetIndexIsMenaced(oppinioMove.FromIndex, colore))
                                         isAddProtectedBonus = true;
                                 }
                                 // si celui qui menace est menacé
                                 if (isAddProtectedBonus)
-                                    node.Weight += currentClonedBoardGPT.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex]);
+                                    node.Weight += currentClonedBoardCE.GetPieceValue(currentClonedBoardCE._cases[node.ToIndex]);
 
                             }
 
@@ -470,11 +499,11 @@ namespace ChessCore.Tools
 
 
                             //In chess
-                            if (currentClonedBoardGPT.IsKingInCheck(colore))
+                            if (currentClonedBoardCE.IsKingInCheck(colore))
                                 node.Weight = -9999;
-                            if (currentClonedBoardGPT.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
+                            if (currentClonedBoardCE.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
                                 node.Weight = 9999;
-                            allNodeGPTList.Add(node);
+                            allNodeCEList.Add(node);
 
 
 
@@ -485,7 +514,7 @@ namespace ChessCore.Tools
                                 maxWeight = node.Weight;
 
                             }
-                            bestNodeGPTList.Add(node);
+                            bestNodeCEList.Add(node);
                         }
                     }
 
@@ -496,27 +525,27 @@ namespace ChessCore.Tools
 
 
                 // Sélection du meilleur coup
-                maxWeight = bestNodeGPTList.Max(x => x.Weight);
+                maxWeight = bestNodeCEList.Max(x => x.Weight);
 
-                bestNodeGPTList = bestNodeGPTList.Where(x => x.Weight == maxWeight).ToList();
+                bestNodeCEList = bestNodeCEList.Where(x => x.Weight == maxWeight).ToList();
                 var rand = new Random();
-                var bestNodeGPT = bestNodeGPTList[rand.Next(bestNodeGPTList.Count)];
+                var bestNodeCE = bestNodeCEList[rand.Next(bestNodeCEList.Count)];
 
 
-                Utils.WritelineAsync($"bestNodeGPTList :");
-                foreach (var node in bestNodeGPTList)
+                Utils.WritelineAsync($"bestNodeCEList :");
+                foreach (var node in bestNodeCEList)
                 {
                     Utils.WritelineAsync($"{node}");
                 }
-                bestNodeGPT.EquivalentBestNodeGPTList = bestNodeGPTList;
-                bestNodeGPT.AllNodeGPTList.AddRange(allNodeGPTList);
+                bestNodeCE.EquivalentBestNodeCEList = bestNodeCEList;
+                bestNodeCE.AllNodeCEList.AddRange(allNodeCEList);
                 var elapsed = DateTime.UtcNow - startTime;
                 Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
                 // Utils.WritelineAsync($"Utils.PossibleMovesListCount = {Utils.PossibleMovesList.Count()}");
                 //Utils.WritelineAsync($"Utils.IsKingInCheckListCount = {Utils.IsKingInCheckList.Count()}");
-                Utils.WritelineAsync($"Best node : {bestNodeGPT}");
+                Utils.WritelineAsync($"Best node : {bestNodeCE}");
                 ReflectionTime = elapsed;
-                return bestNodeGPT;
+                return bestNodeCE;
             }
             catch (Exception)
             {
@@ -531,7 +560,7 @@ namespace ChessCore.Tools
         }
 
 
-        public NodeGPT RunEngineOdd(string colore, BoardGPT boardChess, int depthLevel, bool isOppinionTurnInNext, bool checkIsInChessOnEnd = true, int limitOfReflectionTimeInSecond = 24 * 60 * 60)
+        public NodeCE RunEngineOdd(string colore, BoardCE boardChess, int depthLevel, bool isOppinionTurnInNext, bool checkIsInChessOnEnd = true, int limitOfReflectionTimeInSecond = 24 * 60 * 60)
         {
             try
             {
@@ -548,8 +577,8 @@ namespace ChessCore.Tools
                 Utils.WritelineAsync($"LimitOfReflectionTimeInSecond :  {Utils.LimitOfReflectionTimeInSecond}");
                 Utils.WritelineAsync($"_checkIsInChessOnEnd :  {_checkIsInChessOnEnd}");
                 Utils.LimitOfReflectionTimeIsShow = false;
-                var bestNodeGPTList = new List<NodeGPT>();
-                var allNodeGPTList = new List<NodeGPT>();
+                var bestNodeCEList = new List<NodeCE>();
+                var allNodeCEList = new List<NodeCE>();
 
                 var startTime = DateTime.UtcNow;
                 Utils.EnginStartTime = startTime;
@@ -569,9 +598,9 @@ namespace ChessCore.Tools
                     //OLD siple foreach
                     foreach (var move in possibleMoves)
                     {
-                        var clonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                        var clonedBoardCE = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
                         var node = MinMaxWithAlphaBeta(
-                            clonedBoardGPT,
+                            clonedBoardCE,
                             depthLevel,
                             double.NegativeInfinity,
                             double.PositiveInfinity,
@@ -581,7 +610,7 @@ namespace ChessCore.Tools
                         node.FromIndex = move.FromIndex;
                         node.ToIndex = move.ToIndex;
 
-                        lock (bestNodeGPTList)
+                        lock (bestNodeCEList)
                         {
                             //TEST
                             if (node.ToIndex == 18)
@@ -589,8 +618,8 @@ namespace ChessCore.Tools
                                 var hhfd = 0;
                             }
 
-                            var currentClonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
-                            var targetIndexIsMenaced = currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor);
+                            var currentClonedBoardCE = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                            var targetIndexIsMenaced = currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor);
                             if (targetIndexIsMenaced)
                             { //Menace
                                 if (node.ToIndex == 25)
@@ -598,24 +627,24 @@ namespace ChessCore.Tools
                                     var fd = 0;
                                 }
                                 //T37 
-                                node.Weight -= currentClonedBoardGPT.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
+                                node.Weight -= currentClonedBoardCE.GetPieceValue(currentClonedBoardCE._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
                             }
                             //protection
-                            //var currentClonedBoardGPT2 = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
-                            //var targetIndexIsMenaced = currentClonedBoardGPT2.TargetIndexIsProtected(node.ToIndex, colore);
+                            //var currentClonedBoardCE2 = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                            //var targetIndexIsMenaced = currentClonedBoardCE2.TargetIndexIsProtected(node.ToIndex, colore);
                             //if (targetIndexIsMenaced)
                             //{
-                            //    node.Weight -= currentClonedBoardGPT2.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex]);//* tomenacedNumber;
+                            //    node.Weight -= currentClonedBoardCE2.GetPieceValue(currentClonedBoardCE._cases[node.ToIndex]);//* tomenacedNumber;
                             //}
 
-                            //if (currentClonedBoardGPT.KingIsMenaced(opponentColor))
+                            //if (currentClonedBoardCE.KingIsMenaced(opponentColor))
                             //{
                             //    node.Weight += 100;  // Malus pour déplacer une pièce menacée
                             //}
 
                             //king is menaced
                             // T59FinDePartieEviterMortDuRoiNoir
-                            if (currentClonedBoardGPT.KingIsMenaced(cpuColor))
+                            if (currentClonedBoardCE.KingIsMenaced(cpuColor))
                             {
                                 node.Weight -= 100;  // Malus pour déplacer une pièce menacée
                             }
@@ -625,30 +654,30 @@ namespace ChessCore.Tools
 
 
                             //menacedBonus
-                            var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
+                            var menacedBonus = currentClonedBoardCE.GetMenacedsPoints(opponentColor);
                             node.Weight += menacedBonus;
-                            var menacedMalus = currentClonedBoardGPT.GetMenacedsPoints(cpuColor);
+                            var menacedMalus = currentClonedBoardCE.GetMenacedsPoints(cpuColor);
                             node.Weight -= menacedMalus;
 
 
                             //In chess
-                            if (currentClonedBoardGPT.IsKingInCheck(cpuColor))
+                            if (currentClonedBoardCE.IsKingInCheck(cpuColor))
                                 node.Weight = -9999;
-                            if (currentClonedBoardGPT.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
+                            if (currentClonedBoardCE.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
                                 node.Weight = 9999;
 
-                            allNodeGPTList.Add(node);
+                            allNodeCEList.Add(node);
 
 
                             // if (node.Weight <= -1000)
-                            //    blackNodeGPTList.Add(node);
+                            //    blackNodeCEList.Add(node);
                             //Utils.WritelineAsync($"{node}");
                             if (node.Weight > maxWeight)
                             {
                                 Utils.WritelineAsync($"{node} *");
                                 maxWeight = node.Weight;
                             }
-                            bestNodeGPTList.Add(node);
+                            bestNodeCEList.Add(node);
                         }
                     }
 
@@ -658,24 +687,24 @@ namespace ChessCore.Tools
                 });
 
                 // Sélection du meilleur coup
-                maxWeight = bestNodeGPTList.Max(x => x.Weight);
+                maxWeight = bestNodeCEList.Max(x => x.Weight);
 
-                bestNodeGPTList = bestNodeGPTList.Where(x => x.Weight == maxWeight).ToList();
+                bestNodeCEList = bestNodeCEList.Where(x => x.Weight == maxWeight).ToList();
                 var rand = new Random();
-                var bestNodeGPT = bestNodeGPTList[rand.Next(bestNodeGPTList.Count)];
+                var bestNodeCE = bestNodeCEList[rand.Next(bestNodeCEList.Count)];
 
 
-                Utils.WritelineAsync($"bestNodeGPTList :");
-                foreach (var node in bestNodeGPTList)
+                Utils.WritelineAsync($"bestNodeCEList :");
+                foreach (var node in bestNodeCEList)
                 {
                     Utils.WritelineAsync($"{node}");
                 }
-                bestNodeGPT.EquivalentBestNodeGPTList = bestNodeGPTList;
-                bestNodeGPT.AllNodeGPTList = allNodeGPTList;
+                bestNodeCE.EquivalentBestNodeCEList = bestNodeCEList;
+                bestNodeCE.AllNodeCEList = allNodeCEList;
                 var elapsed = DateTime.UtcNow - startTime;
                 Utils.WritelineAsync($"Reflection time: {elapsed}");
-                Utils.WritelineAsync($"Best node : {bestNodeGPT}");
-                return bestNodeGPT;
+                Utils.WritelineAsync($"Best node : {bestNodeCE}");
+                return bestNodeCE;
             }
             catch (Exception)
             {
@@ -690,7 +719,7 @@ namespace ChessCore.Tools
         }
 
 
-        public NodeGPT RunEngineEven(string colore, BoardGPT boardChess, int depthLevel, bool isOppinionTurnInNext, bool checkIsInChessOnEnd = true, int limitOfReflectionTimeInSecond = 24 * 60 * 60)
+        public NodeCE RunEngineEven(string colore, BoardCE boardChess, int depthLevel, bool isOppinionTurnInNext, bool checkIsInChessOnEnd = true, int limitOfReflectionTimeInSecond = 24 * 60 * 60)
         {
             try
             {
@@ -707,8 +736,8 @@ namespace ChessCore.Tools
                 Utils.WritelineAsync($"LimitOfReflectionTimeInSecond :  {Utils.LimitOfReflectionTimeInSecond}");
                 Utils.WritelineAsync($"_checkIsInChessOnEnd :  {_checkIsInChessOnEnd}");
                 Utils.LimitOfReflectionTimeIsShow = false;
-                var bestNodeGPTList = new List<NodeGPT>();
-                var allNodeGPTList = new List<NodeGPT>();
+                var bestNodeCEList = new List<NodeCE>();
+                var allNodeCEList = new List<NodeCE>();
 
                 var startTime = DateTime.UtcNow;
                 Utils.EnginStartTime = startTime;
@@ -728,9 +757,9 @@ namespace ChessCore.Tools
                     //OLD siple foreach
                     foreach (var move in possibleMoves)
                     {
-                        var clonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                        var clonedBoardCE = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
                         var node = MinMaxWithAlphaBeta(
-                            clonedBoardGPT,
+                            clonedBoardCE,
                             depthLevel,
                             double.NegativeInfinity,
                             double.PositiveInfinity,
@@ -740,7 +769,7 @@ namespace ChessCore.Tools
                         node.FromIndex = move.FromIndex;
                         node.ToIndex = move.ToIndex;
 
-                        lock (bestNodeGPTList)
+                        lock (bestNodeCEList)
                         {
                             //TEST
                             if (node.ToIndex == 18)
@@ -748,46 +777,46 @@ namespace ChessCore.Tools
                                 var hhfd = 0;
                             }
 
-                            var currentClonedBoardGPT = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
-                            var targetIndexIsMenaced = currentClonedBoardGPT.TargetIndexIsMenaced(node.ToIndex, opponentColor);
+                            var currentClonedBoardCE = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                            var targetIndexIsMenaced = currentClonedBoardCE.TargetIndexIsMenaced(node.ToIndex, opponentColor);
                             if (targetIndexIsMenaced)
                             {
                                 //T37 
-                                node.Weight -= currentClonedBoardGPT.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
+                                node.Weight -= currentClonedBoardCE.GetPieceValue(currentClonedBoardCE._cases[node.ToIndex])/*depthLevel*/;//* tomenacedNumber;
                             }
                             //protection
-                            //var currentClonedBoardGPT2 = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
-                            //var targetIndexIsMenaced = currentClonedBoardGPT2.TargetIndexIsProtected(node.ToIndex, colore);
+                            //var currentClonedBoardCE2 = boardChess.CloneAndMove(move.FromIndex, move.ToIndex);
+                            //var targetIndexIsMenaced = currentClonedBoardCE2.TargetIndexIsProtected(node.ToIndex, colore);
                             //if (targetIndexIsMenaced)
                             //{
-                            //    node.Weight -= currentClonedBoardGPT2.GetPieceValue(currentClonedBoardGPT._cases[node.ToIndex]);//* tomenacedNumber;
+                            //    node.Weight -= currentClonedBoardCE2.GetPieceValue(currentClonedBoardCE._cases[node.ToIndex]);//* tomenacedNumber;
                             //}
 
-                            //if (currentClonedBoardGPT.KingIsMenaced(opponentColor))
+                            //if (currentClonedBoardCE.KingIsMenaced(opponentColor))
                             //{
                             //    node.Weight += 100;  // Malus pour déplacer une pièce menacée
                             //}
 
                             //king is menaced
                             // T59FinDePartieEviterMortDuRoiNoir
-                            if (currentClonedBoardGPT.KingIsMenaced(cpuColor))
+                            if (currentClonedBoardCE.KingIsMenaced(cpuColor))
                             {
                                 node.Weight -= 100;  // Malus pour déplacer une pièce menacée
                             }
 
                             //TODO METTRE ICI EN PRIORITE LES AMELIORATION
                             //menacedBonus
-                            var menacedBonus = currentClonedBoardGPT.GetMenacedsPoints(opponentColor);
+                            var menacedBonus = currentClonedBoardCE.GetMenacedsPoints(opponentColor);
                             node.Weight += menacedBonus;
-                            var menacedMalus = currentClonedBoardGPT.GetMenacedsPoints(cpuColor);
+                            var menacedMalus = currentClonedBoardCE.GetMenacedsPoints(cpuColor);
                             node.Weight -= menacedMalus;
 
 
 
                             //In chess
-                            if (currentClonedBoardGPT.IsKingInCheck(cpuColor))
+                            if (currentClonedBoardCE.IsKingInCheck(cpuColor))
                                 node.Weight = -9999;
-                            if (currentClonedBoardGPT.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
+                            if (currentClonedBoardCE.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
                                 node.Weight = 9999;
 
 
@@ -796,18 +825,18 @@ namespace ChessCore.Tools
 
 
 
-                            allNodeGPTList.Add(node);
+                            allNodeCEList.Add(node);
 
 
                             // if (node.Weight <= -1000)
-                            //    blackNodeGPTList.Add(node);
+                            //    blackNodeCEList.Add(node);
                             //Utils.WritelineAsync($"{node}");
                             if (node.Weight > maxWeight)
                             {
                                 Utils.WritelineAsync($"{node} *");
                                 maxWeight = node.Weight;
                             }
-                            bestNodeGPTList.Add(node);
+                            bestNodeCEList.Add(node);
                         }
                     }
 
@@ -817,24 +846,24 @@ namespace ChessCore.Tools
                 });
 
                 // Sélection du meilleur coup
-                maxWeight = bestNodeGPTList.Max(x => x.Weight);
+                maxWeight = bestNodeCEList.Max(x => x.Weight);
 
-                bestNodeGPTList = bestNodeGPTList.Where(x => x.Weight == maxWeight).ToList();
+                bestNodeCEList = bestNodeCEList.Where(x => x.Weight == maxWeight).ToList();
                 var rand = new Random();
-                var bestNodeGPT = bestNodeGPTList[rand.Next(bestNodeGPTList.Count)];
+                var bestNodeCE = bestNodeCEList[rand.Next(bestNodeCEList.Count)];
 
 
-                Utils.WritelineAsync($"bestNodeGPTList :");
-                foreach (var node in bestNodeGPTList)
+                Utils.WritelineAsync($"bestNodeCEList :");
+                foreach (var node in bestNodeCEList)
                 {
                     Utils.WritelineAsync($"{node}");
                 }
-                bestNodeGPT.EquivalentBestNodeGPTList = bestNodeGPTList;
-                bestNodeGPT.AllNodeGPTList = allNodeGPTList;
+                bestNodeCE.EquivalentBestNodeCEList = bestNodeCEList;
+                bestNodeCE.AllNodeCEList = allNodeCEList;
                 var elapsed = DateTime.UtcNow - startTime;
                 Utils.WritelineAsync($"Reflection time: {elapsed}");
-                Utils.WritelineAsync($"Best node : {bestNodeGPT}");
-                return bestNodeGPT;
+                Utils.WritelineAsync($"Best node : {bestNodeCE}");
+                return bestNodeCE;
             }
             catch (Exception)
             {
@@ -851,7 +880,7 @@ namespace ChessCore.Tools
 
 
 
-        public NodeGPT MinMaxWithAlphaBeta(BoardGPT board, int depth, double alpha, double beta, bool maximizingPlayer, string cpuColor)
+        public NodeCE MinMaxWithAlphaBeta(BoardCE board, int depth, double alpha, double beta, bool maximizingPlayer, string cpuColor)
         {
             var executionEngineTime = DateTime.UtcNow - Utils.EnginStartTime;
             if (executionEngineTime.TotalSeconds > Utils.LimitOfReflectionTimeInSecond)
@@ -862,11 +891,11 @@ namespace ChessCore.Tools
                     Utils.WritelineAsync($"REFLECTION TIME OVER  {Utils.LimitOfReflectionTimeInSecond} s STOP ENGINE");
                     Utils.LimitOfReflectionTimeIsShow = true;
                 }
-                return new NodeGPT() { Level = -1, Weight = -9999 };
+                return new NodeCE() { Level = -1, Weight = -9999 };
             }
 
 
-            var currentNodeGPT = new NodeGPT
+            var currentNodeCE = new NodeCE
             {
                 Level = depth,
                 Colore = cpuColor
@@ -876,29 +905,29 @@ namespace ChessCore.Tools
             //T131_B_E8toD8
             if (board.IsKingInCheck(cpuColor))
             {
-                currentNodeGPT.Weight = -9999;
-                // return currentNodeGPT;
+                currentNodeCE.Weight = -9999;
+               //  return currentNodeCE;
             }
             if (board.IsKingInCheck(opponentColor))
             {
-                currentNodeGPT.Weight = 9999;
-                // return currentNodeGPT;
+                currentNodeCE.Weight = 9999;
+                // return currentNodeCE;
             }
 
             // Vérification de fin de recherche ou de fin de partie
             if (depth == 0 || board.IsGameOver())
             {
                 // Évaluation de la position courante
-                currentNodeGPT.Weight = board.CalculateBoardGPTScore(board, cpuColor, opponentColor);
+                currentNodeCE.Weight = board.CalculateBoardCEScore(board, cpuColor, opponentColor);
 
 
                 ////TEST A DECOMMNETER SI NO SUCCES
                 ////if (_checkIsInChessOnEnd)
                 ////{
                 ////    if (board.IsKingInCheck(cpuColor))
-                ////        currentNodeGPT.Weight = -9999;
+                ////        currentNodeCE.Weight = -9999;
                 ////    if (board.IsKingInCheck(opponentColor))
-                ////        currentNodeGPT.Weight = 9999;
+                ////        currentNodeCE.Weight = 9999;
                 ////}
 
 
@@ -907,23 +936,32 @@ namespace ChessCore.Tools
                 //king is menaced
                 //if (board.KingIsMenaced(cpuColor))
                 //{
-                //    currentNodeGPT.Weight -= 100;  // Malus pour déplacer une pièce menacée
+                //    currentNodeCE.Weight -= 100;  // Malus pour déplacer une pièce menacée
                 //}
                 //menacedBonus
                 //var menacedBonus = board.GetMenacedsPoints(opponentColor);
-                //currentNodeGPT.Weight += menacedBonus;
+                //currentNodeCE.Weight += menacedBonus;
                 //var menacedMalus = board.GetMenacedsPoints(cpuColor);
-                //currentNodeGPT.Weight -= menacedMalus;
+                //currentNodeCE.Weight -= menacedMalus;
+
 
 
 
                 //In chess
-                ////if (board.IsKingInCheck(cpuColor))
-                ////    currentNodeGPT.Weight = -9999;
-                ////if (board.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
-                ////    currentNodeGPT.Weight = 9999;
-                // allNodeGPTList.Add(node);
-                return currentNodeGPT;
+                // T88LesBlanchDoiventEviterLEchec et T95SuiteSuiteBlackWin
+                if (_depthLevel == 1)
+                {
+                    if (board.IsKingInCheck(cpuColor))
+                        currentNodeCE.Weight = -9999;
+                    if (board.IsKingInCheck(opponentColor)/* && !targetIndexIsMenaced T67WhiteIsInChess*/)
+                        currentNodeCE.Weight = 9999;
+                }
+                   
+
+
+
+
+                return currentNodeCE;
             }
 
             double bestValue = maximizingPlayer ? double.NegativeInfinity : double.PositiveInfinity;
@@ -941,7 +979,7 @@ namespace ChessCore.Tools
 
 
                 // Appel récursif pour le sous-nœud
-                var childNodeGPT = MinMaxWithAlphaBeta(
+                var childNodeCE = MinMaxWithAlphaBeta(
                     board: clonedBoard,
                     depth: depth - 1,
                     alpha: alpha,
@@ -956,35 +994,35 @@ namespace ChessCore.Tools
                 //{
                 //    string capturedPieceType = capturedPiece.Split('|')[0];
                 //    int capturedValue = clonedBoard.GetPieceValue(capturedPieceType);
-                //    childNodeGPT.Weight += maximizingPlayer ? capturedValue : -capturedValue;
+                //    childNodeCE.Weight += maximizingPlayer ? capturedValue : -capturedValue;
                 //}
 
                 // Ajouter un bonus pour mettre l'adversaire en échec
                 //if (clonedBoard.IsKingInCheck(opponentColor))
                 //{
-                //    childNodeGPT.Weight += 50;
+                //    childNodeCE.Weight += 50;
                 //}
 
                 //// Vérifier les menaces sur les pièces alliées
                 //if (TargetIndexIsMenaced(clonedBoard, cpuColor, opponentColor, move.ToIndex) > 0)
                 //{
-                //    childNodeGPT.Weight -= 20;  // Malus pour déplacer une pièce menacée
+                //    childNodeCE.Weight -= 20;  // Malus pour déplacer une pièce menacée
                 //}
                 // malus si le roi est menacé 
                 //T59FinDePartieEviterMortDuRoiNoir
                 //if (clonedBoard.KingIsMenaced(cpuColor))
                 //{
-                //    childNodeGPT.Weight -= 100;  // Malus pour déplacer une pièce menacée
+                //    childNodeCE.Weight -= 100;  // Malus pour déplacer une pièce menacée
                 //}
 
                 // T59FinDePartieEviterMortDuRoiNoir OK BUT LON TIME
                 //if (board.KingIsMenaced(cpuColor))
                 //{
-                //    currentNodeGPT.Weight -= 100;  // Malus pour déplacer une pièce menacée
+                //    currentNodeCE.Weight -= 100;  // Malus pour déplacer une pièce menacée
                 //}
                 //if (board.KingIsMenaced(opponentColor))
                 //{
-                //    currentNodeGPT.Weight += 100;  // Malus pour déplacer une pièce menacée
+                //    currentNodeCE.Weight += 100;  // Malus pour déplacer une pièce menacée
                 //}
 
 
@@ -996,9 +1034,9 @@ namespace ChessCore.Tools
                 if (_depthLevel == 1)
                 {
                     var menacedBonus = clonedBoard.GetMenacedsPoints(opponentColor);
-                    childNodeGPT.Weight += menacedBonus;
+                    childNodeCE.Weight += menacedBonus;
                     var menacedMalus = clonedBoard.GetMenacedsPoints(cpuColor);
-                    childNodeGPT.Weight -= menacedMalus;
+                    childNodeCE.Weight -= menacedMalus;
                 }
 
 
@@ -1006,11 +1044,11 @@ namespace ChessCore.Tools
                 // Maximizing Player (CPU)
                 if (maximizingPlayer)
                 {
-                    if (childNodeGPT.Weight > bestValue)
+                    if (childNodeCE.Weight > bestValue)
                     {
-                        bestValue = childNodeGPT.Weight;
-                        currentNodeGPT.ToIndex = move.ToIndex;
-                        currentNodeGPT.FromIndex = move.FromIndex;
+                        bestValue = childNodeCE.Weight;
+                        currentNodeCE.ToIndex = move.ToIndex;
+                        currentNodeCE.FromIndex = move.FromIndex;
 
                     }
                     alpha = Math.Max(alpha, bestValue);
@@ -1018,11 +1056,11 @@ namespace ChessCore.Tools
                 // Minimizing Player (Adversaire)
                 else
                 {
-                    if (childNodeGPT.Weight < bestValue)
+                    if (childNodeCE.Weight < bestValue)
                     {
-                        bestValue = childNodeGPT.Weight;
-                        currentNodeGPT.ToIndex = move.ToIndex;
-                        currentNodeGPT.FromIndex = move.FromIndex;
+                        bestValue = childNodeCE.Weight;
+                        currentNodeCE.ToIndex = move.ToIndex;
+                        currentNodeCE.FromIndex = move.FromIndex;
 
                     }
                     beta = Math.Min(beta, bestValue);
@@ -1039,14 +1077,22 @@ namespace ChessCore.Tools
 
 
 
+            //if(currentNodeCE.FromIndex == 27 && currentNodeCE.ToIndex == 21)
+            //{
+            //    var dfd = currentNodeCE;
+            //}
 
+            //if (currentNodeCE.FromIndex == 6 && currentNodeCE.ToIndex == 2)
+            //{
+            //    var dfd = currentNodeCE;
+            //}
+
+            currentNodeCE.Weight = (int)bestValue;
            
-            currentNodeGPT.Weight = (int)bestValue;
-           
 
 
-            //Utils.WritelineAsync($"{depth}, {currentNodeGPT}");
-            return currentNodeGPT;
+            //Utils.WritelineAsync($"{depth}, {currentNodeCE}");
+            return currentNodeCE;
         }
 
 
@@ -1057,7 +1103,7 @@ namespace ChessCore.Tools
         }
     }
 
-    public class BoardGPT
+    public class BoardCE
     {
         public string[] _cases = new string[64];
         public void Print()
@@ -1077,19 +1123,19 @@ namespace ChessCore.Tools
             Utils.WritelineAsync("_____________________________________________________________________");
         }
 
-        public BoardGPT()
+        public BoardCE()
         {
             for (int i = 0; i < 64; i++)
             {
                 _cases[i] = $"__";
             }
         }
-        public BoardGPT(string[] cases)
+        public BoardCE(string[] cases)
         {
             _cases = cases;
         }
 
-        public BoardGPT(BoardGPT other)
+        public BoardCE(BoardCE other)
         {
             Array.Copy(other._cases, _cases, 64);
         }
@@ -1311,7 +1357,7 @@ namespace ChessCore.Tools
                 "B" => 30, // Fou
                 "T" => 60, // Tour // Tour 50 mais pour T126 et T125
                 "Q" => 90, // Reine
-                "K" => 10000, // Roi
+                "K" => 100, // Roi 10000 to 100 for T136C_W_D5toF6 et T136B_W_D5toF6 Roi
                 _ => 0,
             };
         }
@@ -1336,7 +1382,7 @@ namespace ChessCore.Tools
 
         private static readonly int[] centralSquares = { 28, 29, 36, 37, 44, 45, 52, 53 };
 
-        public int CalculateBoardGPTScore(BoardGPT board, string color, string opponentColor)
+        public int CalculateBoardCEScore(BoardCE board, string color, string opponentColor)
         {
 
             int whiteScore = 0;
@@ -1350,7 +1396,7 @@ namespace ChessCore.Tools
         { "B", 30 },  // Fou
         { "T", 60 },  // Tour 50 mais pour T126 et T125
         { "Q", 90 },  // Reine
-        { "K", 10000 } // Roi (valeur arbitraire très élevée pour éviter sa capture)
+        { "K", 100 } // 10000 to 100 for T136C_W_D5toF6 et T136B_W_D5toF6 Roi (valeur arbitraire très élevée pour éviter sa capture)
     };
 
             // Parcourir le plateau pour calculer les scores
@@ -1451,7 +1497,10 @@ namespace ChessCore.Tools
                 {
                     if (enemyMove.ToIndex == index)
                     {
-                        result.Add(enemyMove);
+                        //T95SuiteSuiteB_W_InChess
+                        var cloneBoard = CloneAndMove(enemyMove);
+                        if (!cloneBoard.KingIsMenaced(opponentColor))
+                            result.Add(enemyMove);
                         //isMenaced = true;
                         //state.Stop(); // Arrête toutes les autres itérations
                         //  _cases[index] = oldContaine;
@@ -1460,6 +1509,15 @@ namespace ChessCore.Tools
                 }//);
             });
             _cases[index] = oldContaine;
+            //foreach (var move in result)
+            //{
+            //    var cloneBoard = CloneAndMove(move);
+            //    if (cloneBoard.KingIsMenaced(opponentColor))
+            //    {
+            //        var f = move;
+            //        result = result.Remove(move);
+            //    }
+            //}
             return result;
 
         }
@@ -1515,11 +1573,16 @@ namespace ChessCore.Tools
             return !_cases.Any(c => c.StartsWith("K|"));
         }
 
-        public BoardGPT CloneAndMove(int fromIndex, int toIndex)
+        public BoardCE CloneAndMove(int fromIndex, int toIndex)
         {
-            var clone = new BoardGPT(this);
+            var clone = new BoardCE(this);
             clone.Move(fromIndex, toIndex);
             return clone;
+        }
+        public BoardCE CloneAndMove(Move move)
+        {
+            
+            return CloneAndMove(move.FromIndex, move.ToIndex);
         }
 
         public List<int> GetCasesIndexForColor(string color)
@@ -2099,10 +2162,10 @@ namespace ChessCore.Tools
         }
     }
 
-    public class NodeGPT
+    public class NodeCE
     {
-        public List<NodeGPT> EquivalentBestNodeGPTList { get; set; }
-        public List<NodeGPT> AllNodeGPTList { get; set; } = new List<NodeGPT>();
+        public List<NodeCE> EquivalentBestNodeCEList { get; set; }
+        public List<NodeCE> AllNodeCEList { get; set; } = new List<NodeCE>();
         public int Weight { get; set; }
         public int Level { get; set; }
         public string Colore { get; set; }
@@ -2112,8 +2175,8 @@ namespace ChessCore.Tools
         public string Location => GetPositionFromIndex(FromIndex); // Position d'origine en notation échiquier
         public string BestChildPosition => GetPositionFromIndex(ToIndex); // Position de destination en notation échiquier
 
-        public BoardGPT BoardGPT { get; set; }
-        public NodeGPT MaxNode { get; set; }
+        public BoardCE BoardCE { get; set; }
+        public NodeCE MaxNode { get; set; }
 
         public TimeSpan ReflectionTime { get; set; }
         /// <summary>
@@ -2187,7 +2250,7 @@ namespace ChessCore.Tools
         }
     }
 
-    public class SpecificBoardGPT { /* Utilisé pour une logique avancée */ }
+    public class SpecificBoardCE { /* Utilisé pour une logique avancée */ }
 
 
 }

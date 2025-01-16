@@ -1,0 +1,12 @@
+Queen;g8;White;False;False;False;False
+SimplePawn;a5;White;False;False;False;False
+Knight;d5;White;False;False;False;False
+SimplePawn;e3;White;False;False;False;False
+SimplePawn;h3;White;False;False;False;False
+SimplePawn;a2;White;False;False;False;False
+King;d2;White;False;False;False;False
+SimplePawn;f2;White;False;False;False;False
+SimplePawn;g2;White;False;False;False;False
+Rook;b1;White;False;False;False;False
+Bishop;c1;White;False;False;False;False
+Rook;f1;White;False;False;False;False

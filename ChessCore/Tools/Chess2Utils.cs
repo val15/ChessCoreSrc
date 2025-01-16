@@ -754,12 +754,12 @@ namespace ChessCore.Tools
             }
 
         }
-        public static BoardGPT GenerateBoardFormPawnListGPT(List<Pawn> pawns)
+        public static BoardCE GenerateBoardFormPawnListCE(List<Pawn> pawns)
         {
 
             try
             {
-                var board = new BoardGPT();
+                var board = new BoardCE();
                 foreach (var pawn in pawns)
                 {
                     if (String.IsNullOrEmpty(pawn.Location))

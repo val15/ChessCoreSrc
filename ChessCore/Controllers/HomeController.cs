@@ -53,7 +53,7 @@ namespace ChessCore.Controllers
                 //computer timer
 
 
-                var currentBoard = new BoardGPT(MainUtils.VM.MainBord.GetCases());
+                var currentBoard = new BoardCE(MainUtils.VM.MainBord.GetCases());
                
                 if(currentBoard.IsKingInCheck(MainUtils.CPUColor) || currentBoard.IsKingInCheck(MainUtils.CPUColor))
                 {
@@ -226,7 +226,7 @@ namespace ChessCore.Controllers
                     //chessEngine.DeepLevel = Utils.DeepLevel;
                     // Utils.WritelineAsync($"DeepLevel = {chessEngine.DeepLevel}");
                     // if(MainUtils.CPUColor == "W")
-                    var bestNode = chessEngine.GetBestPositionLocalUsingMiltiThreading(MainUtils.CurrentTurnColor, new BoardGPT(MainUtils.VM.MainBord.GetCases()), depthLevel);
+                    var bestNode = chessEngine.GetBestPositionLocalUsingMiltiThreading(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
                     if (bestNode == null)//ECHES ET MATE
                     {
                         Utils.WritelineAsync("CHECKMATE");
