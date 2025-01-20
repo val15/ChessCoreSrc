@@ -757,7 +757,7 @@ namespace ChessCore.Controllers
 
 
         [HttpPost]
-        public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, string selectedDurationType, int selectedLevel, bool isFullCPU,int FullCPUWhiteLevel,int FullCPUBlackLevel)
+        public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU,int FullCPUWhiteLevel,int FullCPUBlackLevel)
         {
             ////  GC.Collect();
             //var t_ = selectionLevel;

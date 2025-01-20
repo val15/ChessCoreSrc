@@ -8,6 +8,41 @@
 <script src="~/js/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js"></script>
 <script type="text/javascript">
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var checkboxIsFullCPU = document.getElementById("isActiveFullCPU");
+        var level = document.getElementById("level");
+        var computerColor = document.getElementById("computerColor");
+        var whiteLevel = document.getElementById("FullCPUWhiteLevel");
+        var blackLevel = document.getElementById("FullCPUBlackLevel");
+
+        function toggleLevels() {
+            if (checkboxIsFullCPU.checked) {
+                level.disabled = true; // Désactive le niveau normal
+                computerColor.disabled = true;
+                whiteLevel.disabled = false;
+                blackLevel.disabled = false;
+                
+            
+                
+            } else {
+                level.disabled = false;
+                computerColor.disabled = false;
+                whiteLevel.disabled = true;
+                blackLevel.disabled = true;
+                
+            }
+        }
+
+        // Ajoute un écouteur d'événement sur la checkbox
+        checkboxIsFullCPU.addEventListener("change", toggleLevels);
+
+        // Appel initial pour s'assurer que l'état est correct au chargement
+        toggleLevels();
+    });
+
+
     function start() {
         var computerColor = $('#computerColor').val();
 
@@ -19,14 +54,15 @@
         //var isActiveFullCPU = $('#isActiveFullCPU').val();
        
 
-        var duration = $('#duration').val();
+       // var duration = $('#duration').val();
         //var selectedLevel = $('#level').val();
         //TODO remmetre le leve
         var selectedLevel = $('#level').val();
         var FullCPUBlackLevel = $('#FullCPUBlackLevel').val();
         var FullCPUWhiteLevel = $('#FullCPUWhiteLevel').val();
+
         //alert(computerColor);
-        var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0, CPUColor: computerColor, selectedDurationType: duration, selectedLevel: selectedLevel, isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel };
+        var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0, CPUColor: computerColor, selectedLevel: selectedLevel, isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel };
         $.ajax({
             type: "POST",
             url: "/Home/Details",
@@ -289,15 +325,16 @@
 
         <br />
     </div>
-   
+  @*  
     <label for="duration">duration:</label>
     <select id="duration">
         <option  value="24h">24h</option>
         <option selected value="1h">1h</option>
         <option value="30mn">30mn</option>
         <option value="15mn">15mn</option>
+        <option value="1mn">1mn</option>
 
-    </select>
+    </select> *@
 
     <label for="level">level:</label>
     <select id="level">
@@ -315,6 +352,7 @@
         <option class="whiteFont sectionBG" value="W">White</option>
         <option class="blackFont sectionBG" value="B">Black</option>
     </select>
+
     <input id="isActiveFullCPU"
            name="isActiveFullCPU"
            type="checkbox" />
