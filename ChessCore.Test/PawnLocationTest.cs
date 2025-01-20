@@ -1,4 +1,5 @@
 ﻿using ChessCore.Tools;
+using ChessCore.Tools.ChessEngine;
 
 namespace ChessCore.Test
 {

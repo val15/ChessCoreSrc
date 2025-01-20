@@ -1,5 +1,7 @@
 ﻿using ChessCore.Models;
 using ChessCore.Tools;
+using ChessCore.Tools.ChessEngine;
+using ChessCore.Tools.ChessEngine.Engine;
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
@@ -79,12 +81,12 @@ namespace ChessCore.Controllers
                 
 
 
-                using (var engine = new ChessEngine())
+                using (var engine = new ChessEngine2())
                 {
                     
                     Utils.DeepLevel = _CPULevel;
 
-                    var bestNode = engine.GetBestPositionLocalUsingMiltiThreading(MainUtils.CPUColor, currentBoard, Utils.DeepLevel);
+                    var bestNode = engine.GetBestModeCE(MainUtils.CPUColor, currentBoard, Utils.DeepLevel);
                     
 
                     var fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
@@ -207,26 +209,35 @@ namespace ChessCore.Controllers
 
 
                 Utils.WritelineAsync($"Current turn = {MainUtils.CurrentTurnColor} => normlaEngine");
-                using (var chessEngine = new ChessEngine())
+
+                var depthLevel = 3;
+                if (MainUtils.CPUColor == "W")
                 {
-                    var depthLevel = 3;
-                    if (MainUtils.CPUColor == "W")
-                    {
+                    depthLevel = MainUtils.FullCPUWhiteLevel;
+                }
+                else
+                {
+                    depthLevel = MainUtils.FullCPUBlackLevel;
 
-                        depthLevel = MainUtils.FullCPUWhiteLevel;
+                }
 
 
-                    }
-                    else
-                    {
-                        depthLevel = MainUtils.FullCPUBlackLevel;
+                IChessEngine chessEngine;
+                NodeCE bestNode;
+                if (depthLevel == 3)
+                {
+                    //TODO A SUPPRIMER
+                    using (chessEngine = new ChessEngine1())
+                         bestNode = chessEngine.GetBestModeCE(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
 
-                    }
 
-                    //chessEngine.DeepLevel = Utils.DeepLevel;
-                    // Utils.WritelineAsync($"DeepLevel = {chessEngine.DeepLevel}");
-                    // if(MainUtils.CPUColor == "W")
-                    var bestNode = chessEngine.GetBestPositionLocalUsingMiltiThreading(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
+                }
+                else
+                {
+                    using (chessEngine = new ChessEngine2())
+                         bestNode = chessEngine.GetBestModeCE(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
+                }
+
                     if (bestNode == null)//ECHES ET MATE
                     {
                         Utils.WritelineAsync("CHECKMATE");
@@ -246,15 +257,15 @@ namespace ChessCore.Controllers
                     }
                     fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
                     toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
-                }
 
 
 
 
-                //determination si attaque pour remplir le cimetiere
-                //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
-                //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
-                if (fromIndex == toIndex)
+
+                    //determination si attaque pour remplir le cimetiere
+                    //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
+                    //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
+                    if (fromIndex == toIndex)
                     return View("Losing");
 
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using ChessCore.Tools.ChessEngine;
 
 namespace ChessCore.Tools
 {
@@ -9,8 +10,8 @@ namespace ChessCore.Tools
         public static int LimitOfReflectionTimeInSecond { get; set; } = 24 * 60 * 60;
         public static bool LimitOfReflectionTimeIsShow { get; set; } = false;
 
-        public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
-        public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
+        //public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
+       // public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
 
 
 

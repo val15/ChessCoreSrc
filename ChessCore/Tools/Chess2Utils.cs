@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ChessCore.Tools.ChessEngine;
 
 namespace ChessCore.Tools
 {

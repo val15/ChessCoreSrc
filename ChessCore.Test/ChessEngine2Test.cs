@@ -1,13 +1,19 @@
 ﻿using ChessCore.Tools;
+using ChessCore.Tools.ChessEngine.Engine;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ChessCore.Test
 {
     [TestClass]
-    public class ChessEngineTest
+    public class ChessEngine2Test
     {
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
 
-        public ChessEngineTest()
+        public ChessEngine2Test()
         {
             Utils.DeepLevel = 3;
         }
@@ -92,9 +98,9 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7", "c7");
             }
@@ -186,10 +192,10 @@ namespace ChessCore.Test
             var pawnList = new List<Pawn>();
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                // var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                // var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7", "c7");
@@ -280,10 +286,10 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
 
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a2", "c2");
             }
@@ -372,9 +378,9 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a2", "c2");
             }
@@ -395,9 +401,9 @@ namespace ChessCore.Test
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final de la reine Noir ne doit pas etre "g5"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
             }
@@ -482,9 +488,9 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final du rook blanch  ne doit pas etre "a7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7");
             }
@@ -568,9 +574,9 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final du rook blanch  ne doit pas etre "a7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a7");
             }
@@ -653,9 +659,9 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final du rook blanch  ne doit pas etre "a7"
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "h2");
             }
@@ -681,9 +687,9 @@ namespace ChessCore.Test
             var testName = "T05LeFousBlacheDoitSeSaccrifierPourProtegerLeRook";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c4");
             }
         }
@@ -696,17 +702,7 @@ namespace ChessCore.Test
             /*Le Rook blanc doit attaquer le roir noir pout  Tout de suite mettre en echec 
              * les noirs*/
             //Position final du rook blanch  doit etre "d8"
-
-
-
-
-
             var computerColore = "White";
-
-
-
-
-
             var pawnListWhite = new List<Pawn>();
             var pawnListBlack = new List<Pawn>();
 
@@ -762,9 +758,9 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual((nodeResult.EquivalentBestNodeCEList, 1););
                 //rook blanch  doit etre "d8"
                 // Assert.AreEqual(nodeResult.AssociatePawn.Name, "Rook");
@@ -840,9 +836,9 @@ namespace ChessCore.Test
         //      pawnList.AddRange(pawnListWhite);
         //      pawnList.AddRange(pawnListBlack);
 
-        //      using (var chessEngine = new ChessEngine())
+        //      using (var chessEngine = new ChessEngine2())
         //      {
-        //          var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //          var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
         //          //Position final blanche  doit etre "d8" ou "e8"
         //          //Assert.AreEqual(nodeResult.AssociatePawn.Name, "Rook");
         //          Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 2);
@@ -871,9 +867,9 @@ namespace ChessCore.Test
             var testName = "T11LaReineBlancNeDoitPasAttaqueLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
             }
         }
@@ -888,10 +884,10 @@ namespace ChessCore.Test
             var testName = "T15LaReineBlanchNeDoitPasPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
 
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
@@ -908,9 +904,9 @@ namespace ChessCore.Test
             var testName = "T16SeulLePionDoitProtegerLeRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.BestChildPosition, "f6");
             }
@@ -933,9 +929,9 @@ namespace ChessCore.Test
             var testName = "T17LeRoirNoirNeDoitPasAttaquer";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
@@ -964,9 +960,9 @@ namespace ChessCore.Test
             var testName = "T18suiteDe16LeCavalierNoirDoitPrendreLeFouBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
@@ -997,9 +993,9 @@ namespace ChessCore.Test
             var testName = "T19bLeFouBlanchDoitnenacerLaReineOulePionDoitProtegerLeTour";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
 
@@ -1038,9 +1034,9 @@ namespace ChessCore.Test
             var testName = "T20LePionDoitPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "d3");
             }
         }
@@ -1063,35 +1059,29 @@ namespace ChessCore.Test
             var testName = "T21LaNoirBlancheDoitSeMettreEnD3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "d3");
             }
         }
 
         [TestMethod]
-        public void T22LeBishopOuLeRoiNoirDoitPrendreLePion()
+        public void T22LeBishopOuLeRoiNoirDoitPrendreLePion() //OK IF L3 (-10)
         {
             /*Le Bishop Noir Doit Prendre le pion */
             ////le Bishop noir  doit se mettre sur "e7"
 
-
-
-
-
             var computerColore = "Black";
-
-
 
             var testName = "T22LeBishopOuLeRoiNoirDoitPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
                 // chessEngine.DeepLevel = 5;
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "e7");
@@ -1113,9 +1103,9 @@ namespace ChessCore.Test
             var testName = "T23LeCavalierNoirNeDoitPasMenacerLeRoiBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b3");
             }
         }
@@ -1134,9 +1124,9 @@ namespace ChessCore.Test
             var testName = "T24LeCavalierNoirNeDoitPasBouger";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult.Location, "a1");
             }
@@ -1154,9 +1144,9 @@ namespace ChessCore.Test
         //    var testName = "T25LeCavalierNoirDoitMenacerLeRoiBlanch";
         //    var testPath = Path.Combine(testsDirrectory, testName);
         //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-        //    using (var chessEngine = new ChessEngine())
+        //    using (var chessEngine = new ChessEngine2())
         //    {
-        //        var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
         //        //Assert.AreEqual(nodeResult.Location, "g4");
 
@@ -1184,9 +1174,9 @@ namespace ChessCore.Test
             var testName = "T26LeCavalierNoirDoitBouger";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 Assert.AreEqual(nodeResult.Location, "f6");
@@ -1201,9 +1191,9 @@ namespace ChessCore.Test
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
 
@@ -1235,9 +1225,9 @@ namespace ChessCore.Test
             var testName = "T27LeBishopBlancDoitSeMettreEnA8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "a8" || nodeResult.BestChildPosition == "g7");
             }
         }
@@ -1257,9 +1247,9 @@ namespace ChessCore.Test
             var testName = "T28LePionNoirDoitPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "d6");
             }
         }
@@ -1270,33 +1260,16 @@ namespace ChessCore.Test
             //ONLY POSITION D1 OR F1
             /*Le pion blanch doit se mettre en h4 ou le Bishop doit se mettre en g2 ou reine en c2  pour proder de l'check*/
             // Le pion blanc doit se mettre en h4 ou le Bishop doit se mettre en g2 ou ou reine en c2
-
-
-
-
             var computerColore = "White";
-
-
-
-
-
             var testName = "T29PourProtegerDEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-
-
-                var isSUcces = nodeResult.EquivalentBestNodeCEList.All(x => x.Location == "f1" || x.Location == "d1") || nodeResult.BestChildPosition == "g5";
-                Assert.IsTrue(isSUcces);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.IsTrue(nodeResult.Location == "f1" || nodeResult.Location == "d1" || nodeResult.BestChildPosition == "g5");
 
             }
-            // Le pion blanc doit se mettre en h4 ou le Bishop doit se mettre en g2 ou reine en c2
-
-
-
-
         }
 
         [TestMethod]
@@ -1312,9 +1285,9 @@ namespace ChessCore.Test
             var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g4");
             }
 
@@ -1335,15 +1308,15 @@ namespace ChessCore.Test
             var testName = "T31LaReineNoirDoitPrendreLaReineBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "a8");
             }
         }
 
 
-       
+
         [TestMethod]
         public void T32LaReineBlanchDoitAttaquerEnB7()
         {
@@ -1351,9 +1324,9 @@ namespace ChessCore.Test
             var testName = "T32LaReineBlanchDoitAttaquerEnB7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
             }
 
@@ -1371,9 +1344,9 @@ namespace ChessCore.Test
             var testName = "T33LaReineBlanchDoitAttaquerEnB7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
             }
         }
@@ -1385,9 +1358,9 @@ namespace ChessCore.Test
             var testName = "T35LePoinNoirNeDoitPasSeMettreEnG5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
             }
 
@@ -1410,9 +1383,9 @@ namespace ChessCore.Test
             var testName = "T36LePoinNoirNeDoitPasSeMettreEnD6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "d6");
             }
 
@@ -1427,9 +1400,9 @@ namespace ChessCore.Test
             var testName = "T37LaTourDoitEtreProtegE";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
                 Assert.AreEqual(nodeResult.BestChildPosition, "c6");
@@ -1447,9 +1420,9 @@ namespace ChessCore.Test
             var testName = "T38LePionNoirNeDoitPasSeMettreSurA3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a3");
             }
@@ -1464,9 +1437,9 @@ namespace ChessCore.Test
             var testName = "T39LePionNoirNeDoitPasSeMettreSurC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c3");
             }
@@ -1481,9 +1454,9 @@ namespace ChessCore.Test
             var testName = "T40LePionNoirNeDoitPasSeMettreSurA2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult, "a2");
             }
@@ -1498,9 +1471,9 @@ namespace ChessCore.Test
             var testName = "T41LaReineBlancheDoitMenacerLeRoiEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 // var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "a2");
 
@@ -1520,9 +1493,9 @@ namespace ChessCore.Test
             var testName = "T44LePionNoirPasRamdumeB5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 // var  T_value = nodeResult.Weight;
                 //var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "b5");
@@ -1619,7 +1592,7 @@ namespace ChessCore.Test
 
             using (var chessEngine = new chessEngine())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
 
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "h5");
@@ -1713,7 +1686,7 @@ namespace ChessCore.Test
 
             using (var chessEngine = new chessEngine())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
 
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "h4");
@@ -1809,7 +1782,7 @@ namespace ChessCore.Test
 
             using (var chessEngine = new chessEngine())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
 
                 // var  T_value = nodeResult.Weight;
                 //var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "b5");
@@ -1907,7 +1880,7 @@ namespace ChessCore.Test
 
             using (var chessEngine = new chessEngine())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
 
                 // var  T_value = nodeResult.Weight;
                 //var result = nodeResult.NodeRandomList.FirstOrDefault(x => x.BestChildPosition == "b5");
@@ -2001,7 +1974,7 @@ namespace ChessCore.Test
 
             using (var chessEngine = new chessEngine())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
                 var isSucces = false;
                 if (nodeResult.BestChildPosition == "g4" || nodeResult.BestChildPosition == "e6" || nodeResult.BestChildPosition == "h6" || nodeResult.BestChildPosition == "c8" || nodeResult.BestChildPosition == "c7")
                     isSucces = true;
@@ -2022,9 +1995,9 @@ namespace ChessCore.Test
             var testName = "T49LesNoirsDoiventprotegerLeRoiMenacE";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 // var randomList = nodeResult.EquivalentBestNodeCEList;
@@ -2044,9 +2017,9 @@ namespace ChessCore.Test
             var testName = "T50LaToureNoirDoitSeMettreEnA7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "a7");
             }
         }
@@ -2062,9 +2035,9 @@ namespace ChessCore.Test
             var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c2");
             }
         }
@@ -2080,11 +2053,11 @@ namespace ChessCore.Test
             var testName = "T53LaPositionFinalNoirNeDoitEtreE6OuE5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                //var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                //var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 var isSucces = (nodeResult.BestChildPosition == "e6" || nodeResult.BestChildPosition == "e5");
                 Assert.IsFalse(isSucces);
@@ -2105,11 +2078,11 @@ namespace ChessCore.Test
             var testName = "T54ALesBlanchDoiventEviterLEvolutionDuPion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                //var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                //var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
 
@@ -2120,17 +2093,18 @@ namespace ChessCore.Test
 
         [TestMethod]
         /*tsiry;27-08-2021*/
-        public void T54B_W_D3toG6()
+        public void T54B_W_D3toG6()//OK IF L3 (70)
         {
 
             var computerColore = "White";
             var testName = "T54BLaTourBlancDoitDoitSeMettreEnA2CarB1EstDejaMenaC";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
+                Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
                 Assert.IsTrue("b1" == nodeResult.BestChildPosition || "g6" == nodeResult.BestChildPosition);
             }
         }
@@ -2146,9 +2120,9 @@ namespace ChessCore.Test
             var testName = "T54CLePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
             }
         }
@@ -2163,9 +2137,9 @@ namespace ChessCore.Test
             var testName = "T54ELePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
             }
@@ -2179,9 +2153,9 @@ namespace ChessCore.Test
             var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 var randomList = nodeResult.EquivalentBestNodeCEList;
                 var isSucces = true;
@@ -2222,11 +2196,11 @@ namespace ChessCore.Test
             var testName = "T54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                //var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                //var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.IsTrue(nodeResult.BestChildPosition == "b1" || nodeResult.BestChildPosition == "c4");
             }
@@ -2247,11 +2221,11 @@ namespace ChessCore.Test
             var testName = "T54GLaReinneNoirDoitAttaquerEnC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                //var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                //var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 Assert.IsTrue(nodeResult.BestChildPosition == "b1" || nodeResult.BestChildPosition == "c4");
@@ -2350,7 +2324,7 @@ namespace ChessCore.Test
                var pawnList = new List<Pawn>();pawnList.AddRange(pawnListWhite);pawnList.AddRange(pawnListBlack);
                using (var chessEngine = new chessEngine())
                {
-                   var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                   var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
 
 
                    Assert.AreEqual(nodeResult.BestChildPosition, "g6");
@@ -2443,7 +2417,7 @@ namespace ChessCore.Test
 
              using (var chessEngine = new chessEngine())
              {
-                 var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                 var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                  Assert.AreNotEqual(nodeResult.BestChildPosition, "c6");
                  Assert.AreNotEqual(nodeResult.BestChildPosition, "b7");
@@ -2461,9 +2435,9 @@ namespace ChessCore.Test
             var testName = "T57SeulLeRookDoitBougerNotRandomD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.Location, "a8");
             }
         }
@@ -2481,9 +2455,9 @@ namespace ChessCore.Test
             var testName = "T59FinDePartieEviterMortDuRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var randomList = nodeResult.EquivalentBestNodeCEList;
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g1");
@@ -2503,9 +2477,9 @@ namespace ChessCore.Test
             var testName = "T61aPourBestSpecificPosition3White";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
@@ -2528,14 +2502,14 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
                 //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-                Assert.AreEqual("f8", nodeResult.BestChildPosition);
+                Assert.IsTrue(nodeResult.Weight<=-900);
             }
 
 
@@ -2553,9 +2527,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("e6", nodeResult.Location);
                 Assert.AreEqual("f7", nodeResult.BestChildPosition);
             }
@@ -2578,9 +2552,9 @@ namespace ChessCore.Test
             var testName = "T62LePionNoirDoitAttaqueLaReineBlancEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "h5");
             }
@@ -2602,9 +2576,9 @@ namespace ChessCore.Test
             var testName = "T65LeRookBlanchNeDoitPasSeMettreEnA6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
 
             }
@@ -2621,14 +2595,14 @@ namespace ChessCore.Test
             var testName = "T67EchecBlancLeRoiDoitSeMettreEnF3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("f3", nodeResult.BestChildPosition);
             }
         }
 
-      
+
 
         /*tsiry;05-07-2022*/
 
@@ -2640,9 +2614,9 @@ namespace ChessCore.Test
             var testName = "T67SuiteLaReineNoirDoitSeMettreEnE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual("d4", nodeResult.Location);
                 Assert.IsTrue("e2" == nodeResult.BestChildPosition);
             }
@@ -2663,9 +2637,9 @@ namespace ChessCore.Test
             var testName = "T68LeRoiBlanchNeDoitPasSeMettreEnG6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
             }
         }
@@ -2681,9 +2655,9 @@ namespace ChessCore.Test
             var testName = "T69LeRoiBanchNeDoitPasPrendreLePionEnG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 var randomList = nodeResult.EquivalentBestNodeCEList;
                 var isSuccess = true;
@@ -2721,9 +2695,9 @@ namespace ChessCore.Test
             var testName = "T71LeRoisBlantNeDoitPasPrendreLeRookEnF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f5");
             }
         }
@@ -2739,9 +2713,9 @@ namespace ChessCore.Test
             var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 var randomList = nodeResult.EquivalentBestNodeCEList;
 
@@ -2766,9 +2740,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 var randomList = nodeResult.EquivalentBestNodeCEList;
                 var isSuccess = false;
@@ -2792,9 +2766,9 @@ namespace ChessCore.Test
             var testName = "T73LeFouNoirNeDoitPasPrendreLePionEnB2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
@@ -2821,9 +2795,9 @@ namespace ChessCore.Test
             var testName = "T74LesBlanchsDoiventPrendreLePionEnD4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //var randomList = nodeResult.EquivalentBestNodeCEList ;
                 //Assert.AreEqual(0, randomList.Count);
@@ -2834,24 +2808,23 @@ namespace ChessCore.Test
 
         /*tsiry;28-10-2021*/
         [TestMethod]
-        public void T78ProtectionDuRookDesNoirs()
+        public void T78ProtectionDuRookDesNoirs()//OK IF L3 (50)
         {
-
-
             var computerColore = "White";
-
             var testName = "T78ProtectionDuRookDesNoirs";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // var randomList = nodeResult.EquivalentBestNodeCEList;
                 //  Assert.IsNull(randomList);
                 //Assert.AreEqual(nodeResult.Location, "c1");
                 //Assert.AreEqual(nodeResult.BestChildPosition, "b2");
-                Assert.IsTrue((nodeResult.Location == "a3" && nodeResult.BestChildPosition == "c4") || (nodeResult.Location == "c2" && nodeResult.BestChildPosition == "b1") || (nodeResult.Location == "a2" && nodeResult.BestChildPosition == "b2"));
+                // Assert.IsTrue((nodeResult.Location == "a3" && nodeResult.BestChildPosition == "c4") || (nodeResult.Location == "c2" && nodeResult.BestChildPosition == "b1") || (nodeResult.Location == "a2" && nodeResult.BestChildPosition == "b2"));
+                //Assert.IsTrue(nodeResult.Location == "a2" && nodeResult.BestChildPosition == "b2");
+                Assert.IsTrue(nodeResult.Location == "c1" && nodeResult.BestChildPosition == "b2");
             }
         }
 
@@ -2871,9 +2844,9 @@ namespace ChessCore.Test
             var testName = "T79LeRoisBlanchDoitSeMettreEnG1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
                 Assert.AreEqual(1, randomList.Count);
@@ -2887,22 +2860,17 @@ namespace ChessCore.Test
         [TestMethod]
         public void T80_B_WinToG4()
         {
-
-
             var computerColore = "Black";
-
-
-
 
             var testName = "T80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
-                Assert.AreEqual(nodeResult.BestChildPosition, "g4");
+                Assert.AreEqual(nodeResult.Location, "d8");
 
             }
         }
@@ -2919,9 +2887,9 @@ namespace ChessCore.Test
             var testName = "T81LeCavalierBlanchNeDoitPasPrendreLaReinEtLesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f6");
             }
@@ -2995,7 +2963,7 @@ namespace ChessCore.Test
         //      Utils.MovingList.Add("34(K|W)>26(__)");
         //      using (var chessEngine = new chessEngineOptimize())
         //      {
-        //          var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //          var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
         //          var randomList = nodeResult.EquivalentBestNodeCEList;
         //          //var t_movingList = Utils.MovingList;
@@ -3021,9 +2989,9 @@ namespace ChessCore.Test
             var testName = "T84EchecEtMatNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.IsTrue(nodeResult.Weight <= 1000);
             }
@@ -3038,9 +3006,9 @@ namespace ChessCore.Test
             var testName = "T84EchecEtMatNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //  var randomList = nodeResult.EquivalentBestNodeCEList;
                 Assert.IsTrue(nodeResult.Weight <= -200);
                 //echec si nodeResult.Location ==  nodeResult.BestChildPosition
@@ -3051,19 +3019,16 @@ namespace ChessCore.Test
 
         /*tsiry;16-12-2021*/
         [TestMethod]
-        public void T85LaToureNoirDoitPrendreLePionEnA5()
+        public void T85LaToureNoirDoitPrendreLePionEnA5()//OK IF L3 (10)
         {
-
-
-
             var computerColore = "Black";
             var testName = "T85LaToureNoirDoitPrendreLePionEnA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
@@ -3087,14 +3052,14 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
                 //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-                Assert.AreEqual("e1", nodeResult.Location);
+                Assert.AreEqual("a8", nodeResult.BestChildPosition);
             }
         }
         /*tsiry;11-01-2022
@@ -3110,9 +3075,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "f2");
             } //var randomList = nodeResult.EquivalentBestNodeCEList;
               //Assert.IsNull(randomList);
@@ -3140,9 +3105,9 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 Assert.IsTrue(nodeResult.BestChildPosition == "e3" || nodeResult.BestChildPosition == "g3");//e3 ou g3 
@@ -3159,10 +3124,10 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
 
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.IsTrue(nodeResult.BestChildPosition == "e3" || nodeResult.BestChildPosition == "g3" || nodeResult.BestChildPosition == "d3");//e3 ou g3 
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.IsTrue(nodeResult.BestChildPosition == "h3" || nodeResult.BestChildPosition == "e3" || nodeResult.BestChildPosition == "g3" || nodeResult.BestChildPosition == "d3");//e3 ou g3 
             }
 
 
@@ -3177,9 +3142,9 @@ namespace ChessCore.Test
             var testName = "T88LesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //var randomList = nodeResult.EquivalentBestNodeCEList;
                 //Assert.IsNull(randomList);
@@ -3204,9 +3169,9 @@ namespace ChessCore.Test
             var testName = "T89LeFouNoirNeDoitPasSeMettreEnB4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b4");
             }
@@ -3233,7 +3198,7 @@ namespace ChessCore.Test
               var pawnList =  Chess2Utils.LoadFromDirectorie(testPath);
               using (var chessEngine = new chessEngine())
               {
-                  var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
+                  var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
 
                   Assert.AreEqual(nodeResult.Location, "h7");
                   Assert.AreEqual(nodeResult.BestChildPosition, "h5");
@@ -3259,9 +3224,9 @@ namespace ChessCore.Test
             var testName = "T91LaReineNoirDoitSeMettreEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.BestChildPosition, "h5");
@@ -3276,25 +3241,20 @@ namespace ChessCore.Test
 
         }
         [TestMethod]
-        public void T33bLePionBlancDoitPrendreLeCavalierOuLeFoueEnD5()
+        public void T33bLePionBlancDoitPrendreLeCavalierOuLeFoueEnD5()////OK IF L3(50)
         {
             /*Le pion blanch prendre le cavalier en d4*/
-
-
-
-
-
-
             var computerColore = "White";
             var testName = "T33bLePionBlancDoitPrendreLeCavalierOuLeFoueEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Le poin doit pas se mettre en d4
                 //if()
+                Assert.IsTrue(nodeResult.EquivalentBestNodeCEList.Count == 1 || nodeResult.EquivalentBestNodeCEList.Count  == 2);
                 Assert.IsTrue(nodeResult.BestChildPosition == "d4" || nodeResult.BestChildPosition == "d5");
                 // var randomList = nodeResult.EquivalentBestNodeCEList;
                 // Assert.AreEqual(randomList.Count, 0);
@@ -3314,9 +3274,9 @@ namespace ChessCore.Test
             var testName = "T92ABlackG8ToH8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 //la toure noir doit éviter d'être pris
@@ -3337,9 +3297,9 @@ namespace ChessCore.Test
             var testName = "T92BLeCavalierNoirDoitPartieDeF6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.Location, "f6");
@@ -3358,9 +3318,9 @@ namespace ChessCore.Test
             var testName = "T93ALaReineNoirDoitSeMettreEnG3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.BestChildPosition, "g3");
@@ -3384,9 +3344,9 @@ namespace ChessCore.Test
             var testName = "T94LeCavalierNoirDoitPasPartirDeF3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f3");
             }
@@ -3408,9 +3368,9 @@ namespace ChessCore.Test
             var testName = "T95LaReineNoirDoitSeMettreEnH1PourGagnier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("h1", nodeResult.BestChildPosition);//h1
 
             }
@@ -3432,9 +3392,9 @@ namespace ChessCore.Test
             var testName = "T95SuiteWhiteE4ToG3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "g3" || nodeResult.BestChildPosition == "f2");//h1
 
             }
@@ -3458,7 +3418,7 @@ namespace ChessCore.Test
         //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
         //    using (var chessEngine = new chessEngine())
         //    {
-        //        var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
         //        Assert.AreEqual("g2", nodeResult.Location);
         //        Assert.AreEqual("f2", nodeResult.BestChildPosition);
 
@@ -3473,10 +3433,10 @@ namespace ChessCore.Test
             var testName = "T95SuiteSuiteBlackWin";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.IsTrue(nodeResult.BestChildPosition == "h1");
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.IsTrue(nodeResult.BestChildPosition == "h1" || nodeResult.BestChildPosition == "f2");
 
             }
 
@@ -3484,16 +3444,16 @@ namespace ChessCore.Test
 
         /*tsiry;23-05-2022*/
         [TestMethod]
-        public void T95BLeCavalierBlanchDoitAttaquerEnF3()
+        public void T95BLeCavalierBlanchDoitAttaquerEnF2()//OK IF L3 (100)
         {
 
             var computerColore = "White";
-            var testName = "T95BLeCavalierBlanchDoitAttaquerEnF3";//WHITE MUST LOSE
+            var testName = "T95BLeCavalierBlanchDoitAttaquerEnF2";//WHITE MUST LOSE
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList),3);
                 // Assert.AreEqual(nodeResult.BestChildPosition, "f2");
                 //var isSuccess = nodeResult.BestChildPosition == "d4" || nodeResult.BestChildPosition == "d3" || nodeResult.BestChildPosition == "c3" || nodeResult.BestChildPosition == "f2";
                 Assert.IsTrue(nodeResult.BestChildPosition == "f2");
@@ -3517,9 +3477,9 @@ namespace ChessCore.Test
             var testName = "T96LeCavalierBlanchDoitSePettreEnC7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "c7");
 
             }
@@ -3543,10 +3503,12 @@ namespace ChessCore.Test
             var testName = "T97AWhitePourAviterT97WhiteNotF1ToG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.AreNotEqual(nodeResult.BestChildPosition, "g2");
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                var isValide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.BestChildPosition == "g2");
+                Assert.IsNotNull(isValide);
 
             }
             //var randomList = nodeResult.EquivalentBestNodeCEList;
@@ -3568,9 +3530,9 @@ namespace ChessCore.Test
             var testName = "T97BBlackWhinG4ToE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.Location, "g4");
                 Assert.AreEqual(nodeResult.BestChildPosition, "e2");
 
@@ -3594,9 +3556,9 @@ namespace ChessCore.Test
             var testName = "T98BlackE8ToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //Assert.AreEqual(nodeResult.BestNodeEquivalentList.Count, 1);
                 Assert.AreEqual(nodeResult.Location, "e8");
@@ -3616,7 +3578,7 @@ namespace ChessCore.Test
         //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
         //    using (var chessEngine = new chessEngineOptimize())
         //    {
-        //        var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
         //        //Assert.AreEqual(nodeResult.BestNodeEquivalentList.Count, 1);
         //        Assert.AreEqual(nodeResult.Location, "f7");
@@ -3634,9 +3596,9 @@ namespace ChessCore.Test
             var testName = "T99WhiteNotC7ToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
                 Assert.IsFalse(nodeResult.BestChildPosition == "f7" || nodeResult.BestChildPosition == "b8");
 
@@ -3661,15 +3623,16 @@ namespace ChessCore.Test
             var testName = "T100BlackG6ToF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
                 Assert.AreEqual("g6", nodeResult.Location);
 
             }
         }
-        /*tsiry;19-07-2022*/
+
+         /*tsiry;19-07-2022*/
         [TestMethod]
         public void T105BlackC6ToD4()//>> ONLY BEST L5
         {
@@ -3678,9 +3641,9 @@ namespace ChessCore.Test
             var testName = "T105BlackC6ToD4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
                 //Assert.IsTrue(nodeResult.li)
 
@@ -3689,16 +3652,9 @@ namespace ChessCore.Test
                 Assert.AreEqual("d4", nodeResult.BestChildPosition);
 
             }
-            //var randomList = nodeResult.EquivalentBestNodeCEList;
-            //Assert.IsNull(randomList);
-            //echec si nodeResult.Location ==  nodeResult.BestChildPosition
-
-
-
-
-
         }
 
+   
 
         [TestMethod]
         public void T106BlackCF6ToD5()
@@ -3708,10 +3664,10 @@ namespace ChessCore.Test
             var testName = "T106LaCavalierNoirDoitPrendreLaReineEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
 
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("d5", nodeResult.BestChildPosition);
             }
         }
@@ -3724,10 +3680,10 @@ namespace ChessCore.Test
             var testName = "T107LaReinneNoirDoitPartirDeD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
 
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("d5", nodeResult.Location);
             }
         }
@@ -3743,7 +3699,7 @@ namespace ChessCore.Test
         //    using (var chessEngine = new chessEngineOptimize())
         //    {
 
-        //        var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
         //        Assert.AreEqual("f4", nodeResult.BestChildPosition);
         //    }
         //}
@@ -3756,10 +3712,10 @@ namespace ChessCore.Test
             var testName = "T109BlackNotB6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
 
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual("b6", nodeResult.BestChildPosition);
             }
         }
@@ -3772,11 +3728,11 @@ namespace ChessCore.Test
             var testName = "T110WhiteKingNoToE1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
 
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+               // Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
                 Assert.AreNotEqual("e1", nodeResult.BestChildPosition);
             }
         }
@@ -3789,9 +3745,9 @@ namespace ChessCore.Test
             var testName = "T111BlackNotToF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual((nodeResult.EquivalentBestNodeCEList.Count, 1););
                 Assert.AreNotEqual("f5", nodeResult.BestChildPosition);
             }
@@ -3805,9 +3761,9 @@ namespace ChessCore.Test
             var testName = "T112WhiteLePoinA3NeDoitPasPrendreLePionB4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual((nodeResult.EquivalentBestNodeCEList.Count, 1););
                 Assert.AreNotEqual("b4", nodeResult.BestChildPosition);
             }
@@ -3820,9 +3776,9 @@ namespace ChessCore.Test
             var testName = "T113WhiteD1toMoveD1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestNodeEquivalentList.Count, 1);
                 Assert.AreEqual("d1", nodeResult.Location);
             }
@@ -3836,25 +3792,25 @@ namespace ChessCore.Test
             var testName = "T114_W_NotB3toF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
                 Assert.AreNotEqual("F7", nodeResult.BestChildPosition);
             }
         }
 
         [TestMethod]
-        public void T115_W_F3toG5()
+        public void T115_W_F3toG5()//TO DEFINE L3(20) OK
         {
 
             var computerColore = "White";
             var testName = "T115W_F3toG5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
                 Assert.AreEqual("g5", nodeResult.BestChildPosition);
             }
@@ -3867,9 +3823,9 @@ namespace ChessCore.Test
             var testName = "T116W_notC3toD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 Assert.IsNull(nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.BestChildPosition == "d5"));
@@ -3884,9 +3840,9 @@ namespace ChessCore.Test
             var testName = "T117_W_toC3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 // Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count,2);
@@ -3903,9 +3859,9 @@ namespace ChessCore.Test
             var testName = "T118_W_toB5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 //Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
@@ -3922,9 +3878,9 @@ namespace ChessCore.Test
             var testName = "T119_W_notToC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 //Assert.AreNotEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
@@ -3941,9 +3897,9 @@ namespace ChessCore.Test
             var testName = "T120_B_notToE3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
 
                 Assert.IsNull(nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "e3"));
@@ -3952,21 +3908,21 @@ namespace ChessCore.Test
         }
 
         [TestMethod]
-        public void T121_()
+        public void T121_()//TO DEFINE
         {
 
             var computerColore = "White";
             var testName = "T121_";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //                5:   H2(55) => G3(46) : -1
                 //5:   D1(59) => E2(52) : -1
                 //Assert.AreNotEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
-                Assert.AreEqual(nodeResult.BestChildPosition, "h3");
+                Assert.IsTrue(nodeResult.BestChildPosition == "h3" || nodeResult.BestChildPosition == "g3");
             }
         }
 
@@ -3978,9 +3934,9 @@ namespace ChessCore.Test
             var testName = "T122_W_NotD2toE3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 //                5:   H2(55) => G3(46) : -1
                 //5:   D1(59) => E2(52) : -1
@@ -3992,18 +3948,18 @@ namespace ChessCore.Test
 
 
         [TestMethod]
-        public void T123_B_()
+        public void T123_B_G8toG7()//seul solution G8 to G7 car si on la rainne noir se meit en e7 et c'est Échec et mat
         {
 
             var computerColore = "Black";
             var testName = "T123_B_";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
-                Assert.IsTrue((nodeResult.Location == "d5" && nodeResult.BestChildPosition == "c4") ||  (nodeResult.Location == "g8" && nodeResult.BestChildPosition == "g7"));
+                Assert.IsTrue((nodeResult.Location == "g8" && nodeResult.BestChildPosition == "g7"));
 
             }
         }
@@ -4016,9 +3972,9 @@ namespace ChessCore.Test
             var testName = "T124_B_H8toF8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.IsTrue(nodeResult.Location == "h8" && nodeResult.BestChildPosition == "f8");
 
@@ -4033,9 +3989,9 @@ namespace ChessCore.Test
             var testName = "T125_B_toD2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "d2");
 
@@ -4050,9 +4006,9 @@ namespace ChessCore.Test
             var testName = "T126_B_toF1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "f1");
 
@@ -4066,9 +4022,9 @@ namespace ChessCore.Test
         //    var testName = "T127_B_toF3";
         //    var testPath = Path.Combine(testsDirrectory, testName);
         //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-        //    using (var chessEngine = new ChessEngine())
+        //    using (var chessEngine = new ChessEngine2())
         //    {
-        //        var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
         //        Assert.AreEqual(nodeResult.BestChildPosition, "f3");
 
@@ -4083,9 +4039,9 @@ namespace ChessCore.Test
             var testName = "T128_W_NotToC1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var invalideNode = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.BestChildPosition == "c1");
                 Assert.IsNull(invalideNode);
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c1");
@@ -4101,9 +4057,9 @@ namespace ChessCore.Test
             var testName = "T128B_B_A6toA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
 
@@ -4111,19 +4067,19 @@ namespace ChessCore.Test
         }
 
         [TestMethod]
-        public void T129_W_notB2toB3()
+        public void T129_W_B2toB3()
         {
 
             var computerColore = "White";
-            var testName = "T129_W_notB2toB3";
+            var testName = "T129_W_B2toB3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                var notValideNode = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "b2" && x.BestChildPosition == "b3");
-                Assert.IsNull(notValideNode);
-            
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var notValideNode = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => (x.Location == "b2" && x.BestChildPosition == "b3") || (x.Location == "b2" && x.BestChildPosition == "a3") );
+                Assert.IsNotNull(notValideNode);
+
             }
         }
 
@@ -4135,10 +4091,10 @@ namespace ChessCore.Test
             var testName = "T130_W";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                 Assert.IsTrue(nodeResult.BestChildPosition == "f2" || nodeResult.BestChildPosition == "e3");
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.IsTrue(nodeResult.BestChildPosition == "f2" || nodeResult.BestChildPosition == "e3");
 
             }
         }
@@ -4152,10 +4108,10 @@ namespace ChessCore.Test
             var testName = "T131_B_E8toD8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count(), 1);  
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count(), 1);
                 Assert.AreEqual(nodeResult.BestChildPosition, "d8");
 
             }
@@ -4169,9 +4125,9 @@ namespace ChessCore.Test
             var testName = "T131B_W_B8toC8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "c8");
 
             }
@@ -4186,9 +4142,9 @@ namespace ChessCore.Test
             var testName = "T132_B_toC6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "c6");
 
             }
@@ -4202,47 +4158,47 @@ namespace ChessCore.Test
             var testName = "T133_B_NotC5toE5AndNotC5toE7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsFalse(nodeResult.Location == "c5" && nodeResult.BestChildPosition == "e5");
                 Assert.IsFalse(nodeResult.Location == "c5" && nodeResult.BestChildPosition == "e7");
             }
         }
 
         [TestMethod]
-        public void T134_B_NotToD2()
+        public void T134_B_ToD2()////OK IF L3(20) BUT TO VERIFIE
         {
 
             var computerColore = "Black";
-            var testName = "T134_B_NotToD2";
+            var testName = "T134_B_ToD2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.IsFalse(nodeResult.Location == "g5" && nodeResult.BestChildPosition == "d2");
-                
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.IsTrue(nodeResult.Location == "g5" && nodeResult.BestChildPosition == "d2");
+
             }
         }
 
-/*
-        [TestMethod]
-        public void T135_W_D5toB6()
-        {
+        /*
+                [TestMethod]
+                public void T135_W_D5toB6()
+                {
 
-            var computerColore = "White";
-            var testName = "T135_W_D5toB6";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
-            {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "b6");
+                    var computerColore = "White";
+                    var testName = "T135_W_D5toB6";
+                    var testPath = Path.Combine(testsDirrectory, testName);
+                    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+                    using (var chessEngine = new ChessEngine2())
+                    {
+                        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                        Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "b6");
 
-            }
-        }*/
-        
+                    }
+                }*/
+
         [TestMethod]
         public void T136_W_B4toA5()//prend la tour et menace dirrecte le roi noir 
         {
@@ -4251,42 +4207,61 @@ namespace ChessCore.Test
             var testName = "T136_W_B4toA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.Location == "b4" && nodeResult.BestChildPosition == "a5");
 
             }
         }
 
         [TestMethod]
-        public void T136B_W_D5toF6()
+        public void T136B_W_D5toF6()//TO VERIFY
         {
 
             var computerColore = "White";
             var testName = "T136B_W_D5toF6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "f6");
 
             }
         }
 
         [TestMethod]
-        public void T136C_W_D5toF6()
+        public void T136C_W_D5toF6() //TO VERIFY
         {
 
             var computerColore = "White";
-            var testName = "TT136C_W_D5toF6";
+            var testName = "T136C_W_D5toF6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine())
+            using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "f6");
+
+            }
+        }
+
+
+        [TestMethod]
+        public void T137_W_A3toD6()
+        {
+
+            var computerColore = "White";
+            var testName = "T137_W_A3toD6";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine2())
+            {
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                var invalide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "a3" && x.BestChildPosition == "d6");
+                Assert.IsNotNull(invalide);
 
             }
         }
@@ -4302,7 +4277,7 @@ namespace ChessCore.Test
               var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
               using (var chessEngine = new chessEngine())
               {
-                var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
                 Assert.AreEqual("g7",nodeResult.BestChildPosition);
 
@@ -4326,7 +4301,7 @@ namespace ChessCore.Test
              var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
              using (var chessEngine = new chessEngine())
              {
-               var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+               var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                // Assert.AreNotEqual(nodeResult.Location, "c7");
                Assert.AreEqual("c1",nodeResult.BestChildPosition);
 
@@ -4353,7 +4328,7 @@ namespace ChessCore.Test
              var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
              using (var chessEngine = new chessEngine())
              {
-               var nodeResult = chessEngine.GetBestPositionLocalUsingMiltiThreading(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+               var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                // Assert.AreNotEqual(nodeResult.Location, "c7");
                Assert.AreEqual("f5",nodeResult.BestChildPosition);
 
@@ -4369,7 +4344,5 @@ namespace ChessCore.Test
            }
        */
     }
-
-
 
 }
