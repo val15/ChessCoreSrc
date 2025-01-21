@@ -44,7 +44,7 @@
             //}
             //var bestOfBest = bestOfBestList.OrderByDescending(x=>x.Weight).OrderBy(x=>x.Level).First();
             var bestOfBest = FindBestMode(boardChess, depthLevel, cpuColor);
-            Utils.WritelineAsync($"bestOfBest :  {bestOfBest}");
+            //Utils.WritelineAsync($"bestOfBest :  {bestOfBest}");
             return bestOfBest;
         }
 
@@ -101,7 +101,7 @@
             Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
             // Utils.WritelineAsync($"Utils.PossibleMovesListCount = {Utils.PossibleMovesList.Count()}");
             //Utils.WritelineAsync($"Utils.IsKingInCheckListCount = {Utils.IsKingInCheckList.Count()}");
-            Utils.WritelineAsync($"Best node : {bestNodeCE}");
+            //Utils.WritelineAsync($"Best node : {bestNodeCE}");
 
             bestNodeCE.ReflectionTime = elapsed;
 
