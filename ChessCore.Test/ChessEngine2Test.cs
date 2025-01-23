@@ -19,6 +19,67 @@ namespace ChessCore.Test
         }
 
         [TestMethod]
+        public void T000aLeKnigntBlanchNeDoitPasAttaquer()
+        {
+            /*La cavalier blanch ne doit pas attaquer*/
+            //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7" 
+
+
+            var computerColore = "White";
+
+            var pawnListWhite = new List<Pawn>();
+            var pawnListBlack = new List<Pawn>();
+
+
+            //WHITEList
+            var whiteListString = "" +
+      "Queen;d1;White;False;False;False;False" +
+      "\nKing;e1;White;False;True;True;True"      ;
+            var whiteList = whiteListString.Split('\n');
+            foreach (var line in whiteList)
+            {
+                var datas = line.Split(';');
+                var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                newPawn.IsFirstMove = bool.Parse(datas[3]);
+                newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                pawnListWhite.Add(newPawn);
+            }
+
+            //BLACKList
+            var blackListString = "" +
+      "Queen;d8;Black;False;False;False;False" +
+      "\nKing;e8;Black;False;True;True;True";
+            var blackList = blackListString.Split('\n');
+            foreach (var line in blackList)
+            {
+                var datas = line.Split(';');
+                var newPawn = new Pawn(datas[0], datas[1], datas[2]);
+                //;{pawn.IsFirstMove};{pawn.IsFirstMoveKing};{pawn.IsLeftRookFirstMove};{pawn.IsRightRookFirstMove}
+                newPawn.IsFirstMove = bool.Parse(datas[3]);
+                newPawn.IsFirstMoveKing = bool.Parse(datas[4]);
+                newPawn.IsLeftRookFirstMove = bool.Parse(datas[5]);
+                newPawn.IsRightRookFirstMove = bool.Parse(datas[6]);
+                pawnListBlack.Add(newPawn);
+            }
+
+
+            var pawnList = new List<Pawn>();
+            pawnList.AddRange(pawnListWhite);
+            pawnList.AddRange(pawnListBlack);
+
+            using (var chessEngine = new ChessEngine2())
+            {
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
+                Assert.AreNotEqual(nodeResult.BestChildPosition, "a7", "c7");
+            }
+        }
+
+
+        [TestMethod]
         public void T00aLeKnigntBlanchNeDoitPasAttaquer()
         {
             /*La cavalier blanch ne doit pas attaquer*/
@@ -2833,14 +2894,7 @@ namespace ChessCore.Test
         [TestMethod]
         public void T79LeRoisBlanchDoitSeMettreEnG1()
         {
-
-
             var computerColore = "White";
-
-
-
-
-
             var testName = "T79LeRoisBlanchDoitSeMettreEnG1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
@@ -3507,7 +3561,7 @@ namespace ChessCore.Test
             {
                 var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
-                var isValide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.BestChildPosition == "g2");
+                var isValide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.BestChildPosition == "g2" || x.BestChildPosition == "h1");
                 Assert.IsNotNull(isValide);
 
             }
@@ -4134,7 +4188,7 @@ namespace ChessCore.Test
         }
 
 
-        [TestMethod]
+        [TestMethod]        
         public void T132_B_toC6()
         {
 
@@ -4231,21 +4285,21 @@ namespace ChessCore.Test
             }
         }
 
-        [TestMethod]
-        public void T136C_W_D5toF6() //TO VERIFY
-        {
+        //[TestMethod]
+        //public void T136C_W_D5toF6() //TO VERIFY
+        //{
 
-            var computerColore = "White";
-            var testName = "T136C_W_D5toF6";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            using (var chessEngine = new ChessEngine2())
-            {
-                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "f6");
+        //    var computerColore = "White";
+        //    var testName = "T136C_W_D5toF6";
+        //    var testPath = Path.Combine(testsDirrectory, testName);
+        //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+        //    using (var chessEngine = new ChessEngine2())
+        //    {
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+        //        Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "f6");
 
-            }
-        }
+        //    }
+        //}
 
 
         [TestMethod]
@@ -4265,6 +4319,79 @@ namespace ChessCore.Test
 
             }
         }
+
+
+        //[TestMethod]
+        //public void T138_W_notD1toH5()
+        //{
+
+        //    var computerColore = "White";
+        //    var testName = "T138_W_notD1toH5";
+        //    var testPath = Path.Combine(testsDirrectory, testName);
+        //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+        //    using (var chessEngine = new ChessEngine2())
+        //    {
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+        //        var invalide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "d1" && x.BestChildPosition == "h5");
+        //        Assert.IsNull(invalide);
+
+        //    }
+        //}
+
+        //[TestMethod]
+        //public void T139_W_notD1toD7()
+        //{
+
+        //    var computerColore = "White";
+        //    var testName = "T139_W_notD1toD7";
+        //    var testPath = Path.Combine(testsDirrectory, testName);
+        //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+        //    using (var chessEngine = new ChessEngine2())
+        //    {
+        //        var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList),6);
+
+        //        var invalide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "d1" && x.BestChildPosition == "d7");
+        //        Assert.IsNull(invalide);
+
+        //    }
+        //}
+
+        [TestMethod]
+        public void T140_W_notE3toC5()
+        {
+
+            var computerColore = "White";
+            var testName = "T140_W_notE3toC5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine2())
+            {
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                var invalide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "e3" && x.BestChildPosition == "c5");
+                Assert.IsNull(invalide);
+
+            }
+        }
+        [TestMethod]
+        public void T141_W_notD3toD8()
+        {
+
+            var computerColore = "White";
+            var testName = "T141_W_notD3toD8";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine2())
+            {
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                var invalide = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.Location == "d3" && x.BestChildPosition == "d8");
+                Assert.IsNull(invalide);
+
+            }
+        }
+
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]

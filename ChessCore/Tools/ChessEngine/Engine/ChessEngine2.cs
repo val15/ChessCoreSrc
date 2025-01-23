@@ -1,4 +1,6 @@
-﻿namespace ChessCore.Tools.ChessEngine.Engine
+﻿using System;
+
+namespace ChessCore.Tools.ChessEngine.Engine
 {
     public class ChessEngine2 : IChessEngine
     {
@@ -19,7 +21,7 @@
             string opponentColor = boardChess.GetOpponentColor(cpuColor);
             Utils.WritelineAsync($"CHESS ENGINE 2 :");
             Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
-            Utils.WritelineAsync($"cpuColor :  {colore}");
+            Utils.WritelineAsync($"cpuColor :  {cpuColor}");
             Utils.WritelineAsync($"opponentColor :  {opponentColor}");
 
             //var bestList = new List<NodeCE>();
@@ -64,10 +66,22 @@
 
 
                 var opponentColor = board.GetOpponentColor(cpuColor);
-                var currentW = 0;//clonedBoard.CalculateBoardCEScore(cpuColor, opponentColor);
+                var currentW = 0;
                 value = currentW + MinMaxWithAlphaBeta(clonedBoard, depthLevel - 1, int.MinValue, int.MaxValue, false, cpuColor);
                 var elapsed = DateTime.UtcNow - startTime;
                 var currentNode = new NodeCE(clonedBoard, move, value, depthLevel, elapsed);
+
+
+                //T140_W_notE3toC5 and T78ProtectionDuRookDesNoirs
+                var isMenaced = clonedBoard.TargetIndexIsMenaced(currentNode.ToIndex, opponentColor);
+                var isProtected = clonedBoard.TargetIndexIsProtected(currentNode.ToIndex, cpuColor);
+                if (isMenaced && !isProtected)
+                {
+                    value -= clonedBoard.GetPieceValue(clonedBoard._cases[currentNode.ToIndex]) / 10;
+                    currentNode.Weight = value;
+                }
+
+
 
                 allNomde.Add(currentNode);
                 // Utils.WritelineAsync($"value = {value}");
@@ -150,7 +164,7 @@
                     alpha = Math.Max(alpha, bestValue);
                     if (beta <= alpha) break;
                 }
-                return currentValue + bestValue;
+                return bestValue + currentValue;
             }
             else
             {
@@ -163,7 +177,7 @@
                     beta = Math.Min(beta, bestValue);
                     if (beta <= alpha) break;
                 }
-                return currentValue + bestValue;
+                return bestValue + currentValue;
             }
         }
     }
