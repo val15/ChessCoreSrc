@@ -24,6 +24,7 @@ COPY --from=publish /app/publish .
 
 # Modification des permissions pour le répertoire ToDownloadedFiles
 USER root
+RUN mkdir -p /app/wwwroot/UploadedFiles && chmod -R 777 /app/wwwroot/UploadedFiles
 RUN mkdir -p /app/wwwroot/ToDownloadedFiles && chmod -R 777 /app/wwwroot/ToDownloadedFiles
 
 # Revenir à l'utilisateur non-root

@@ -382,15 +382,17 @@ namespace ChessCore.Controllers
 
                 //lecture des positions
                 var destinationExtractedPath = Path.Combine(fileFullPath, destinationDirectory);
+                if(!Directory.Exists(destinationExtractedPath))
+                    Directory.CreateDirectory(destinationExtractedPath);
                 var whiteFileLocation = $"{destinationExtractedPath}/WHITEList.txt";
-                var blackFileLocation = $"{destinationExtractedPath}/BlackList.txt";
+                var blackFileLocation = $"{destinationExtractedPath}/BLACKList.txt";
                 var huntingBoardWhiteImageListLoaction = $"{destinationExtractedPath}/huntingBoardWhiteImageList.txt";
                 var huntingBoardBlackImageListLoaction = $"{destinationExtractedPath}/huntingBoardBlackImageList.txt";
                 var historyLoaction = $"{destinationExtractedPath}/History.txt";
 
 
                 var pawnList = new List<Tools.Pawn>();
-
+             
                 var readText = System.IO.File.ReadAllText(whiteFileLocation);
                 using (StringReader sr = new StringReader(readText))
                 {
@@ -411,6 +413,7 @@ namespace ChessCore.Controllers
 
                     }
                 }
+              
                 readText = System.IO.File.ReadAllText(blackFileLocation);
                 using (StringReader sr = new StringReader(readText))
                 {
