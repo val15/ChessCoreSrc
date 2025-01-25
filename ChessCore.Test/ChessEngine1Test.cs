@@ -4,11 +4,11 @@ using ChessCore.Tools.ChessEngine.Engine;
 namespace ChessCore.Test
 {
     [TestClass]
-    public class ChessEngine11Test
+    public class ChessEngine1Test
     {
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
 
-        public ChessEngine11Test()
+        public ChessEngine1Test()
         {
             Utils.DeepLevel = 3;
         }

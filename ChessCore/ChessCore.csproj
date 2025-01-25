@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cloo.clSharp" Version="1.0.1" />
+    <PackageReference Include="ComputeSharp" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
