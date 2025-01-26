@@ -11,7 +11,6 @@ namespace ChessCore.Tools.ChessEngine.Engine
     // Table de transposition pour mettre en cache les états évalués
     private readonly ConcurrentDictionary<long, int> _transpositionTable = new ConcurrentDictionary<long, int>();
 
-
     private static object lockObj = new object();
     private int _depthLevel = 0;
 
