@@ -120,7 +120,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             bestNodeCE.ReflectionTime = elapsed;
 
 
-            Utils.WritelineAsync($"bestNode : {bestNode}");
+            Utils.WritelineAsync($"bestNode : {bestNodeCE}");
             return bestNodeCE;
         }
 

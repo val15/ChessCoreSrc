@@ -1,0 +1,1 @@
+docker build -t chess_core:v0.0.0 .

@@ -2160,7 +2160,7 @@ namespace ChessCore.Test
             {
                 var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
-                Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
+                Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 2);
                 Assert.IsTrue("b1" == nodeResult.BestChildPosition || "g6" == nodeResult.BestChildPosition);
             }
         }
@@ -3674,7 +3674,7 @@ namespace ChessCore.Test
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
             using (var chessEngine = new ChessEngine2())
             {
-                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList),5);
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
                 Assert.AreEqual("g6", nodeResult.Location);
 

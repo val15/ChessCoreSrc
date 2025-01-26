@@ -22,7 +22,7 @@
 
         }
 
-        public NodeCE(BoardCE boardCE, Move move, int weight, int level, TimeSpan reflectionTime)
+        public NodeCE(BoardCE boardCE, Move move, int weight, int level, TimeSpan reflectionTime= new TimeSpan())
         {
             BoardCE = boardCE;
             FromIndex = move.FromIndex;

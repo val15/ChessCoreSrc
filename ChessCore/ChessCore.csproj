@@ -30,6 +30,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="MinMaxKernel.cl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="MinMaxKernel.cl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\Images\OriginalsImage\BishopBlack.png" />
     <None Include="wwwroot\Images\OriginalsImage\BishopWhite.png" />
     <None Include="wwwroot\Images\OriginalsImage\KingBlack.png" />
@@ -48,6 +58,7 @@
     <PackageReference Include="Cloo.clSharp" Version="1.0.1" />
     <PackageReference Include="ComputeSharp" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenCL.Net" Version="2.2.9" />
   </ItemGroup>
 
   <ItemGroup>

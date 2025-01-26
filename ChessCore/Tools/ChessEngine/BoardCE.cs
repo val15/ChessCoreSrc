@@ -1,4 +1,6 @@
-﻿namespace ChessCore.Tools.ChessEngine
+﻿using System;
+
+namespace ChessCore.Tools.ChessEngine
 {
     public class BoardCE
     {
@@ -27,6 +29,11 @@
                 _cases[i] = $"__";
             }
         }
+
+        public BoardCE CopyFrom(BoardCE boardCE)
+    {
+      return new BoardCE(boardCE);
+    }
         public BoardCE(string[] cases)
         {
             _cases = cases;
@@ -53,7 +60,12 @@
             _cases[index] = $"{pieceType}|{color}";
         }
 
-        public void Move(int fromIndex, int toIndex)
+
+    public void Move(Move move)
+    {
+      Move(move.FromIndex, move.ToIndex);
+    }
+    public void Move(int fromIndex, int toIndex)
         {
             _cases[toIndex] = _cases[fromIndex];
             _cases[fromIndex] = "__";
