@@ -11,6 +11,6 @@ SimplePawn;d7;Black;False;False;False;False
 SimplePawn;f7;Black;False;False;False;False
 SimplePawn;g7;Black;False;False;False;False
 SimplePawn;h7;Black;False;False;False;False
-Queen;c4;Black;False;False;False;False
+Queen;b6;Black;False;False;False;False
 SimplePawn;c6;Black;False;False;False;False
 SimplePawn;e6;Black;False;False;False;False

@@ -155,13 +155,13 @@
 
         @if (Model.IsFormLoander)
         {
-            <h6>Apercus : </h6>
+            <h6>Historique : </h6>
             <div class="d-flex">
                 <div class="d-inline-block">
                     <div id="history_div" style="width: 150px; height: 700px; overflow-y: scroll;">
                         @if (Model.MovingList != null)
                         {
-                            @Model.MovingList.Count
+                            @* @Model.MovingList.Count *@
                             foreach (var line in Model.MovingList)
                             {
                                 @line
@@ -176,9 +176,9 @@
                             Preview
                         </button>
                     </a>
-                    <button onclick="SaveLoadingBoard()">save</button>
+                   @* <button onclick="SaveLoadingBoard()">save</button> *@
                     <button class="fa fa-camera" onclick="Print();">
-                        print
+                        print/save
                     </button>
                     <a href="@Url.Action("Next", "Home")">
                         <button type="button">
@@ -339,6 +339,7 @@
     <label for="level">level:</label>
     <select id="level">
         <option value="1">1</option>
+        <option value="2">2</option>
         <option  value="3">3</option>
         <option  value="4">4</option>
         <option  value="5">5</option>
@@ -360,6 +361,7 @@
     <label for="FullCPUWhiteLevel">White level:</label>
     <select id="FullCPUWhiteLevel">
         <option value="1">1</option>
+        <option value="2">2</option>
         <option  value="3">3</option>
         <option value="4">4</option>
         <option selected value="5">5</option>
@@ -368,6 +370,7 @@
     <label for="FullCPUBlackLevel">Black level:</label>
     <select id="FullCPUBlackLevel">
         <option value="1">1</option>
+        <option value="2">2</option>
         <option  value="3">3</option>
         <option value="4">4</option>
         <option  value="5">5</option>

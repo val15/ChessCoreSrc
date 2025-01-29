@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Reflection;
+
 
 namespace ChessCore.Controllers
 {
@@ -357,7 +357,7 @@ namespace ChessCore.Controllers
             {
                 if (file == null || file.Length == 0)
                     return Content("file not selected");
-
+                MainUtils.MovingListIndex = -1;
                 var fileFullPath = Path.Combine(
                             Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles",
                             file.FileName);
@@ -467,6 +467,7 @@ namespace ChessCore.Controllers
                     while ((line = sr.ReadLine()) != null)
                     {
                         historyList.Add(line);
+                        //historyList.Add(Utils.LineToSymbol(line));
                     }
                 }
 
@@ -539,7 +540,7 @@ namespace ChessCore.Controllers
                 MainUtils.MovingListIndex--;
                 lastMoveStr = MainUtils.VM.MainBord.MovingList[MainUtils.MovingListIndex];
 
-                var data = lastMoveStr.Split(">");
+                var data = lastMoveStr.Split("→");
                 var fromSrt = data[0];
                 var toSrt = data[1];
 
@@ -590,10 +591,11 @@ namespace ChessCore.Controllers
                 //   if(MainUtils.MovingListIndex == -1 )
                 //       MainUtils.MovingListIndex =MainUtils.VM.MainBord.MovingList.Count();
 
-
+                if(MainUtils.MovingListIndex==-1)
+                    MainUtils.MovingListIndex = MainUtils.VM.MainBord.MovingList.Count()-1; 
                 lastMoveStr = MainUtils.VM.MainBord.MovingList[MainUtils.MovingListIndex];
 
-                var data = lastMoveStr.Split(">");
+                var data = lastMoveStr.Split("→");
                 var fromSrt = data[0];
                 var toSrt = data[1];
 

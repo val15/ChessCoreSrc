@@ -1,4 +1,4 @@
-SimplePawn;d2;White;False;False;False;False
+SimplePawn;d4;White;False;False;False;False
 SimplePawn;g3;White;False;False;False;False
 SimplePawn;a2;White;False;False;False;False
 SimplePawn;b2;White;False;False;False;False

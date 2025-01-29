@@ -852,7 +852,7 @@ namespace ChessCore.Tools
                 MovingList = new List<string>();
 
             // MovingList.Add($"{Utils.ToSympbol(initialCase)}({initialIndex.ToString()}) > {Utils.ToSympbol(destinationCase)}({destinationIndex})");//pour l'affichage
-            MovingList.Add($"{initialIndex.ToString()}({initialCase})>{destinationIndex.ToString()}({destinationCase})");
+            MovingList.Add($"{initialIndex.ToString()}({initialCase})→{destinationIndex.ToString()}({destinationCase})");
 
 
             //GestionDes roc

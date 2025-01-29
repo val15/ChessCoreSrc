@@ -866,7 +866,7 @@ namespace ChessCore.Tools
                                             var toRemoveCumputerMove = sixLastAction.First();
                                             //on doit enlever toRemovecumputerMove de parent.ChildList pour éviter la répétition
                                             //  "61(Q|B)>53(__)"
-                                            var data = toRemoveCumputerMove.Split('>');
+                                            var data = toRemoveCumputerMove.Split('→');
 
                                             var fromIndexToRemove = data[0].Substring(0, data[0].IndexOf("("));
                                             var toIndexToRemove = data[1].Substring(0, data[1].IndexOf("("));

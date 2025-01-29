@@ -97,7 +97,7 @@ namespace ChessCore.Tools
         public static double LimitationForT41InMn { get; set; } = 1.5;
 
 
-        public static string NavigationStoryCursor { get; set; } = "-";//07-07-2022
+        public static string NavigationStoryCursor { get; set; } = "▶";//07-07-2022
                                                                        //pour T07a et T07b
         public static Board MainBoard { get; set; }
 
@@ -132,10 +132,10 @@ namespace ChessCore.Tools
             try
             {
                 //51(P|W)>35(__) => symbole(index)>symbole(destIndex)
-                var data = line.Split('>');
+                var data = line.Split('→');
                 var from = indexPanwToSymboleIndex(data[0]);
                 var to = indexPanwToSymboleIndex(data[1]);
-                return $"{from} > {to}";
+                return $"{from} → {to}";
             }
             catch (Exception ex)
             {

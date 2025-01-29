@@ -209,9 +209,9 @@
     }
     <label id="whiteTimeLabel" class="whiteFont"></label>
     <label id="blackTimeLabel" class="blackFont"></label>
-    <button class="fa fa-camera" onclick="Print();">
-        print
-    </button>
+   @*  <button class="fa fa-camera" onclick="Print();">
+        print/save
+    </button> *@
     <b style='color:red;'>@Model.GetMemoryUsed() </b>
     <b style='color:white;'>@Model.StringWhiteCPULevel </b>
     <b style='color:black;'>@Model.StringBlackCPULevel </b>
@@ -254,12 +254,16 @@
                 Preview
             </button>
         </a>
-        <a href="@Url.Action("SaveHistory", "Home")">
+      @*   <a href="@Url.Action("SaveHistory", "Home")">
             <button type="button">
-                @*<i class="bi bi-camera"></i>*@
+              
                 save
             </button>
-        </a>
+        </a> *@
+
+        <button class="fa fa-camera" onclick="Print();">
+            print/save
+        </button>
     </div>
 
     <div class="d-inline-block" style="margin-top: 43px;">
