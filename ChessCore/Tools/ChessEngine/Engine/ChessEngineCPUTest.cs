@@ -5,7 +5,7 @@ using ComputeSharp.Interop;
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {
-  public class ChessEngineCPU : IChessEngine
+  public class ChessEngineCPUTest : IChessEngine
   {
     private static object lockObj = new object();
     private int _depthLevel = 0;

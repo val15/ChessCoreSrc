@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 
 namespace ChessCore.Tools.ChessEngine
 {
@@ -245,7 +246,7 @@ namespace ChessCore.Tools.ChessEngine
 
         }
 
-        public List<Move> GetPossibleMovesForColor(string color)
+        public List<Move> GetPossibleMovesForColor(string color,bool chessIsInChess=false)
         {
             var moves = new List<Move>();
             var indicesForColor = GetCasesIndexForColor(color);
@@ -253,6 +254,20 @@ namespace ChessCore.Tools.ChessEngine
             foreach (var fromIndex in indicesForColor)
             {
                 moves.AddRange(GetPossibleMovesOLD(fromIndex));
+            }
+
+            //si pour un mouvement, le roi est menacé, ce mouvement n'est pas possible
+            if(chessIsInChess)
+            {
+                for (int i = 0; i < moves.Count; i++)
+                {
+
+
+                    var move = moves[i];
+                    var cloanBord = this.CloneAndMove(move);
+                    if(cloanBord.KingIsMenaced(color))
+                        moves.Remove(move);
+                }
             }
 
             return moves;
@@ -348,11 +363,23 @@ namespace ChessCore.Tools.ChessEngine
 
 
                     if (pieceColor == "W")
+                    {
                         whiteScore += pieceValues[pieceType] + positionalBonus;
+                       
+                    }
+                        
                     else if (pieceColor == "B")
+                    {
                         blackScore += pieceValues[pieceType] + positionalBonus;
+                       
+                    }
+                        
                 }
             }
+
+            ////T110WhiteKingNoToE1
+            //value -= board.GetMenacedsPoints(opponentColor);
+            //currentNode.Weight = value;
 
             // Calcul du score en fonction de la couleur donnée
             return color == "W" ? whiteScore - blackScore : blackScore - whiteScore;

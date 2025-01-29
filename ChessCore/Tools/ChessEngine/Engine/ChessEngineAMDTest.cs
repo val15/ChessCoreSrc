@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 namespace ChessCore.Tools.ChessEngine.Engine
 {
-  public class ChessEngineAMD
+  public class ChessEngineAMDTest
   {
     private Device _gpuDevice;
     private Context _context;
@@ -11,7 +11,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
     private Program _program;
     private Kernel _kernel;
 
-    public ChessEngineAMD()
+    public ChessEngineAMDTest()
     {
       _gpuDevice = OpenCLHelper.GetFirstGPUDevice();
       _context = OpenCLHelper.CreateContext(_gpuDevice);

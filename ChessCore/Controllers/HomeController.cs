@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Reflection;
 
 namespace ChessCore.Controllers
 {
@@ -29,6 +30,8 @@ namespace ChessCore.Controllers
             //_blackCPULevel = _configuration.GetValue<int>("CPUSettings:BlackCPULevel");
             //_whiteCPULevel = _configuration.GetValue<int>("CPUSettings:WhiteCPULevel");
             _CPULevel = Utils.DeepLevel;
+
+          
         }
 
 
@@ -81,7 +84,7 @@ namespace ChessCore.Controllers
                 
 
 
-                using (var engine = new ChessEngine2())
+                using (var engine = new ChessEngine3())
                 {
                     
                     Utils.DeepLevel = _CPULevel;
@@ -234,7 +237,7 @@ namespace ChessCore.Controllers
                 }
                 else
                 {
-                    using (chessEngine = new ChessEngine2())
+                    using (chessEngine = new ChessEngine3())
                          bestNode = chessEngine.GetBestModeCE(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
                 }
 

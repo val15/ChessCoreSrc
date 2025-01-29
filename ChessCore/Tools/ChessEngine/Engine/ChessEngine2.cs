@@ -2,6 +2,8 @@
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {
+
+    //SIMPLE : NOT CHAS
     public class ChessEngine2 : IChessEngine
     {
 

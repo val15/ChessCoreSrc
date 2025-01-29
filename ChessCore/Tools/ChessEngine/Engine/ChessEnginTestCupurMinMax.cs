@@ -1,16 +1,16 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {
-    // HASH: BORD
-    public class ChessEngine3 : IChessEngine
+    public class ChessEnginTestCupurMinMax : IChessEngine
     {
         // Pool d'objets pour réduire les allocations mémoire
         private static readonly ObjectPool<BoardCE> _boardPool = new ObjectPool<BoardCE>(() => new BoardCE());
 
         // Table de transposition pour mettre en cache les états évalués
         private readonly ConcurrentDictionary<long, int> _transpositionTable = new ConcurrentDictionary<long, int>();
-        
+
         private static object lockObj = new object();
         private int _depthLevel = 0;
 
@@ -24,19 +24,19 @@ namespace ChessCore.Tools.ChessEngine.Engine
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;
             string opponentColor = boardChess.GetOpponentColor(cpuColor);
-            Utils.WritelineAsync($"CHESS ENGINE 3 :");
+            Utils.WritelineAsync($"CHESS ENGINE 22 :");
             Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
             Utils.WritelineAsync($"cpuColor :  {cpuColor}");
             Utils.WritelineAsync($"opponentColor :  {opponentColor}");
             var bestOfBest = FindBestMode(boardChess, depthLevel, cpuColor);
             //Utils.WritelineAsync($"bestOfBest :  {bestOfBest}");
-            return bestOfBest;
+             return bestOfBest;
         }
 
         public NodeCE FindBestMode(BoardCE board, int depthLevel, string cpuColor)
         {
             var startTime = DateTime.UtcNow;
-            var possibleMoves = board.GetPossibleMovesForColor(cpuColor, true);
+            var possibleMoves = board.GetPossibleMovesForColor(cpuColor,true);
             Move bestMove = null;
             int bestValue = int.MinValue;
             NodeCE bestNode = null;
@@ -49,6 +49,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
 
                 var opponentColor = board.GetOpponentColor(cpuColor);
+
                 value = MinMaxWithAlphaBeta(clonedBoard, depthLevel - 1, int.MinValue, int.MaxValue, false, cpuColor);
                 var elapsed = DateTime.UtcNow - startTime;
                 var currentNode = new NodeCE(clonedBoard, move, value, depthLevel, elapsed);
@@ -63,8 +64,10 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     currentNode.Weight = value;
                 }
 
-                // if (clonedBoard.KingIsMenaced(cpuColor))
-                //   currentNode.Weight = -9999;
+                if (clonedBoard.KingIsMenaced(cpuColor))
+                    currentNode.Weight = -9999;
+
+              
 
 
                 allNomde.Add(currentNode);
@@ -102,29 +105,24 @@ namespace ChessCore.Tools.ChessEngine.Engine
             //Utils.WritelineAsync($"Best node : {bestNodeCE}");
 
             bestNodeCE.ReflectionTime = elapsed;
-
+            bestNodeCE.AllNodeCEList = allNomde;
 
             Utils.WritelineAsync($"bestNode : {bestNodeCE}");
             return bestNodeCE;
         }
 
 
-
         private int MinMaxWithAlphaBeta(BoardCE board, int depth, int alpha, int beta, bool maximizingPlayer, string cpuColor)
         {
             // Mise en cache rapide
             var boardHash = ComputeBoardHash(board);
-            // if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
-            //         return cachedScore;
+
 
             var opponentColor = board.GetOpponentColor(cpuColor);
-            var currentValue = board.CalculateBoardCEScore(cpuColor, opponentColor) / 10;
+            var currentValue =0;// board.CalculateBoardCEScore(cpuColor, opponentColor) / 10;
             // Conditions d'arrêt rapides avec vérification des échecs
             if (depth == 0 || board.IsGameOver())
             {
-                if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
-                    return cachedScore;
-
                 int score = board.CalculateBoardCEScore(cpuColor, opponentColor);
                 _transpositionTable[boardHash] = score;
                 return score;
@@ -137,9 +135,15 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 if (board.IsKingInCheck(opponentColor)) return 9999;
             }
 
+            
+            if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
+            {
+                //T110WhiteKingNoToE1
+                cachedScore -= board.GetMenacedsPoints(opponentColor);
+                return cachedScore;
+            }
+               
 
-            // if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
-            //         return cachedScore;
             string currentPlayer = maximizingPlayer ? cpuColor : opponentColor;
 
             // Ordonnancement des mouvements pour améliorer l'élagage
@@ -151,18 +155,14 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 foreach (Move move in moves)
                 {
                     var clonedBoard = board.CloneAndMove(move);
-
-                     
-                     var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, false, cpuColor);
-
+                    int value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, false, cpuColor);
 
                     bestValue = Math.Max(bestValue, value);
                     alpha = Math.Max(alpha, bestValue);
 
-
-                   if (beta <= alpha) break;
+                    if (beta <= alpha) break;
                 }
-                return bestValue + currentValue;
+                return bestValue+ currentValue;
             }
             else
             {
@@ -170,25 +170,18 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 foreach (Move move in moves)
                 {
                     var clonedBoard = board.CloneAndMove(move);
-
-                   
-                   var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, true, cpuColor);
-
-
-
+                    int value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, true, cpuColor);
 
                     bestValue = Math.Min(bestValue, value);
                     beta = Math.Min(beta, bestValue);
 
-                 
-
                     if (beta <= alpha) break;
                 }
-                return bestValue + currentValue;
+                return bestValue+ currentValue;
             }
         }
 
-
+   
         private List<Move> OrderMoves(List<Move> moves, BoardCE board, string color)
         {
             return moves.OrderByDescending(move =>
@@ -217,8 +210,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             }
             return hash;
         }
-
-       
     }
+
 
 }
