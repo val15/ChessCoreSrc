@@ -14,7 +14,6 @@ namespace ChessCore.Tools
         //public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
         // public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
 
-
         public static NodeCE RunEngine(IChessEngine chessEngine, string colore, BoardCE boardChess, int depthLevel = 6)
         {
             return chessEngine.GetBestModeCE(colore, boardChess, depthLevel);

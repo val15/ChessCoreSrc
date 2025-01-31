@@ -22,7 +22,7 @@ namespace ChessCore.Controllers
         private int _CPULevel;
         private bool _isCHECKMATE = false;
 
-       // private IChessEngine _chessEngine;
+        //private IChessEngine _chessEngine;
         //private 
 
 
@@ -95,17 +95,6 @@ namespace ChessCore.Controllers
                     return PartialView("Details", winVM);
 
                 }
-
-
-                //var winVM = new DetailsViewModel();
-                //if (MainUtils.CPUColor == "W")
-                //    return Content("<xml>Balck WIN</xml>");
-                //else
-                //    return Content("<xml>White WIN\"</xml>");
-                // return PartialView("Details", winVM);
-
-
-
 
 
                 Utils.DeepLevel = _CPULevel;
@@ -248,7 +237,7 @@ namespace ChessCore.Controllers
                 }
 
 
-                IChessEngine chessEngine;
+
                 NodeCE bestNode;
 
                 bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
@@ -789,7 +778,8 @@ namespace ChessCore.Controllers
             MainUtils.FullCPUWhiteLevel = FullCPUWhiteLevel;
             MainUtils.FullCPUBlackLevel = FullCPUBlackLevel;
 
-            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedEngine);
+            if(selectedEngine !=null)
+                MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedEngine);
 
             if (selectedLevel != -1)
                 _CPULevel = _whiteCPULevel = _blackCPULevel = MainUtils.DeepLevel = Utils.DeepLevel = selectedLevel;
