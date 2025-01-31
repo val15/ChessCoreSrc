@@ -11,6 +11,7 @@ using System.IO.Compression;
 
 namespace ChessCore.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,9 +22,13 @@ namespace ChessCore.Controllers
         private int _CPULevel;
         private bool _isCHECKMATE = false;
 
+       // private IChessEngine _chessEngine;
+        //private 
+
 
         public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
+            // _chessEngine = new ChessEngine3();
             _logger = logger;
             _configuration = configuration;
             //_CPULevel = _configuration.GetValue<int>("CPUSettings:CPULevel");
@@ -31,7 +36,24 @@ namespace ChessCore.Controllers
             //_whiteCPULevel = _configuration.GetValue<int>("CPUSettings:WhiteCPULevel");
             _CPULevel = Utils.DeepLevel;
 
-          
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            var mainBord = new Board();
+            mainBord.Init();
+            MainUtils.VM = new MainPageViewModel(mainBord);
+            MainUtils.VM.Engines.Add(new ChessEngine1());
+            MainUtils.VM.Engines.Add(new ChessEngine2());
+            MainUtils.VM.Engines.Add(new ChessEngine3());
+            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.Last();
+            MainUtils.VM.SelectedLevel = 6;
+            MainUtils.VM.SelectedWhiteLevel = 4;
+            MainUtils.VM.SelectedBlackLevel= 5;
+
+
+            return View(MainUtils.VM);
         }
 
 
@@ -59,8 +81,8 @@ namespace ChessCore.Controllers
 
 
                 var currentBoard = new BoardCE(MainUtils.VM.MainBord.GetCases());
-               
-                if(currentBoard.IsKingInCheck(MainUtils.CPUColor) || currentBoard.IsKingInCheck(MainUtils.CPUColor))
+
+                if (currentBoard.IsKingInCheck(MainUtils.CPUColor) || currentBoard.IsKingInCheck(MainUtils.CPUColor))
                 {
                     Utils.WritelineAsync("CHECKMATE");
                     _isCHECKMATE = true;
@@ -73,97 +95,96 @@ namespace ChessCore.Controllers
                     return PartialView("Details", winVM);
 
                 }
-                   
-
-                    //var winVM = new DetailsViewModel();
-                    //if (MainUtils.CPUColor == "W")
-                    //    return Content("<xml>Balck WIN</xml>");
-                    //else
-                    //    return Content("<xml>White WIN\"</xml>");
-                    // return PartialView("Details", winVM);
-                
 
 
-                using (var engine = new ChessEngine3())
+                //var winVM = new DetailsViewModel();
+                //if (MainUtils.CPUColor == "W")
+                //    return Content("<xml>Balck WIN</xml>");
+                //else
+                //    return Content("<xml>White WIN\"</xml>");
+                // return PartialView("Details", winVM);
+
+
+
+
+
+                Utils.DeepLevel = _CPULevel;
+
+                var bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CPUColor, currentBoard, Utils.DeepLevel);
+
+
+                var fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
+                var toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
+
+                //determination si attaque pour remplir le cimetiere
+                //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
+                //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
+                if (fromIndex == toIndex)
+                    return View("Losing");
+
+
+                MainUtils.VM.MainBord.Move(fromIndex, toIndex);
+                MainUtils.TurnNumber++;
+                MainUtils.VM.Refresh(MainUtils.VM.MainBord);
+                MainUtils.FromGridIndex = -1;
+
+
+                var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, null, fromIndex, toIndex);
+                //dans le cas de loaded
+                /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
+                 vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
+                 vmEngine.MovingList = MainUtils.MovingList;*/
+
+                vmEngine.FromGridIndex = MainUtils.FromGridIndex;
+                // return View(MainUtils.VM);
+
+
+                if (MainUtils.CurrentTurnColor == "B")
+                    MainUtils.CurrentTurnColor = "W";
+                else
+                    MainUtils.CurrentTurnColor = "B";
+                vmEngine.CurrentTurn = MainUtils.CurrentTurnColor;
+                vmEngine.ComputerColor = MainUtils.CPUColor;
+
+                vmEngine.InitialDuration = MainUtils.InitialDuration;
+                MainUtils.MovingList = vmEngine.MovingList;
+                if (MainUtils.CPUColor == "B")
+                    vmEngine.RevertWrapperClass = "revertWrapper";
+
+                if (vmEngine.MainBord.WhiteScore < vmEngine.MainBord.BlackScore)
+                    vmEngine.BlackScore = (vmEngine.MainBord.BlackScore - vmEngine.MainBord.WhiteScore);
+                else if (vmEngine.MainBord.BlackScore < vmEngine.MainBord.WhiteScore)
+                    vmEngine.WhiteScore = (vmEngine.MainBord.WhiteScore - vmEngine.MainBord.BlackScore);
+                else
+                    vmEngine.BlackScore = vmEngine.WhiteScore = 0;
+
+                MainUtils.CaseList = vmEngine.MainBord.GetCases().ToList();
+
+
+                // System.GC.Collect();
+                //                GC.Collect();
+
+                //on remet MainUtils.CpuCount à 0 per permetre le reflection du CPU au prochain tour
+                MainUtils.CpuCount = 0;
+                if (MainUtils.IsFullCPU)
+                    vmEngine.IsFullCPU = 1;
+                else
+                    vmEngine.IsFullCPU = 0;
+
+                //couleurs des levels
+                if (MainUtils.CPUColor == "B")
                 {
-                    
-                    Utils.DeepLevel = _CPULevel;
-
-                    var bestNode = engine.GetBestModeCE(MainUtils.CPUColor, currentBoard, Utils.DeepLevel);
-                    
-
-                    var fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
-                    var toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
-
-                    //determination si attaque pour remplir le cimetiere
-                    //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
-                    //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
-                    if (fromIndex == toIndex)
-                        return View("Losing");
-
-
-                    MainUtils.VM.MainBord.Move(fromIndex, toIndex);
-                    MainUtils.TurnNumber++;
-                    MainUtils.VM.Refresh(MainUtils.VM.MainBord);
-                    MainUtils.FromGridIndex = -1;
-
-
-                    var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, null, fromIndex, toIndex);
-                    //dans le cas de loaded
-                    /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
-                     vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
-                     vmEngine.MovingList = MainUtils.MovingList;*/
-
-                    vmEngine.FromGridIndex = MainUtils.FromGridIndex;
-                    // return View(MainUtils.VM);
-
-
-                    if (MainUtils.CurrentTurnColor == "B")
-                        MainUtils.CurrentTurnColor = "W";
-                    else
-                        MainUtils.CurrentTurnColor = "B";
-                    vmEngine.CurrentTurn = MainUtils.CurrentTurnColor;
-                    vmEngine.ComputerColor = MainUtils.CPUColor;
-
-                    vmEngine.InitialDuration = MainUtils.InitialDuration;
-                    MainUtils.MovingList = vmEngine.MovingList;
-                    if (MainUtils.CPUColor == "B")
-                        vmEngine.RevertWrapperClass = "revertWrapper";
-
-                    if (vmEngine.MainBord.WhiteScore < vmEngine.MainBord.BlackScore)
-                        vmEngine.BlackScore = (vmEngine.MainBord.BlackScore - vmEngine.MainBord.WhiteScore);
-                    else if (vmEngine.MainBord.BlackScore < vmEngine.MainBord.WhiteScore)
-                        vmEngine.WhiteScore = (vmEngine.MainBord.WhiteScore - vmEngine.MainBord.BlackScore);
-                    else
-                        vmEngine.BlackScore = vmEngine.WhiteScore = 0;
-
-                    MainUtils.CaseList = vmEngine.MainBord.GetCases().ToList();
-
-
-                    // System.GC.Collect();
-                    //                GC.Collect();
-
-                    //on remet MainUtils.CpuCount à 0 per permetre le reflection du CPU au prochain tour
-                    MainUtils.CpuCount = 0;
-                    if (MainUtils.IsFullCPU)
-                        vmEngine.IsFullCPU = 1;
-                    else
-                        vmEngine.IsFullCPU = 0;
-
-                    //couleurs des levels
-                    if (MainUtils.CPUColor == "B")
-                    {
-                        vmEngine.StringBlackCPULevel = $"L {_CPULevel}";
-                        vmEngine.StringWhiteCPULevel = $"L {0}";
-                    }
-                    else
-                    {
-                        vmEngine.StringWhiteCPULevel = $"L {_CPULevel}";
-                        vmEngine.StringBlackCPULevel = $"L {0}";
-                    }
-
-                    return PartialView("Details", vmEngine);
+                    vmEngine.StringBlackCPULevel = $"L {_CPULevel}";
+                    vmEngine.StringWhiteCPULevel = $"L {0}";
                 }
+                else
+                {
+                    vmEngine.StringWhiteCPULevel = $"L {_CPULevel}";
+                    vmEngine.StringBlackCPULevel = $"L {0}";
+                }
+
+                return PartialView("Details", vmEngine);
+
 
             }
             catch (Exception)
@@ -183,6 +204,8 @@ namespace ChessCore.Controllers
 
 
 
+
+
         [HttpPost]
         //MOVEMENT CPU vs CPU
         public ActionResult DetailsTimerFULLCPU()
@@ -198,7 +221,7 @@ namespace ChessCore.Controllers
                 //pour le timer,
                 //il faut prendre l'intervale en seconde et l'ajouter à 
                 //computer timer
-               // var startRefelectionTime = DateTime.Now;
+                // var startRefelectionTime = DateTime.Now;
 
                 //Méthode nonothread
                 // var engine = new Engine(MainUtils.DeepLevel, MainUtils.CPUColor, false, null);
@@ -227,48 +250,40 @@ namespace ChessCore.Controllers
 
                 IChessEngine chessEngine;
                 NodeCE bestNode;
-                if (depthLevel == 3)
-                {
-                    //TODO A SUPPRIMER
-                    using (chessEngine = new ChessEngine1())
-                         bestNode = chessEngine.GetBestModeCE(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
 
+                bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
+
+
+
+
+                if (bestNode == null)//ECHES ET MATE
+                {
+                    Utils.WritelineAsync("CHECKMATE");
+                    _isCHECKMATE = true;
+                    var winVM = new DetailsViewModel();
+                    if (MainUtils.CPUColor == "W")
+                        winVM.StringWinnerColor = "Balck WIN";
+                    else
+                        winVM.StringWinnerColor = "White WIN";
+                    winVM.IsCHECKMATE = true;
+                    return PartialView("Details", winVM);
+                    //if (MainUtils.CPUColor == "W")
+                    //    return Content("<xml>Balck WIN</xml>");
+                    //else
+                    //    return Content("<xml>White WIN\"</xml>");
 
                 }
-                else
-                {
-                    using (chessEngine = new ChessEngine3())
-                         bestNode = chessEngine.GetBestModeCE(MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
-                }
-
-                    if (bestNode == null)//ECHES ET MATE
-                    {
-                        Utils.WritelineAsync("CHECKMATE");
-                        _isCHECKMATE = true;
-                        var winVM = new DetailsViewModel();
-                        if (MainUtils.CPUColor == "W")
-                            winVM.StringWinnerColor = "Balck WIN";
-                        else
-                            winVM.StringWinnerColor = "White WIN";
-                        winVM.IsCHECKMATE = true;
-                        return PartialView("Details", winVM);
-                        //if (MainUtils.CPUColor == "W")
-                        //    return Content("<xml>Balck WIN</xml>");
-                        //else
-                        //    return Content("<xml>White WIN\"</xml>");
-
-                    }
-                    fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
-                    toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
+                fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
+                toIndex = CoordTools.GetIndexFromLocation(bestNode.BestChildPosition);
 
 
 
 
 
-                    //determination si attaque pour remplir le cimetiere
-                    //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
-                    //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
-                    if (fromIndex == toIndex)
+                //determination si attaque pour remplir le cimetiere
+                //  var destinationCase = MainUtils.VM.MainBord.GetCases()[bestNodeChess2.ToIndex];
+                //le CPU a perdu si bestNodeChess2.FromIndex == bestNodeChess2.ToIndex
+                if (fromIndex == toIndex)
                     return View("Losing");
 
 
@@ -276,28 +291,28 @@ namespace ChessCore.Controllers
                 MainUtils.TurnNumber++;
                 MainUtils.VM.Refresh(MainUtils.VM.MainBord);
                 MainUtils.FromGridIndex = -1;
-                
+
                 var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, null, fromIndex, toIndex);
                 //dans le cas de loaded
                 /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
                  vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
                  vmEngine.MovingList = MainUtils.MovingList;*/
-                
+
                 vmEngine.DateTimeNow = degingDateTimeNow;
-                
+
                 vmEngine.FromGridIndex = MainUtils.FromGridIndex;
                 // return View(MainUtils.VM);
 
 
                 if (MainUtils.CurrentTurnColor == "B")
                 {
-                    MainUtils.CurrentTurnColor = "W"; 
+                    MainUtils.CurrentTurnColor = "W";
                 }
                 else
                 {
-                    MainUtils.CurrentTurnColor = "B"; 
+                    MainUtils.CurrentTurnColor = "B";
                 }
-                    
+
                 vmEngine.CurrentTurn = MainUtils.CurrentTurnColor;
                 //Mode ful CPU
                 MainUtils.CPUColor = MainUtils.CurrentTurnColor;
@@ -328,7 +343,7 @@ namespace ChessCore.Controllers
 
 
                 vmEngine.StringBlackCPULevel = $"L {MainUtils.FullCPUBlackLevel}";
-                vmEngine.StringWhiteCPULevel = $"L {MainUtils.FullCPUWhiteLevel }";
+                vmEngine.StringWhiteCPULevel = $"L {MainUtils.FullCPUWhiteLevel}";
                 return PartialView("Details", vmEngine);
 
 
@@ -385,7 +400,7 @@ namespace ChessCore.Controllers
 
                 //lecture des positions
                 var destinationExtractedPath = Path.Combine(fileFullPath, destinationDirectory);
-                if(!Directory.Exists(destinationExtractedPath))
+                if (!Directory.Exists(destinationExtractedPath))
                     Directory.CreateDirectory(destinationExtractedPath);
                 var whiteFileLocation = $"{destinationExtractedPath}/WHITEList.txt";
                 var blackFileLocation = $"{destinationExtractedPath}/BLACKList.txt";
@@ -395,7 +410,7 @@ namespace ChessCore.Controllers
 
 
                 var pawnList = new List<Tools.Pawn>();
-             
+
                 var readText = System.IO.File.ReadAllText(whiteFileLocation);
                 using (StringReader sr = new StringReader(readText))
                 {
@@ -416,7 +431,7 @@ namespace ChessCore.Controllers
 
                     }
                 }
-              
+
                 readText = System.IO.File.ReadAllText(blackFileLocation);
                 using (StringReader sr = new StringReader(readText))
                 {
@@ -591,8 +606,8 @@ namespace ChessCore.Controllers
                 //   if(MainUtils.MovingListIndex == -1 )
                 //       MainUtils.MovingListIndex =MainUtils.VM.MainBord.MovingList.Count();
 
-                if(MainUtils.MovingListIndex==-1)
-                    MainUtils.MovingListIndex = MainUtils.VM.MainBord.MovingList.Count()-1; 
+                if (MainUtils.MovingListIndex == -1)
+                    MainUtils.MovingListIndex = MainUtils.VM.MainBord.MovingList.Count() - 1;
                 lastMoveStr = MainUtils.VM.MainBord.MovingList[MainUtils.MovingListIndex];
 
                 var data = lastMoveStr.Split("→");
@@ -765,7 +780,7 @@ namespace ChessCore.Controllers
 
 
         [HttpPost]
-        public ActionResult Details(int objId, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU,int FullCPUWhiteLevel,int FullCPUBlackLevel)
+        public ActionResult Details(int objId, string selectedEngine, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU, int FullCPUWhiteLevel, int FullCPUBlackLevel)
         {
             ////  GC.Collect();
             //var t_ = selectionLevel;
@@ -773,10 +788,11 @@ namespace ChessCore.Controllers
             MainUtils.IsFullCPU = isFullCPU;
             MainUtils.FullCPUWhiteLevel = FullCPUWhiteLevel;
             MainUtils.FullCPUBlackLevel = FullCPUBlackLevel;
-            
+
+            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedEngine);
 
             if (selectedLevel != -1)
-                _CPULevel = _whiteCPULevel= _blackCPULevel = MainUtils.DeepLevel = Utils.DeepLevel = selectedLevel;
+                _CPULevel = _whiteCPULevel = _blackCPULevel = MainUtils.DeepLevel = Utils.DeepLevel = selectedLevel;
             MainUtils.InitialDuration = 0;
             /*if (selectedDurationType != null)
             {
@@ -988,7 +1004,7 @@ namespace ChessCore.Controllers
 
         public FileResult SavePrintScreen(string image, string cases)
         {
-           // var t_ = cases;
+            // var t_ = cases;
             List<string> caseList = JsonConvert.DeserializeObject<List<string>>(cases);
 
             var dateTimeString = DateTime.Now.ToString("HH-mm-ss dd-MM-yyyy");
@@ -1011,7 +1027,7 @@ namespace ChessCore.Controllers
             //var caseList = pawnCases;//MainUtils.VM.Cases.ToList();
             if (caseList == null)
                 return null;
-          //  var caseListStr = String.Join("\n", caseList);
+            //  var caseListStr = String.Join("\n", caseList);
             //  var dirPath = AppDomain.CurrentDomain.BaseDirectory + dirName;// $"~/{dateTimeString}";
             if (Directory.Exists(dirLocalPath))
             {
@@ -1055,7 +1071,7 @@ namespace ChessCore.Controllers
 
                 //historique
                 var movingListStr = string.Empty;
-                if(MainUtils.MovingList!=null)
+                if (MainUtils.MovingList != null)
                     movingListStr = String.Join("\n", MainUtils.MovingList); //MainUtils.MovingList.Join( ("\\n");
                 var historyFileName = $"{dateTimeString}History.txt";
                 System.IO.File.WriteAllText($"{dirLocalPath}/History.txt", movingListStr);
@@ -1134,14 +1150,7 @@ namespace ChessCore.Controllers
 
 
 
-        [HttpGet]
-        public ActionResult Index()
-        {
-            var mainBord = new Board();
-            mainBord.Init();
-            MainUtils.VM = new MainPageViewModel(mainBord);
-            return View(MainUtils.VM);
-        }
+
 
         public IActionResult Privacy()
         {

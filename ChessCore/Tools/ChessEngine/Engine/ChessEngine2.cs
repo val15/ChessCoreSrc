@@ -15,13 +15,17 @@ namespace ChessCore.Tools.ChessEngine.Engine
         {
 
         }
+        public string GetName()
+        {
+            return this.GetType().Name;
+        }
 
         public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 5)
         {
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;
             string opponentColor = boardChess.GetOpponentColor(cpuColor);
-            Utils.WritelineAsync($"CHESS ENGINE 2 :");
+            Utils.WritelineAsync($"{GetName()}");
             Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
             Utils.WritelineAsync($"cpuColor :  {cpuColor}");
             Utils.WritelineAsync($"opponentColor :  {opponentColor}");

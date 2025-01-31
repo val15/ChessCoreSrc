@@ -25,7 +25,10 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
         }
 
-
+        public string GetName()
+        {
+            return this.GetName();
+        }
 
         public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
         {

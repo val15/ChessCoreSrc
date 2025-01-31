@@ -23,15 +23,15 @@
                 computerColor.disabled = true;
                 whiteLevel.disabled = false;
                 blackLevel.disabled = false;
-                
-            
-                
+
+
+
             } else {
                 level.disabled = false;
                 computerColor.disabled = false;
                 whiteLevel.disabled = true;
                 blackLevel.disabled = true;
-                
+
             }
         }
 
@@ -50,19 +50,23 @@
         var isFullCPU = checkboxIsFullCPU.checked;
         // alert(checkboxIsFullCPU.checked);
         // Vérifier si le checkbox est coché
-       // if (checkbox.checked)
+        // if (checkbox.checked)
         //var isActiveFullCPU = $('#isActiveFullCPU').val();
-       
 
-       // var duration = $('#duration').val();
+
+        // var duration = $('#duration').val();
         //var selectedLevel = $('#level').val();
         //TODO remmetre le leve
         var selectedLevel = $('#level').val();
+        var selectedEngine = $('#engine').val();
         var FullCPUBlackLevel = $('#FullCPUBlackLevel').val();
         var FullCPUWhiteLevel = $('#FullCPUWhiteLevel').val();
 
         //alert(computerColor);
-        var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0, CPUColor: computerColor, selectedLevel: selectedLevel, isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel };
+        var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0,
+            SelectedEngine: selectedEngine,
+            CPUColor: computerColor, selectedLevel: selectedLevel, 
+            isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel };
         $.ajax({
             type: "POST",
             url: "/Home/Details",
@@ -117,10 +121,10 @@
 
             // Get base64URL
             var base64URL = canvas.toDataURL('image/jpeg').replace('image/jpeg', 'image/octet-stream');
-          // var Cases = '@Model.Cases';
-          //  alert(Cases);
+            // var Cases = '@Model.Cases';
+            //  alert(Cases);
             // Convertir la liste d'objets en une chaîne JSON
-           // var casesJSON = JSON.stringify(@Html.Raw(JsonConvert.SerializeObject(Model.PawnCases)));
+            // var casesJSON = JSON.stringify(@Html.Raw(JsonConvert.SerializeObject(Model.PawnCases)));
 
             var casesJSON = JSON.stringify(@Html.Raw(JsonConvert.SerializeObject(Model.Cases)));
 
@@ -176,7 +180,7 @@
                             Preview
                         </button>
                     </a>
-                   @* <button onclick="SaveLoadingBoard()">save</button> *@
+                    @* <button onclick="SaveLoadingBoard()">save</button> *@
                     <button class="fa fa-camera" onclick="Print();">
                         print/save
                     </button>
@@ -325,57 +329,98 @@
 
         <br />
     </div>
-  @*  
+    @*
     <label for="duration">duration:</label>
     <select id="duration">
-        <option  value="24h">24h</option>
-        <option selected value="1h">1h</option>
-        <option value="30mn">30mn</option>
-        <option value="15mn">15mn</option>
-        <option value="1mn">1mn</option>
+    <option  value="24h">24h</option>
+    <option selected value="1h">1h</option>
+    <option value="30mn">30mn</option>
+    <option value="15mn">15mn</option>
+    <option value="1mn">1mn</option>
 
     </select> *@
 
-    <label for="level">level:</label>
+    @*     <label for="level">level:</label>
     <select id="level">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option  value="3">3</option>
-        <option  value="4">4</option>
-        <option  value="5">5</option>
-        <option selected value="6">6</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option  value="3">3</option>
+    <option  value="4">4</option>
+    <option  value="5">5</option>
+    <option selected value="6">6</option>
+    </select> *@
+
+    <label for="engine">engine:</label>
+    <select id="engine" name="SelectedEngine">
+        @foreach (var engine in Model.Engines)
+        {
+            <option value="@engine.GetName()" selected="@(engine == Model.SelectedEngine ? "selected" : null)">
+                @engine.GetName()
+            </option>
+        }
     </select>
 
-    
+    <label for="level">level:</label>
+    <select id="level" name="SelectedLevel">
+        @foreach (var level in Model.Levels)
+        {
+            <option value="@level" selected="@(level == Model.SelectedLevel ? "selected" : null)">
+                @level
+            </option>
+        }
+    </select>
+
+
 
     <label for="color">Computer color:</label>
     <select id="computerColor">
         <option class="whiteFont sectionBG" value="W">White</option>
         <option class="blackFont sectionBG" value="B">Black</option>
     </select>
-
+    <br />
+    <label>Full CPU : </label>
     <input id="isActiveFullCPU"
            name="isActiveFullCPU"
            type="checkbox" />
-    <label>Full CPU : </label>
-    <label for="FullCPUWhiteLevel">White level:</label>
+    
+  @*   <label for="FullCPUWhiteLevel">White level:</label>
     <select id="FullCPUWhiteLevel">
         <option value="1">1</option>
         <option value="2">2</option>
-        <option  value="3">3</option>
+        <option value="3">3</option>
         <option value="4">4</option>
         <option selected value="5">5</option>
         <option value="6">6</option>
+    </select> *@
+    <label for="FullCPUWhiteLevel">White level:</label>
+    <select id="FullCPUWhiteLevel" name="SelectedWhiteLevel">
+        @foreach (var level in Model.Levels)
+        {
+            <option value="@level" selected="@(level == Model.SelectedWhiteLevel? "selected" : null)">
+                @level
+            </option>
+        }
     </select>
+@* 
     <label for="FullCPUBlackLevel">Black level:</label>
     <select id="FullCPUBlackLevel">
         <option value="1">1</option>
         <option value="2">2</option>
-        <option  value="3">3</option>
+        <option value="3">3</option>
         <option value="4">4</option>
-        <option  value="5">5</option>
+        <option value="5">5</option>
         <option selected value="6">6</option>
+    </select> *@
+    <label for="FullCPUBlackLevel">Black level:</label>
+    <select id="FullCPUBlackLevel" name="SelectedBlackLevel">
+        @foreach (var level in Model.Levels)
+        {
+            <option value="@level" selected="@(level == Model.SelectedBlackLevel? "selected" : null)">
+                @level
+            </option>
+        }
     </select>
+
     <button onclick="start()">play</button>
 </div>
 <div id="dvPartial"></div>

@@ -1,10 +1,21 @@
 ﻿using ChessCore.Tools;
 using ChessCore.Tools.ChessEngine;
+using ChessCore.Tools.ChessEngine.Engine;
 
 namespace ChessCore.Models
 {
     public class MainPageViewModel
     {
+
+        public List<IChessEngine> Engines { get; set; } = new List<IChessEngine>();
+
+        public IChessEngine SelectedEngine { get; set; } = new ChessEngine3();
+
+        public int[] Levels = [1, 2, 3, 4, 5, 6];
+
+        public int SelectedLevel { get; set; }
+        public int SelectedWhiteLevel { get; set; }
+        public int SelectedBlackLevel { get; set; }
         public bool IsFormLoander { get; set; } = false;
 
         public string FromGridIndex { get; set; }
@@ -20,45 +31,45 @@ namespace ChessCore.Models
         public string RevertWrapperClass { get; set; }
         public List<string> MovingList { get; set; }
 
-        private int _whiteScore; 
+        private int _whiteScore;
 
-         public int WhiteScore
-         {
-            get {return _whiteScore;}
+        public int WhiteScore
+        {
+            get { return _whiteScore; }
             set
             {
-                _whiteScore = value/10;
+                _whiteScore = value / 10;
             }
-         }
-           public string GetWhiteScoreString()
-          {
-            if(WhiteScore>0)
+        }
+        public string GetWhiteScoreString()
+        {
+            if (WhiteScore > 0)
                 return $"+ {WhiteScore}";
             else
                 return " ";
 
-           }
-   
+        }
 
-        private int _blackScore; 
 
-         public int BlackScore
-         {
-            get {return _blackScore;}
+        private int _blackScore;
+
+        public int BlackScore
+        {
+            get { return _blackScore; }
             set
             {
-                _blackScore = value/10;
+                _blackScore = value / 10;
             }
-         }
+        }
 
-          public string GetBlackScoreString()
-          {
-            if(BlackScore>0)
+        public string GetBlackScoreString()
+        {
+            if (BlackScore > 0)
                 return $"+ {BlackScore}";
             else
                 return " ";
 
-           }
+        }
 
 
         public List<string> HuntingBoardWhiteImageList { get; set; }

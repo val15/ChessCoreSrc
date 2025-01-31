@@ -10,6 +10,11 @@
         private int _depthLevel = 3;
         private static object lockObj = new object();
 
+        public string GetName()
+        {
+            return this.GetType().Name;
+        }
+
         public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 3)
         {
 
@@ -23,6 +28,7 @@
             if (boardChess.IsGameOver())
                 return null;
             var totalStartTime = DateTime.UtcNow;
+            Utils.WritelineAsync($"{GetName()}");
             Utils.WritelineAsync($"DEPTH LEVEL : {depthLevel}");
             var checkIsInChessOnEnd = true;
             if (depthLevel == 5)
@@ -46,7 +52,7 @@
         {
             if (boardChess.IsGameOver())
                 return null;
-            Utils.WritelineAsync($"CHESS ENGINE 1");
+            Utils.WritelineAsync($"{GetName()}");
 
             var l1 = new NodeCE() { Weight = -9999, Colore = colore };
             var l3 = new NodeCE() { Weight = -9999, Colore = colore };

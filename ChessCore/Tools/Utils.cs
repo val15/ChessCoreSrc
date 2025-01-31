@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
 using ChessCore.Tools.ChessEngine;
+using ChessCore.Tools.ChessEngine.Engine;
 
 namespace ChessCore.Tools
 {
@@ -11,8 +12,13 @@ namespace ChessCore.Tools
         public static bool LimitOfReflectionTimeIsShow { get; set; } = false;
 
         //public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
-       // public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
+        // public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
 
+
+        public static NodeCE RunEngine(IChessEngine chessEngine, string colore, BoardCE boardChess, int depthLevel = 6)
+        {
+            return chessEngine.GetBestModeCE(colore, boardChess, depthLevel);
+        }
 
 
         public static string GenerateKeyForPossibleMoves(string casesToString, int fromIndex)
