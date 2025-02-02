@@ -52,6 +52,10 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 var clonedBoard = board.CloneAndMove(move);
 
 
+
+                
+
+
                 var opponentColor = board.GetOpponentColor(cpuColor);
                 value = MinMaxWithAlphaBeta(clonedBoard, depthLevel - 1, int.MinValue, int.MaxValue, false, cpuColor);
                 var elapsed = DateTime.UtcNow - startTime;

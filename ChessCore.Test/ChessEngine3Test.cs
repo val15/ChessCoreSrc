@@ -4390,6 +4390,45 @@ namespace ChessCore.Test
             }
         }
 
+        [TestMethod]
+        public void T142_W_C7toC8_Win()
+        {
+
+            var computerColore = "White";
+            var testName = "T142_W_C7toC8_Win";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine3())
+            {
+                var nodeResult = Utils.RunEngine(_chessEngine, computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                Assert.IsTrue(nodeResult.Weight >= 9999); 
+                Assert.IsTrue(nodeResult.Location == "c7" && nodeResult.BestChildPosition == "c8");
+
+            }
+        }
+
+
+        [TestMethod]
+        public void T143_B_B8to_ElseLose()
+        {
+
+            var computerColore = "Black";
+            var testName = "T143_B_B8to_ElseLose";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            using (var chessEngine = new ChessEngine3())
+            {
+                var nodeResult = Utils.RunEngine(_chessEngine, computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                Assert.IsTrue((nodeResult.Location == "b8")
+                    || (nodeResult.Location == "f4" && nodeResult.BestChildPosition == "e2")
+                    );
+
+            }
+        }
+
+
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]

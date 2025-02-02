@@ -104,6 +104,18 @@ namespace ChessCore.Test
         }
 
         [TestMethod]
+        public void T142_W_Win()
+        {
+            var testName = "T142_W_Win";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
+            var result = boad.IsKingInCheck("B");
+            Assert.IsTrue(result);
+        }
+
+
+        [TestMethod]
         public void T93_W_InChess()
         {
 

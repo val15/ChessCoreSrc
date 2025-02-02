@@ -32,9 +32,9 @@ namespace ChessCore.Tools.ChessEngine
         }
 
         public BoardCE CopyFrom(BoardCE boardCE)
-    {
-      return new BoardCE(boardCE);
-    }
+        {
+            return new BoardCE(boardCE);
+        }
         public BoardCE(string[] cases)
         {
             _cases = cases;
@@ -62,11 +62,11 @@ namespace ChessCore.Tools.ChessEngine
         }
 
 
-    public void Move(Move move)
-    {
-      Move(move.FromIndex, move.ToIndex);
-    }
-    public void Move(int fromIndex, int toIndex)
+        public void Move(Move move)
+        {
+            Move(move.FromIndex, move.ToIndex);
+        }
+        public void Move(int fromIndex, int toIndex)
         {
             _cases[toIndex] = _cases[fromIndex];
             _cases[fromIndex] = "__";
@@ -145,7 +145,7 @@ namespace ChessCore.Tools.ChessEngine
                 {
 
                     //SAVE IN CHESS 
-                  //  AddInIsKingInCheckList(new IsKingInCheck(_cases, color, true));
+                    //  AddInIsKingInCheckList(new IsKingInCheck(_cases, color, true));
                     return true;
                 }
 
@@ -166,7 +166,7 @@ namespace ChessCore.Tools.ChessEngine
                         if (!copyBoard.TargetIndexIsMenaced(kingMove.ToIndex, opponentColor))
                         {
                             //SAVE IN CHESS 
-                           // AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
+                            // AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
                             return false;
 
                         }
@@ -231,7 +231,7 @@ namespace ChessCore.Tools.ChessEngine
                 }
 
                 //SAVE IN CHESS
-               // AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
+                // AddInIsKingInCheckList(new IsKingInCheck(_cases, color, false));
                 return false; // Le roi n'est pas en échec
             }
             catch (Exception)
@@ -246,7 +246,7 @@ namespace ChessCore.Tools.ChessEngine
 
         }
 
-        public List<Move> GetPossibleMovesForColor(string color,bool chessIsInChess=false)
+        public List<Move> GetPossibleMovesForColor(string color, bool chessIsInChess = false)
         {
             var moves = new List<Move>();
             var indicesForColor = GetCasesIndexForColor(color);
@@ -257,7 +257,7 @@ namespace ChessCore.Tools.ChessEngine
             }
 
             //si pour un mouvement, le roi est menacé, ce mouvement n'est pas possible
-            if(chessIsInChess)
+            if (chessIsInChess)
             {
                 for (int i = 0; i < moves.Count; i++)
                 {
@@ -265,7 +265,7 @@ namespace ChessCore.Tools.ChessEngine
 
                     var move = moves[i];
                     var cloanBord = this.CloneAndMove(move);
-                    if(cloanBord.KingIsMenaced(color))
+                    if (cloanBord.KingIsMenaced(color))
                         moves.Remove(move);
                 }
             }
@@ -365,15 +365,15 @@ namespace ChessCore.Tools.ChessEngine
                     if (pieceColor == "W")
                     {
                         whiteScore += pieceValues[pieceType] + positionalBonus;
-                       
+
                     }
-                        
+
                     else if (pieceColor == "B")
                     {
                         blackScore += pieceValues[pieceType] + positionalBonus;
-                       
+
                     }
-                        
+
                 }
             }
 
@@ -386,7 +386,22 @@ namespace ChessCore.Tools.ChessEngine
 
         }
 
+        public BoardCE Evolution(BoardCE boardCE, int index)
+        {
+            if (boardCE._cases[index].First() != 'P')
+                return boardCE;
 
+            if ((index >= 56 && index <= 63)
+                ||
+                (index >= 0 && index <= 7))
+            {
+                boardCE._cases[index] =boardCE._cases[index].Replace("P", "Q");//EVOLUTION
+            }
+
+
+            return boardCE;
+
+        }
 
         public bool TargetIndexIsMenaced(int index, string opponentColor)
         {
@@ -513,6 +528,9 @@ namespace ChessCore.Tools.ChessEngine
         {
             var clone = new BoardCE(this);
             clone.Move(fromIndex, toIndex);
+
+            //evoution
+            clone = clone.Evolution(clone, toIndex);
             return clone;
         }
         public BoardCE CloneAndMove(Move move)
