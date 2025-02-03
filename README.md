@@ -34,3 +34,6 @@ DockerComposeUp.bat
 ### On Linux/macOS
 chmod +x DockerComposeUp.sh
 ./DockerComposeUp.sh
+
+### Access the Application 🌍
+http://localhost:7021/
