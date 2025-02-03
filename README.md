@@ -1,0 +1,39 @@
+﻿# **ChessCore** ♟️  
+
+**ChessCore** is a chess engine that implements the **Minimax algorithm with Alpha-Beta pruning**. It supports parallel execution for improved performance.  
+
+## **Features** 🚀  
+✅ Chess engine with **Minimax + Alpha-Beta pruning**  
+✅ Supports **parallel computation** for better performance  
+✅ Can be **Dockerized** and run in a container  
+✅ Includes **pre-configured scripts** for building and running  
+
+---
+
+## **Getting Started** 🛠  
+
+### **1️⃣ Clone the Repository**  
+```sh
+git clone https://github.com/val15/ChessCoreSrc.git
+cd ChessCoreSrc
+
+
+## **Build the Docker Image
+# On Windows
+DockerBuild.bat
+
+# On Linux/macOS
+chmod +x DockerBuild.sh
+./DockerBuild.sh
+
+
+
+## **Run the Chess Engine in Docker
+# On Windows
+DockerComposeUp.bat
+
+# On Linux/macOS
+chmod +x DockerComposeUp.sh
+./DockerComposeUp.sh
+
+
