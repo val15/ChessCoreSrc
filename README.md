@@ -18,7 +18,7 @@ git clone https://github.com/val15/ChessCoreSrc.git
 cd ChessCoreSrc
 
 
-## **Build the Docker Image
+### **2️⃣ Build the Docker Image 🐳
 # On Windows
 DockerBuild.bat
 
