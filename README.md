@@ -12,28 +12,25 @@
 
 ## **Getting Started** 🛠  
 
-### **1️ Clone the Repository**  
-```sh
+## **1️ Clone the Repository**  
+
 git clone https://github.com/val15/ChessCoreSrc.git
 cd ChessCoreSrc
 
-```sh
-### **2️ Build the Docker Image 🐳**
-# On Windows
+
+## **2️ Build the Docker Image 🐳**
+### On Windows
 DockerBuild.bat
 
-# On Linux/macOS
+### On Linux/macOS
 chmod +x DockerBuild.sh
 ./DockerBuild.sh
 
 
-```sh
-### **3 Run the Chess Engine in Docker
-# On Windows
+## **3 Run the Chess Engine in Docker**
+### On Windows
 DockerComposeUp.bat
 
-# On Linux/macOS
+### On Linux/macOS
 chmod +x DockerComposeUp.sh
 ./DockerComposeUp.sh
-
-
