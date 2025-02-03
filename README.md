@@ -27,7 +27,7 @@ chmod +x DockerBuild.sh
 ./DockerBuild.sh
 
 
-## **3 Run the Chess Engine in Docker**
+## **3 Run the Chess Engine in Docker ▶️**
 ### On Windows
 DockerComposeUp.bat
 
