@@ -2,7 +2,7 @@
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {
-    // HASH: BORD
+    //OPTIMIZE USIN TRANSPOSITION TABLE IN 0 LEVEL ENGINE DEFAULT DEPTH LEVEL 6
     public class ChessEngine3 : IChessEngine
     {
         // Pool d'objets pour réduire les allocations mémoire
@@ -10,7 +10,8 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
         // Table de transposition pour mettre en cache les états évalués
         private readonly ConcurrentDictionary<long, int> _transpositionTable = new ConcurrentDictionary<long, int>();
-        
+
+
         private static object lockObj = new object();
         private int _depthLevel = 0;
 
@@ -23,7 +24,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return this.GetType().Name;
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel =6)
         {
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;
@@ -93,15 +94,40 @@ namespace ChessCore.Tools.ChessEngine.Engine
             });
 
             equivalentBestNodeCEList = allNomde.Where(x => x.Weight == bestValue).ToList();
-            var rand = new Random();
-            var bestNodeCE = equivalentBestNodeCEList[rand.Next(equivalentBestNodeCEList.Count)];
 
+
+
+
+
+            //T144A_B_E7toD6
+            //get local next turn score for all equivalentBestNodeCEList
+            if (equivalentBestNodeCEList.Count > 1)
+            {
+                Utils.WritelineAsync($"bestNodeCEList calcul immediatelyWeight:");
+
+                //foreach (var node in equivalentBestNodeCEList)
+                for (int i = 0; i < equivalentBestNodeCEList.Count; i++)
+                {
+
+                    var node = equivalentBestNodeCEList[i];
+                    var cloanBoard = board.CloneAndMove(node.FromIndex, node.ToIndex);
+                    var opponentColor = board.GetOpponentColor(cpuColor);
+                    var immediatelyWeight = cloanBoard.CalculateBoardCEScore(cpuColor, opponentColor);
+                    //Utils.WritelineAsync($"{node} ; score : {score}");
+                    equivalentBestNodeCEList[i].Weight += immediatelyWeight / 10;
+                }
+                bestValue = equivalentBestNodeCEList.Max(x => x.Weight);
+                equivalentBestNodeCEList = equivalentBestNodeCEList.Where(x => x.Weight == bestValue).ToList();
+
+            }
 
             Utils.WritelineAsync($"bestNodeCEList :");
             foreach (var node in equivalentBestNodeCEList)
             {
                 Utils.WritelineAsync($"{node}");
             }
+            var bestNodeCE = equivalentBestNodeCEList[(new Random()).Next(equivalentBestNodeCEList.Count)];
+
             bestNodeCE.EquivalentBestNodeCEList = equivalentBestNodeCEList;
             var elapsed = DateTime.UtcNow - startTime;
             Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
@@ -197,6 +223,9 @@ namespace ChessCore.Tools.ChessEngine.Engine
         }
 
 
+
+
+
         private List<Move> OrderMoves(List<Move> moves, BoardCE board, string color)
         {
             return moves.OrderByDescending(move =>
@@ -228,5 +257,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
        
     }
+
+
 
 }

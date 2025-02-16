@@ -3,6 +3,8 @@
 namespace ChessCore.Tools.ChessEngine.Engine
 {
 
+    //OPTIMIZE ENGINE DEFAULT DEPTH LEVEL 5
+
     //SIMPLE : NOT CHAS
     public class ChessEngine2 : IChessEngine
     {
@@ -20,7 +22,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return this.GetType().Name;
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 5)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
         {
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;

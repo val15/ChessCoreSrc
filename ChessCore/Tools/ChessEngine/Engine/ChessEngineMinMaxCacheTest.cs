@@ -14,7 +14,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
         // Table de transposition pour mettre en cache les états évalués
         private readonly ConcurrentDictionary<long, int> _transpositionTable = new ConcurrentDictionary<long, int>();
         // private readonly ConcurrentDictionary<long, int> _transpositionMinMaxTable = new ConcurrentDictionary<long, int>();
-       // private ConcurrentDictionary<long, List<(int depth, int value)>> _transpositionMinMaxTable = new ConcurrentDictionary<long, List<(int, int)>>();
+        private ConcurrentDictionary<long, List<(int depth, int value)>> _transpositionMinMaxTable = new ConcurrentDictionary<long, List<(int, int)>>();
 
 
         private static object lockObj = new object();
@@ -30,7 +30,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return this.GetName();
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 5)
         {
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;
@@ -179,7 +179,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     if (transpositionMinMaxTable.TryGetValue(boardMinMaxHash, out var cachedEntries))
                     {
                         var entry = cachedEntries.FirstOrDefault(e => e.depth == depth);
-                        if (entry != default)
+                        if (entry != default && depth == 4)
                         {
                             value = entry.value;
 
@@ -205,10 +205,14 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     // var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, false, cpuColor);
 
                     //ENREGISTREMENT DE value
-                    transpositionMinMaxTable.AddOrUpdate(boardMinMaxHash,new List<(int, int)> { (depth, value) },
+                    if(depth == 4)
+                    {
+                         transpositionMinMaxTable.AddOrUpdate(boardMinMaxHash,new List<(int, int)> { (depth, value) },
                     (key, oldList) => { oldList.Add((depth, value)); 
                         return oldList; 
                     });
+                    }
+                   
 
                     bestValue = Math.Max(bestValue, value);
                     alpha = Math.Max(alpha, bestValue);
@@ -252,7 +256,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     if (transpositionMinMaxTable.TryGetValue(boardMinMaxHash, out var cachedEntries))
                     {
                         var entry = cachedEntries.FirstOrDefault(e => e.depth == depth);
-                        if (entry != default)
+                        if (entry != default && depth == 3)
                         {
                             value = entry.value;
 
@@ -283,6 +287,15 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     //    _transpositionMinMaxTable[boardMinMaxHash] = value;
 
                     //}
+
+                    if (depth == 4)
+                    {
+                        transpositionMinMaxTable.AddOrUpdate(boardMinMaxHash, new List<(int, int)> { (depth, value) },
+                   (key, oldList) => {
+                       oldList.Add((depth, value));
+                       return oldList;
+                   });
+                    }
 
 
 

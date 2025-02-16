@@ -2,6 +2,8 @@
 {
 
 
+
+    //SIMPLE ENGINE DEFAULT DEPTH LEVEL 3
     public class ChessEngine1 :  IChessEngine
     {
         public TimeSpan ReflectionTime { get; set; }
