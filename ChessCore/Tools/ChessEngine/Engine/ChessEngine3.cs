@@ -24,7 +24,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return this.GetType().Name;
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel =6)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
         {
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;
@@ -45,7 +45,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             Move bestMove = null;
             int bestValue = int.MinValue;
             NodeCE bestNode = null;
-            var allNomde = new List<NodeCE>();
+            var allNode = new List<NodeCE>();
             var equivalentBestNodeCEList = new List<NodeCE>();
             Parallel.ForEach(possibleMoves, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, move =>
             {
@@ -54,7 +54,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
 
 
-                
+
 
 
                 var opponentColor = board.GetOpponentColor(cpuColor);
@@ -63,20 +63,24 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 var currentNode = new NodeCE(clonedBoard, move, value, depthLevel, elapsed);
 
 
-                //T140_W_notE3toC5 and T78ProtectionDuRookDesNoirs
+                
+               
                 var isMenaced = clonedBoard.TargetIndexIsMenaced(currentNode.ToIndex, opponentColor);
-                var isProtected = clonedBoard.TargetIndexIsProtected(currentNode.ToIndex, cpuColor);
-                if (isMenaced && !isProtected)
+               // var isProtected = clonedBoard.TargetIndexIsProtected(currentNode.ToIndex, cpuColor);
+                if (isMenaced /*&& isProtected*/)
                 {
-                    value -= clonedBoard.GetPieceValue(clonedBoard._cases[currentNode.ToIndex]) / 10;
-                    currentNode.Weight = value;
+                    //T141_W_notD3toD8
+                    value -= clonedBoard.GetPieceValue(clonedBoard._cases[currentNode.ToIndex]) / 9;
+                    //OLD
+                    //value -= clonedBoard.GetPieceValue(clonedBoard._cases[currentNode.ToIndex]) / 10;
+                    currentNode.Weight= value;
                 }
 
                 // if (clonedBoard.KingIsMenaced(cpuColor))
                 //   currentNode.Weight = -9999;
 
 
-                allNomde.Add(currentNode);
+                allNode.Add(currentNode);
                 // Utils.WritelineAsync($"value = {value}");
                 lock (lockObj)
                 {
@@ -93,7 +97,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
             });
 
-            equivalentBestNodeCEList = allNomde.Where(x => x.Weight == bestValue).ToList();
+            equivalentBestNodeCEList = allNode.Where(x => x.Weight == bestValue).ToList();
 
 
 
@@ -129,6 +133,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             var bestNodeCE = equivalentBestNodeCEList[(new Random()).Next(equivalentBestNodeCEList.Count)];
 
             bestNodeCE.EquivalentBestNodeCEList = equivalentBestNodeCEList;
+            bestNodeCE.AllNodeCEList = allNode;
             var elapsed = DateTime.UtcNow - startTime;
             Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
             // Utils.WritelineAsync($"Utils.PossibleMovesListCount = {Utils.PossibleMovesList.Count()}");
@@ -153,6 +158,10 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
             var opponentColor = board.GetOpponentColor(cpuColor);
             var currentValue = board.CalculateBoardCEScore(cpuColor, opponentColor) / 10;
+
+
+
+
             // Conditions d'arrêt rapides avec vérification des échecs
             if (depth == 0 || board.IsGameOver())
             {
@@ -184,29 +193,42 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 int bestValue = int.MinValue;
                 foreach (Move move in moves)
                 {
+
+                    // currentValue += GetEvolutionBonusOrMalus(board, move, maximizingPlayer);
+
+
+
+
                     var clonedBoard = board.CloneAndMove(move);
 
-                     
-                     var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, false, cpuColor);
+
+                    var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, false, cpuColor);
 
 
                     bestValue = Math.Max(bestValue, value);
                     alpha = Math.Max(alpha, bestValue);
 
 
-                   if (beta <= alpha) break;
+                    if (beta <= alpha) break;
                 }
                 return bestValue + currentValue;
+
             }
             else
             {
                 int bestValue = int.MaxValue;
                 foreach (Move move in moves)
                 {
+
+
+                    // currentValue += GetEvolutionBonusOrMalus(board, move, maximizingPlayer);
+
+
+
                     var clonedBoard = board.CloneAndMove(move);
 
-                   
-                   var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, true, cpuColor);
+
+                    var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, true, cpuColor);
 
 
 
@@ -214,16 +236,60 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     bestValue = Math.Min(bestValue, value);
                     beta = Math.Min(beta, bestValue);
 
-                 
+
 
                     if (beta <= alpha) break;
                 }
+
+
                 return bestValue + currentValue;
+
             }
         }
 
 
+        //public int GetEvolutionBonusOrMalus(BoardCE boardCE,Move move,bool maximizingPlayer)
+        //{
+        //    string piece = boardCE._cases[move.FromIndex];
 
+        //    string[] parts = piece.Split('|');
+        //    string pieceType = parts[0]; // Type de pièce (P, C, B, etc.)
+        //    string pieceColor = parts[1]; // Couleur de la pièce (W ou B)
+        //    if(pieceType != "P")
+        //        return 0;
+
+        //    if (pieceType == "P")
+        //    {
+        //        // Bonus pour les pions avancés (encourager les promotions)
+        //        // positionalBonus = pieceColor == "W" ? i / 8 * 2 : (7 - i / 8) * 2;
+
+        //        // Bonus supplémentaire pour les pions proches de la promotion
+        //        if (pieceColor == "B")
+        //        {
+        //            if (move.ToIndex >= 56 && move.ToIndex <= 63)
+        //            {
+        //                if(maximizingPlayer)
+        //                    return +10;
+        //                else
+        //                    return -10;
+
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (move.ToIndex >= 0 && move.ToIndex <= 7)
+        //            {
+
+        //                if (maximizingPlayer)
+        //                    return +10;
+        //                else
+        //                    return -10;
+
+        //            }
+        //        }
+        //    }
+        //    return 0;
+        //}
 
 
         private List<Move> OrderMoves(List<Move> moves, BoardCE board, string color)
@@ -255,7 +321,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return hash;
         }
 
-       
+
     }
 
 

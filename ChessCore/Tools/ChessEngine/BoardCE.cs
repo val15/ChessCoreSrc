@@ -395,7 +395,7 @@ namespace ChessCore.Tools.ChessEngine
                 ||
                 (index >= 0 && index <= 7))
             {
-                boardCE._cases[index] =boardCE._cases[index].Replace("P", "Q");//EVOLUTION
+                boardCE._cases[index] = boardCE._cases[index].Replace("P", "Q");//EVOLUTION
             }
 
 

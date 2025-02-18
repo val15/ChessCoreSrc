@@ -253,6 +253,23 @@ namespace ChessCore.Test
         }
 
         [TestMethod]
+        public void T145_B_G5IsProteced()
+        {
+
+
+            var testName = "T145_B_G8to";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+
+            BoardCE boardCE = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
+
+            var isInChess = boardCE.TargetIndexIsProtected(30, "B");
+            Assert.IsTrue(isInChess);
+
+
+        }
+
+        [TestMethod]
         public void T93_W_InChessGetToOpponentKingPath46to6O()
         {
 

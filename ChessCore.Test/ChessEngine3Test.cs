@@ -4445,7 +4445,60 @@ namespace ChessCore.Test
             }
         }
 
+        [TestMethod]
+        public void T145_B_G8to()
+        {
 
+            var computerColore = "Black";
+            var testName = "T145_B_G8to";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+
+            {
+                var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                // Assert.IsTrue(nodeResult.EquivalentBestNodeCEList.Count == 1);
+                Assert.AreEqual(nodeResult.Location, "g8");
+                Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
+
+
+            }
+        }
+
+        [TestMethod]
+        public void T145Suite_B_G5toF3()
+        {
+
+            var computerColore = "Black";
+            var testName = "T145_SUITE";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+
+            {
+                var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                
+                Assert.IsTrue(nodeResult.Location == "g5" && nodeResult.BestChildPosition == "f3");
+
+
+            }
+        }
+
+        [TestMethod]
+        public void T145Suite_W_H4toG5()
+        {
+
+            var computerColore = "White";
+            var testName = "T145_SUITE";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+
+            {
+                var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+                Assert.IsTrue(nodeResult.Location == "h4" && nodeResult.BestChildPosition == "g5");
+
+
+            }
+        }
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]

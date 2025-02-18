@@ -1,0 +1,3 @@
+../../Images/KnightWhite.png
+../../Images/SimplePawnWhite.png
+../../Images/SimplePawnWhite.png
