@@ -4,6 +4,12 @@ namespace ChessCore.Models
 {
     public class DetailsViewModel
     {
+                public int[] Levels = [1, 2, 3, 4, 5, 6, 7];
+        public int[] ReflectionTimesInMinute = [1, 2, 5, 10,15,30,60];
+        public int SelectedReflectionTimeInMinute { get; set; }
+
+        public int SelectedLevel { get; set; }
+
         public string StringWinnerColor { get; set; } = "";
         public bool IsCHECKMATE  { get; set; } = false;
         public string StringWhiteCPULevel { get; set; } = "L 0";
@@ -18,6 +24,7 @@ namespace ChessCore.Models
         public int FromGridIndex { get; set; }
 
         public int ToGridIndex { get; set; }
+        public int IsMove { get; set; } = 0;
         public Board MainBord { get; set; }
 
         public string[] Cases { get; set; }

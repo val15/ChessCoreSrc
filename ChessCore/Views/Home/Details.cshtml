@@ -11,47 +11,44 @@
     // Pour obtenir la valeur
     //var maValeur = sessionStorage.getItem('maVariable');
 
-   // alert(maValeur);
+    // alert(maValeur);
     //var winnerColor = @Model.StringWinnerColor;
-   if (!typeof '@Model.StringWinnerColor' === "string" && !'@Model.StringWinnerColor'.length === 0) {
+    if (!typeof '@Model.StringWinnerColor' === "string" && !'@Model.StringWinnerColor'.length === 0) {
         alert('@Model.StringWinnerColor');
-    } 
-  
+    }
+
     var initialSeconde = @Model.InitialDuration;
     //alert(initialSeconde);
     var isComputerTurn = @Model.GetIsComputerTurn();
     var isFullCPU = @Model.IsFullCPU;
+
     //alert(isFullCPU);
 
     //pour les timers des joeurs
 
+    //alert(sessionStorage.getItem('startTimeWhite'));
+
     var blackTimeLabel = document.getElementById("blackTimeLabel");
     var whiteTimeLabel = document.getElementById("whiteTimeLabel");
-    var totalSecondsWhite = sessionStorage.getItem('totalSecondsWhite');
-    var totalSecondsBlack = sessionStorage.getItem('totalSecondsBlack');
+
     var currentColor = '@Model.CurrentTurn';
+    var computerColor = '@Model.ComputerColor';
 
-    printTimes();
-    var oldTime = new Date();
+    var levelDetails = document.getElementById("levelDetails");
+    var maxReflectionTimeInMinuteDetails = document.getElementById("MaxReflectionTimeInMinuteDetails");
 
-    var newTime = null;
-
-
-
-    function printTimes() {
-
-
-
-        var mn = pad(parseInt((initialSeconde + totalSecondsWhite) / 60));
-        var s = pad((initialSeconde + totalSecondsWhite) % 60);
-        whiteTimeLabel.innerHTML = mn + " : " + s;
-        mn = pad(parseInt((initialSeconde + totalSecondsBlack) / 60));
-        s = pad((initialSeconde + totalSecondsBlack) % 60);
-
-        blackTimeLabel.innerHTML = mn + " : " + s;
-
-
+    levelDetails.disabled = false;
+    maxReflectionTimeInMinuteDetails.disabled = false;
+    if (currentColor == computerColor) {
+        levelDetails.disabled = true;
+        maxReflectionTimeInMinuteDetails.disabled = true;
     }
+
+
+    document.getElementById('whiteTimeLabel').textContent = formatTime((totalSecondsWhite));
+    document.getElementById('blackTimeLabel').textContent = formatTime((totalSecondsBlack));
+    document.getElementById('clock').textContent = formatTime((totalSecondsReflection));
+
 
 
     function pad(val) {
@@ -68,32 +65,10 @@
     $(function () {
         if (typeof '@Model.StringWinnerColor' === "string" && '@Model.StringWinnerColor'.length === 0) {
             setInterval(BindPartialView, 1000);
-            setInterval(timerCount, 50);
+            //setInterval(timerCount, 50);
         }
     });
 
-
-    function timerCount() {
-
-        var endDate = new Date();
-        //  alert(endDate);
-        var seconds = (endDate.getTime() - oldTime.getTime()) / 1000;
-        // alert(seconds);
-        if (seconds >= 1) {
-            oldTime = new Date()
-
-            if (currentColor == "W") {
-                ++totalSecondsWhite;
-                sessionStorage.setItem('totalSecondsWhite', totalSecondsWhite);
-            }
-            else {
-                ++totalSecondsBlack;
-                sessionStorage.setItem('totalSecondsBlack', totalSecondsBlack);
-            }
-            printTimes();
-        }
-
-    }
 
 
     function BindPartialView() {
@@ -101,7 +76,7 @@
         objDiv.scrollTop = objDiv.scrollHeight;
 
         //alert(isFullCPU);
-        var data = { };
+        var data = {};
         var urlValue = "/Home/DetailsTimer";
         if (isFullCPU == "1")
             urlValue = "/Home/DetailsTimerFULLCPU";
@@ -133,8 +108,11 @@
     function DivClicked(index) {
         document.getElementById(index).style.backgroundColor = 'yellow';
         document.getElementById(index);
+        var selectedLevel = $('#levelDetails').val();
+        var SelectedReflectionTimeInMinute = $('#MaxReflectionTimeInMinuteDetails').val();
 
-        var data = { objId: index, selectedLevel: -1 };
+
+        var data = { objId: index, selectedLevel: selectedLevel, SelectedReflectionTimeInMinute: SelectedReflectionTimeInMinute };
         $.ajax({
             type: "POST",
             url: "/Home/Details",
@@ -187,32 +165,49 @@
     }
 
 
+
 </script>
 <h5 class="d-inline-block inline">
-    <span class="informationFont">Current turn :</span>
-    @if (@Model.CurrentTurn == "W")
+    @* <span class="informationFont">Current turn :</span> *@
+
+    @if (@Model.CurrentTurn == "W" && Model.ComputerColor != "W")
     {
-        <span class="whiteFont">White</span>
+        @* <span class="whiteFont">👤</span> *@
+        <i class="fa-solid fa-user" title="Current turn Player 👤" style="color: white;"></i>  <!-- Icône blanche -->
+    }
+    else if (@Model.CurrentTurn == "W" && Model.ComputerColor == "W")
+    {
+        <i class="fa-solid fa-robot" title="Current turn 🤖" style=" color: white;"></i>
+       
+    }
+    else if (@Model.CurrentTurn == "B" && Model.ComputerColor != "B")
+    {
+        <i class="fa-solid fa-user" title="Current turn Player 👤" style="color: black;"></i>
     }
     else
     {
-        <span class="blackFont">Black</span>
+        <i class="fa-solid fa-robot" title="Current turn IA 🤖"  style="color: black;"></i>
     }
-    <span class="informationFont">Computer color :</span>
-    @if (@Model.ComputerColor == "W")
+    @* <span class="informationFont">Computer color :</span> *@
+   @*  @if (@Model.ComputerColor == "W")
     {
-        <span class="whiteFont">White</span>
+       
+        <i class="fa-solid fa-robot" style="color: white;"></i>
     }
     else
     {
-        <span class="blackFont">Black</span>
-    }
+       
+        <i class="fa-solid fa-robot" style="color: black;"></i>
+    } *@
+    <label id="times"> |🕒 </label>
     <label id="whiteTimeLabel" class="whiteFont"></label>
     <label id="blackTimeLabel" class="blackFont"></label>
-   @*  <button class="fa fa-camera" onclick="Print();">
-        print/save
+    <label> | </label>
+    @*  <button class="fa fa-camera" onclick="Print();">
+    print/save
     </button> *@
-    <b style='color:red;'>@Model.GetMemoryUsed() </b>
+    @* GET MEMERY USAGE *@
+    @* <b style='color:red;'>@Model.GetMemoryUsed() </b> *@
     <b style='color:white;'>@Model.StringWhiteCPULevel </b>
     <b style='color:black;'>@Model.StringBlackCPULevel </b>
 </h5>
@@ -229,14 +224,52 @@
 
 
 @*<button onclick="RunEngine()">run engine</button>*@
+
 <div class="d-flex">
 
+
     <div class="d-inline-block">
-        @if (@Model.MovingList!=null)
+        <div class="d-inline-block">
+            <label for="level" title="Computer level">L :</label>
+            <select id="levelDetails" name="SelectedLevel" title="Computer level">
+                @foreach (var level in Model.Levels)
+                {
+                    <option value="@level" selected="@(level == Model.SelectedLevel ? "selected" : null)">
+                        @level
+                    </option>
+                }
+            </select>
+
+            <label for="MaxReflectionTimeInMinute" title="IA maximum reflection time in minute">⏳:</label>
+            <select id="MaxReflectionTimeInMinuteDetails" name="MaxReflectionTimeInMinute" title="IA maximum reflection time in minute">
+                @foreach (var reflectionTimeInMinute in Model.ReflectionTimesInMinute)
+                {
+                    <option value="@reflectionTimeInMinute" selected="@(reflectionTimeInMinute == Model.SelectedReflectionTimeInMinute ? "selected" : null)">
+                        @reflectionTimeInMinute
+                    </option>
+                }
+            </select>
+            <div class="d-inline-block" title="Current turn reflection time">
+                @if (@Model.CurrentTurn == "W")
+                {
+                    <div id="clock" class="whiteFont">00:00</div>
+                }
+                else
+                {
+                    <div id="clock" class="blackFont">00:00</div>
+                }
+            </div>
+
+
+
+
+
+        </div>
+        @if (@Model.MovingList != null)
         {
-            <p>Turn : @Model.MovingList.Count</p>
+            <p title="Turn number">🔄 : @Model.MovingList.Count</p>
         }
-        
+
         <div id="history_div" style="width: 150px; height: 575px; overflow-y: scroll;">
             @if (Model.MovingList != null)
             {
@@ -254,11 +287,11 @@
                 Preview
             </button>
         </a>
-      @*   <a href="@Url.Action("SaveHistory", "Home")">
-            <button type="button">
-              
-                save
-            </button>
+        @*   <a href="@Url.Action("SaveHistory", "Home")">
+        <button type="button">
+
+        save
+        </button>
         </a> *@
 
         <button class="fa fa-camera" onclick="Print();">
@@ -332,25 +365,29 @@
                     {
 
                         <div id="@Model.GetPawn(j + (8 * i)).Index"
-                        class="box"
-                        onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
+                             class="box"
+                             onclick="DivClicked(@Model.GetPawn(j + (8 * i)).Index); return true;">
                             @* <p>@Model.GetPawn(j + (8 * i)).Index</p>*@
 
 
                             @if (@Model.GetPawn(j + (8 * i)).ImageIsExist)
                             {
                                 <img src=@Model.GetPawn(j + (8 * i)).PawnImageSrc width="50" height="50"
-                                class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+                                     class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
                             }
                             else
                             {
                                 <img src="" width="5" height="5"
-                                class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
+                                     class="@Model.GetPawn(j + (8 * i)).SelectedClass @Model.RevertWrapperClass" />
                             }
                             @*<img src="~/Images/BishopBlack.png" width="50" height="50" />*@
-                            <div class="caseNumber" style=" font-size: 10px;"><p class="@Model.RevertWrapperClass">@(
-                        j + (i * 8)
-                        )</p></div>
+                            <div class="caseNumber" style=" font-size: 10px;">
+                                <p class="@Model.RevertWrapperClass">
+                                    @(
+                                        j + (i * 8)
+                                        )
+                                </p>
+                            </div>
 
 
                         </div>
@@ -361,10 +398,10 @@
             catch (Exception ex)
             {
                 <H1>
-                   '@Model.StringWinnerColor';
+                    '@Model.StringWinnerColor';
                 </H1>
-                
-           }
+
+            }
 
             <div class="bottom">
                 <div>

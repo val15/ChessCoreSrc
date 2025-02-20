@@ -14,6 +14,9 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
         private static object lockObj = new object();
         private int _depthLevel = 0;
+        private DateTime _startTime;
+        private  int MAX_SEARCH_TIME_S = 60*5;
+        private bool _isExperedReflectionTime = false;
 
         public void Dispose()
         {
@@ -24,13 +27,17 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return this.GetType().Name;
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
         {
+            MAX_SEARCH_TIME_S = maxReflectionTimeInMinute * 60;
+            _startTime = DateTime.UtcNow;
+            _isExperedReflectionTime = false;
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;
             string opponentColor = boardChess.GetOpponentColor(cpuColor);
             Utils.WritelineAsync($"{GetName()}");
             Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
+            Utils.WritelineAsync($"MAX_SEARCH_TIME_S :  {MAX_SEARCH_TIME_S}");
             Utils.WritelineAsync($"cpuColor :  {cpuColor}");
             Utils.WritelineAsync($"opponentColor :  {opponentColor}");
             var bestOfBest = FindBestMode(boardChess, depthLevel, cpuColor);
@@ -49,6 +56,13 @@ namespace ChessCore.Tools.ChessEngine.Engine
             var equivalentBestNodeCEList = new List<NodeCE>();
             Parallel.ForEach(possibleMoves, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, move =>
             {
+
+                if (isReflextionLimitExpered())
+                {
+                    
+                    return;
+                }
+                
                 int value = 0;
                 var clonedBoard = board.CloneAndMove(move);
 
@@ -59,6 +73,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
                 var opponentColor = board.GetOpponentColor(cpuColor);
                 value = MinMaxWithAlphaBeta(clonedBoard, depthLevel - 1, int.MinValue, int.MaxValue, false, cpuColor);
+               
                 var elapsed = DateTime.UtcNow - startTime;
                 var currentNode = new NodeCE(clonedBoard, move, value, depthLevel, elapsed);
 
@@ -135,6 +150,13 @@ namespace ChessCore.Tools.ChessEngine.Engine
             bestNodeCE.EquivalentBestNodeCEList = equivalentBestNodeCEList;
             bestNodeCE.AllNodeCEList = allNode;
             var elapsed = DateTime.UtcNow - startTime;
+            if (_isExperedReflectionTime)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Utils.WritelineAsync("REFTECTION TIME LIMIT EXPERED");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+                
             Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
             // Utils.WritelineAsync($"Utils.PossibleMovesListCount = {Utils.PossibleMovesList.Count()}");
             //Utils.WritelineAsync($"Utils.IsKingInCheckListCount = {Utils.IsKingInCheckList.Count()}");
@@ -151,16 +173,17 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
         private int MinMaxWithAlphaBeta(BoardCE board, int depth, int alpha, int beta, bool maximizingPlayer, string cpuColor)
         {
+            var opponentColor = board.GetOpponentColor(cpuColor);
+            if (isReflextionLimitExpered())
+               return board.CalculateBoardCEScore(cpuColor, opponentColor);
+
             // Mise en cache rapide
-            var boardHash = ComputeBoardHash(board);
+            var boardHash = ComputeBoardHash(board,depth, cpuColor);
             // if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
             //         return cachedScore;
 
-            var opponentColor = board.GetOpponentColor(cpuColor);
+            
             var currentValue = board.CalculateBoardCEScore(cpuColor, opponentColor) / 10;
-
-
-
 
             // Conditions d'arrêt rapides avec vérification des échecs
             if (depth == 0 || board.IsGameOver())
@@ -246,6 +269,16 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
             }
         }
+       
+        private bool isReflextionLimitExpered()
+        {
+            if(DateTime.UtcNow - _startTime > TimeSpan.FromSeconds(MAX_SEARCH_TIME_S))
+            {
+                _isExperedReflectionTime = true;
+                return true;
+            }
+            return false;
+        }
 
 
         //public int GetEvolutionBonusOrMalus(BoardCE boardCE,Move move,bool maximizingPlayer)
@@ -307,9 +340,8 @@ namespace ChessCore.Tools.ChessEngine.Engine
         }
 
         // Méthode simple de hachage pour la table de transposition
-        private long ComputeBoardHash(BoardCE board)
+        private long ComputeBoardHash(BoardCE board, int depth, string color)
         {
-            // Implémentation simplifiée, à remplacer par un hachage plus robuste
             long hash = 0;
             for (int i = 0; i < board._cases.Length; i++)
             {
@@ -318,9 +350,11 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     hash ^= (long)board._cases[i].GetHashCode() << (i % 16);
                 }
             }
+            // Inclure la profondeur et la couleur dans le hachage
+            hash ^= depth << 24;
+            hash ^= color.GetHashCode() << 32;
             return hash;
         }
-
 
     }
 

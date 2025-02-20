@@ -10,6 +10,61 @@
 <script type="text/javascript">
 
 
+    // TIMES
+    var oldTimeGlobal = new Date();
+    var oldTurn = ""
+    var newTimeGlobal = null;
+    //var reflectionStartTime = Date.now();
+    var totalSecondsReflection = 0;
+    var totalSecondsBlack = 0;
+    var totalSecondsWhite = 0;
+    
+    setInterval(updateTimersGlobal, 100);
+
+    function updateTimersGlobal() {
+
+      //  globaCurrentTurn = currentColor;
+        //console.clear();
+        //console.log('currentElapsed    ' + currentElapsed);
+        if (oldTurn != currentColor) 
+        {
+            totalSecondsReflection = 0;
+            oldTurn = currentColor;
+        }
+        var endDate = new Date();
+        //  alert(endDate);
+        var miliSeconds = (endDate.getTime() - oldTimeGlobal.getTime());
+        // alert(seconds);
+        if (miliSeconds >= 1000) {
+            oldTimeGlobal = new Date()
+
+            if (currentColor == "W") {
+                ++totalSecondsWhite;
+               // document.getElementById('clock').textContent = formatTime((totalSecondsTEST));
+                
+            }
+            else
+            {
+                ++totalSecondsBlack;
+               
+               // document.getElementById('clock').textContent = formatTime((totalSecondsTEST));
+            }
+            ++totalSecondsReflection;
+        }
+        document.getElementById('whiteTimeLabel').textContent = formatTime((totalSecondsWhite));
+        document.getElementById('blackTimeLabel').textContent = formatTime((totalSecondsBlack));
+        document.getElementById('clock').textContent = formatTime((totalSecondsReflection));
+
+    }
+    // Formater le temps en MM:SS
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+
+
     document.addEventListener("DOMContentLoaded", function () {
         var checkboxIsFullCPU = document.getElementById("isActiveFullCPU");
         var level = document.getElementById("level");
@@ -59,6 +114,7 @@
         //TODO remmetre le leve
         var selectedLevel = $('#level').val();
         var selectedEngine = $('#engine').val();
+        var SelectedReflectionTimeInMinute = $('#MaxReflectionTimeInMinute').val();
         var FullCPUBlackLevel = $('#FullCPUBlackLevel').val();
         var FullCPUWhiteLevel = $('#FullCPUWhiteLevel').val();
 
@@ -66,7 +122,9 @@
         var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0,
             SelectedEngine: selectedEngine,
             CPUColor: computerColor, selectedLevel: selectedLevel, 
-            isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel };
+            isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel,
+            SelectedReflectionTimeInMinute: SelectedReflectionTimeInMinute
+        };
         $.ajax({
             type: "POST",
             url: "/Home/Details",
@@ -210,9 +268,9 @@
 
                             foreach (var coordY in coordYArray)
                             {
-                                <div style="height:70px; background-color: #04AA6D;">
-                                    <label style="font-weight: bold; margin-top: 25px"> @coordY &nbsp;</label>
-                                </div>
+                                                <div style="height:70px; background-color: #04AA6D;">
+                                                    <label style="font-weight: bold; margin-top: 25px"> @coordY &nbsp;</label>
+                                                </div>
 
                             }
                         }
@@ -222,9 +280,9 @@
 
                             foreach (var coordY in coordYArray)
                             {
-                                <div style="height:70px; background-color: #04AA6D;">
-                                    <label class="@Model.RevertWrapperClass" style="font-weight: bold; margin-top: 25px"> @coordY &nbsp</label>
-                                </div>
+                                                <div style="height:70px; background-color: #04AA6D;">
+                                                    <label class="@Model.RevertWrapperClass" style="font-weight: bold; margin-top: 25px"> @coordY &nbsp</label>
+                                                </div>
 
                             }
                         }
@@ -289,28 +347,28 @@
 
                                     foreach (var coordX in coordXArray)
                                     {
-                                        <label class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
+                                                        <label class="@Model.RevertWrapperClass" style="width: 66px; font-weight: bold;">&nbsp; &nbsp; &nbsp; @coordX</label>
                                     }
 
-                                    <div class="wrapper-inner">
-                                        <div align="left">
-                                            <label class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
-                                        </div>
+                                                    <div class="wrapper-inner">
+                                                        <div align="left">
+                                                            <label class="@Model.RevertWrapperClass">@Model.GetWhiteScoreString() </label>
+                                                        </div>
 
-                                        <div align="right">
-                                            @if (Model.HuntingBoardBlackImageList != null)
+                                                        <div align="right">
+                                                            @if (Model.HuntingBoardBlackImageList != null)
                                             {
                                                 foreach (var imageSrc in Model.HuntingBoardBlackImageList)
                                                 {
-                                                    <img src=@imageSrc width="25" height="25"
-                                                         class="@Model.RevertWrapperClass" />
+                                                                    <img src=@imageSrc width="25" height="25"
+                                                                         class="@Model.RevertWrapperClass" />
 
                                                 }
                                             }
-                                        </div>
+                                                        </div>
 
 
-                                    </div>
+                                                    </div>
 
                                 }
                             </div>
@@ -350,8 +408,8 @@
     <option selected value="6">6</option>
     </select> *@
 
-    <label for="engine">engine:</label>
-    <select id="engine" name="SelectedEngine">
+    <label for="engine" title="Chess Engine"> ⚙️</label>
+    <select id="engine" name="SelectedEngine" title="Chess Engine">
         @foreach (var engine in Model.Engines)
         {
             <option value="@engine.GetName()" selected="@(engine == Model.SelectedEngine ? "selected" : null)">
@@ -359,9 +417,9 @@
             </option>
         }
     </select>
-
-    <label for="level">level:</label>
-    <select id="level" name="SelectedLevel">
+    <label>|</label>
+    <label for="level" title="Computer level"> L:</label>
+    <select id="level" name="SelectedLevel" title="Computer level">
         @foreach (var level in Model.Levels)
         {
             <option value="@level" selected="@(level == Model.SelectedLevel ? "selected" : null)">
@@ -369,31 +427,46 @@
             </option>
         }
     </select>
+   
+    <label for="MaxReflectionTimeInMinute" title="IA maximum reflection time in minute">⏳:</label>
+    <select id="MaxReflectionTimeInMinute" name="MaxReflectionTimeInMinute" title="IA maximum reflection time in minute">
+        >
+        @foreach (var reflectionTimeInMinute in Model.ReflectionTimesInMinute)
+        {
+            <option value="@reflectionTimeInMinute" selected="@(reflectionTimeInMinute == Model.SelectedReflectionTimeInMinute ? "selected" : null)">
+                @reflectionTimeInMinute
+            </option>
+        }
+    </select>
+    <label>|</label>
 
 
 
-    <label for="color">Computer color:</label>
-    <select id="computerColor">
+    <label for="color" title="Computer color">🤖</label>
+     <select id="computerColor" title="Computer color">
         <option class="whiteFont sectionBG" value="W">White</option>
         <option class="blackFont sectionBG" value="B">Black</option>
-    </select>
+    </select> 
+    @* <div class="custom-select">
+        <div class="option" data-value="W">
+            <i class="fas fa-robot"></i> White
+        </div>
+        <div class="option" data-value="B">
+            <i class="fas fa-robot"></i> Black
+        </div>
+    </div> *@
+
+
     <br />
-    <label>Full CPU : </label>
+    <label title="Full CPU">🤖⚔️🤖 </label>
     <input id="isActiveFullCPU"
            name="isActiveFullCPU"
-           type="checkbox" />
+           type="checkbox"
+           title="Full CPU"/>
     
-  @*   <label for="FullCPUWhiteLevel">White level:</label>
-    <select id="FullCPUWhiteLevel">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option selected value="5">5</option>
-        <option value="6">6</option>
-    </select> *@
-    <label for="FullCPUWhiteLevel">White level:</label>
-    <select id="FullCPUWhiteLevel" name="SelectedWhiteLevel">
+    <label>|</label>
+    <label for="FullCPUWhiteLevel" title="White level" class="fa-solid fa-robot" style=" color: white;"></label>
+    <select id="FullCPUWhiteLevel" name="SelectedWhiteLevel" title="White level">
         @foreach (var level in Model.Levels)
         {
             <option value="@level" selected="@(level == Model.SelectedWhiteLevel? "selected" : null)">
@@ -411,8 +484,8 @@
         <option value="5">5</option>
         <option selected value="6">6</option>
     </select> *@
-    <label for="FullCPUBlackLevel">Black level:</label>
-    <select id="FullCPUBlackLevel" name="SelectedBlackLevel">
+    <label for="FullCPUBlackLevel" title="Black level" class="fa-solid fa-robot" style=" color: black;"></label>
+    <select id="FullCPUBlackLevel" name="SelectedBlackLevel" title="Black level">
         @foreach (var level in Model.Levels)
         {
             <option value="@level" selected="@(level == Model.SelectedBlackLevel? "selected" : null)">
@@ -420,8 +493,8 @@
             </option>
         }
     </select>
-
-    <button onclick="start()">play</button>
+    <label>|</label>
+    <button onclick="start()" title="play">▶️</button>
 </div>
 <div id="dvPartial"></div>
 

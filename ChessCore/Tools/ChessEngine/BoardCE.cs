@@ -71,7 +71,32 @@ namespace ChessCore.Tools.ChessEngine
             _cases[toIndex] = _cases[fromIndex];
             _cases[fromIndex] = "__";
         }
+        public void MakeMove(Move move)
+        {
+            MakeMove(move.FromIndex, move.ToIndex);
+        }
 
+        public void MakeMove(int fromIndex, int toIndex)
+        {
+            // Déplacer la pièce de fromIndex à toIndex
+            _cases[toIndex] = _cases[fromIndex];
+            _cases[fromIndex] = "__";
+
+            // Gérer la promotion des pions
+            if (_cases[toIndex].StartsWith("P"))
+            {
+                // Promotion pour les pions blancs
+                if (toIndex >= 0 && toIndex <= 7)
+                {
+                    _cases[toIndex] = _cases[toIndex].Replace("P", "Q"); // Promotion en reine
+                }
+                // Promotion pour les pions noirs
+                else if (toIndex >= 56 && toIndex <= 63)
+                {
+                    _cases[toIndex] = _cases[toIndex].Replace("P", "Q"); // Promotion en reine
+                }
+            }
+        }
         public int GetMenacedsPoints(string color)
         {
             var result = 0;
@@ -522,6 +547,11 @@ namespace ChessCore.Tools.ChessEngine
         public bool IsGameOver()
         {
             return !_cases.Any(c => c.StartsWith("K|"));
+        }
+        public bool IsGameOverTow()
+        {
+            var kCount = _cases.Where(c => c.StartsWith("K|")).Count();
+            return ! (kCount != 2) ;
         }
 
         public BoardCE CloneAndMove(int fromIndex, int toIndex)

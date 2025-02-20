@@ -17,7 +17,7 @@
             return this.GetType().Name;
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 3)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 3, int maxReflectionTimeInMinute = 2)
         {
 
             if (depthLevel == 3)
@@ -383,16 +383,15 @@
                 string opponentColor = colore == "W" ? "B" : "W";
                 string iaTurn = depthLevel % 2 == 1 ? opponentColor : colore;
                 _checkIsInChessOnEnd = checkIsInChessOnEnd;
-                Utils.LimitOfReflectionTimeInSecond = limitOfReflectionTimeInSecond;
+               
 
                 Utils.WritelineAsync($"DepthLevel :  {_depthLevel}");
                 Utils.WritelineAsync($"cpuColor :  {colore}");
                 Utils.WritelineAsync($"iaTurn :  {iaTurn}");
                 Utils.WritelineAsync($"opponentColor :  {opponentColor}");
                 Utils.WritelineAsync($"isOppinionTurnInNext :  {isOppinionTurnInNext}");
-                Utils.WritelineAsync($"LimitOfReflectionTimeInSecond :  {Utils.LimitOfReflectionTimeInSecond}");
                 Utils.WritelineAsync($"_checkIsInChessOnEnd :  {_checkIsInChessOnEnd}");
-                Utils.LimitOfReflectionTimeIsShow = false;
+               // Utils.LimitOfReflectionTimeIsShow = false;
                 var bestNodeCEList = new List<NodeCE>();
                 var allNodeCEList = new List<NodeCE>();
 
@@ -586,14 +585,13 @@
                 string cpuColor = colore[0].ToString();
                 string opponentColor = cpuColor == "W" ? "B" : "W";
                 _checkIsInChessOnEnd = checkIsInChessOnEnd;
-                Utils.LimitOfReflectionTimeInSecond = limitOfReflectionTimeInSecond;
+       
                 Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
                 Utils.WritelineAsync($"cpuColor :  {cpuColor}");
                 Utils.WritelineAsync($"opponentColor :  {opponentColor}");
                 Utils.WritelineAsync($"isOppinionTurnInNext :  {isOppinionTurnInNext}");
-                Utils.WritelineAsync($"LimitOfReflectionTimeInSecond :  {Utils.LimitOfReflectionTimeInSecond}");
                 Utils.WritelineAsync($"_checkIsInChessOnEnd :  {_checkIsInChessOnEnd}");
-                Utils.LimitOfReflectionTimeIsShow = false;
+                //Utils.LimitOfReflectionTimeIsShow = false;
                 var bestNodeCEList = new List<NodeCE>();
                 var allNodeCEList = new List<NodeCE>();
 
@@ -745,14 +743,11 @@
                 string cpuColor = colore[0].ToString();
                 string opponentColor = cpuColor == "W" ? "B" : "W";
                 _checkIsInChessOnEnd = checkIsInChessOnEnd;
-                Utils.LimitOfReflectionTimeInSecond = limitOfReflectionTimeInSecond;
                 Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
                 Utils.WritelineAsync($"cpuColor :  {cpuColor}");
                 Utils.WritelineAsync($"opponentColor :  {opponentColor}");
                 Utils.WritelineAsync($"isOppinionTurnInNext :  {isOppinionTurnInNext}");
-                Utils.WritelineAsync($"LimitOfReflectionTimeInSecond :  {Utils.LimitOfReflectionTimeInSecond}");
-                Utils.WritelineAsync($"_checkIsInChessOnEnd :  {_checkIsInChessOnEnd}");
-                Utils.LimitOfReflectionTimeIsShow = false;
+              //  Utils.LimitOfReflectionTimeIsShow = false;
                 var bestNodeCEList = new List<NodeCE>();
                 var allNodeCEList = new List<NodeCE>();
 
@@ -900,16 +895,16 @@
         public NodeCE MinMaxWithAlphaBeta(BoardCE board, int depth, double alpha, double beta, bool maximizingPlayer, string cpuColor)
         {
             var executionEngineTime = DateTime.UtcNow - Utils.EnginStartTime;
-            if (executionEngineTime.TotalSeconds > Utils.LimitOfReflectionTimeInSecond)
-            {
-                if (!Utils.LimitOfReflectionTimeIsShow)
-                {
+           // if (executionEngineTime.TotalSeconds > Utils.LimitOfReflectionTimeInSecond)
+          //  {
+               /* if (!Utils.LimitOfReflectionTimeIsShow)
+                {*/
                     Utils.WritelineAsync($"executionEngineTime : {executionEngineTime}");
-                    Utils.WritelineAsync($"REFLECTION TIME OVER  {Utils.LimitOfReflectionTimeInSecond} s STOP ENGINE");
-                    Utils.LimitOfReflectionTimeIsShow = true;
-                }
+                   // Utils.WritelineAsync($"REFLECTION TIME OVER  {Utils.LimitOfReflectionTimeInSecond} s STOP ENGINE");
+                    //Utils.LimitOfReflectionTimeIsShow = true;
+               // }
                 return new NodeCE() { Level = -1, Weight = -9999 };
-            }
+           // }
 
 
             var currentNodeCE = new NodeCE

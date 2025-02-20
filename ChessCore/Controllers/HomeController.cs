@@ -41,6 +41,8 @@ namespace ChessCore.Controllers
         [HttpGet]
         public ActionResult Index()
         {
+
+            //INIT ALL
             var mainBord = new Board();
             mainBord.Init();
             MainUtils.VM = new MainPageViewModel(mainBord);
@@ -49,8 +51,9 @@ namespace ChessCore.Controllers
             MainUtils.VM.Engines.Add(new ChessEngine3());
             MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.Last();
             MainUtils.VM.SelectedLevel = 6;
-            MainUtils.VM.SelectedWhiteLevel = 4;
-            MainUtils.VM.SelectedBlackLevel= 5;
+            MainUtils.VM.SelectedReflectionTimeInMinute = 2;
+            MainUtils.VM.SelectedWhiteLevel = 6;
+            MainUtils.VM.SelectedBlackLevel= 7;
 
 
             return View(MainUtils.VM);
@@ -87,6 +90,8 @@ namespace ChessCore.Controllers
                     Utils.WritelineAsync("CHECKMATE");
                     _isCHECKMATE = true;
                     var winVM = new DetailsViewModel();
+                    winVM.SelectedLevel = Utils.DeepLevel;
+                    winVM.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
                     if (MainUtils.CPUColor == "W")
                         winVM.StringWinnerColor = "Balck WIN";
                     else
@@ -99,7 +104,7 @@ namespace ChessCore.Controllers
 
                 Utils.DeepLevel = _CPULevel;
 
-                var bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CPUColor, currentBoard, Utils.DeepLevel);
+                var bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CPUColor, currentBoard, Utils.DeepLevel,Utils.SelectedReflectionTimeInMinute);
 
 
                 var fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
@@ -119,6 +124,8 @@ namespace ChessCore.Controllers
 
 
                 var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, null, fromIndex, toIndex);
+                vmEngine.SelectedLevel = Utils.DeepLevel;
+                vmEngine.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
                 //dans le cas de loaded
                 /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
                  vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
@@ -171,7 +178,7 @@ namespace ChessCore.Controllers
                     vmEngine.StringWhiteCPULevel = $"L {_CPULevel}";
                     vmEngine.StringBlackCPULevel = $"L {0}";
                 }
-
+                vmEngine.IsMove = 1;
                 return PartialView("Details", vmEngine);
 
 
@@ -240,7 +247,7 @@ namespace ChessCore.Controllers
 
                 NodeCE bestNode;
 
-                bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel);
+                bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel,Utils.SelectedReflectionTimeInMinute);
 
 
 
@@ -250,6 +257,8 @@ namespace ChessCore.Controllers
                     Utils.WritelineAsync("CHECKMATE");
                     _isCHECKMATE = true;
                     var winVM = new DetailsViewModel();
+                    winVM.SelectedLevel = Utils.DeepLevel;
+                    winVM.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
                     if (MainUtils.CPUColor == "W")
                         winVM.StringWinnerColor = "Balck WIN";
                     else
@@ -282,6 +291,8 @@ namespace ChessCore.Controllers
                 MainUtils.FromGridIndex = -1;
 
                 var vmEngine = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, null, fromIndex, toIndex);
+                vmEngine.SelectedLevel = Utils.DeepLevel;
+                vmEngine.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
                 //dans le cas de loaded
                 /* vmEngine.HuntingBoardWhiteImageList = MainUtils.HuntingBoardWhiteImageList;
                  vmEngine.HuntingBoardBlackImageList = MainUtils.HuntingBoardBlackImageList;
@@ -769,7 +780,7 @@ namespace ChessCore.Controllers
 
 
         [HttpPost]
-        public ActionResult Details(int objId, string selectedEngine, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU, int FullCPUWhiteLevel, int FullCPUBlackLevel)
+        public ActionResult Details(int objId, string selectedEngine, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU, int FullCPUWhiteLevel, int FullCPUBlackLevel,int SelectedReflectionTimeInMinute)
         {
             ////  GC.Collect();
             //var t_ = selectionLevel;
@@ -781,6 +792,8 @@ namespace ChessCore.Controllers
             if(selectedEngine !=null)
                 MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedEngine);
 
+            if(SelectedReflectionTimeInMinute!=0)
+                Utils.SelectedReflectionTimeInMinute = SelectedReflectionTimeInMinute;
             if (selectedLevel != -1)
                 _CPULevel = _whiteCPULevel = _blackCPULevel = MainUtils.DeepLevel = Utils.DeepLevel = selectedLevel;
             MainUtils.InitialDuration = 0;
@@ -806,6 +819,8 @@ namespace ChessCore.Controllers
 
 
                 var initialVm = new DetailsViewModel(MainUtils.VM.MainBord);
+                initialVm.SelectedLevel = Utils.DeepLevel;
+                initialVm.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
                 //dans le cas de loaded
                 /* initialVm.HuntingBoardWhiteImageList = MainUtils.VM.HuntingBoardWhiteImageList;
                  initialVm.HuntingBoardBlackImageList = MainUtils.VM.HuntingBoardBlackImageList;
@@ -853,7 +868,7 @@ namespace ChessCore.Controllers
                     initialVm.StringWhiteCPULevel = $"L {_whiteCPULevel}";
                 }
 
-
+                //NOT modif
                 return PartialView("Details", initialVm);
             }
             // NorthwindEntities entities = new NorthwindEntities();
@@ -887,6 +902,8 @@ namespace ChessCore.Controllers
                     /*var mainBord = new Board();
                     mainBord.Init();*/
                     var vmOld = new DetailsViewModel(MainUtils.VM.MainBord);
+                    vmOld.SelectedLevel = Utils.DeepLevel;
+                    vmOld.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
                     vmOld.DateTimeNow = dateTimeNow;
                     vmOld.CurrentTurn = MainUtils.CurrentTurnColor;
                     vmOld.ComputerColor = MainUtils.CPUColor;
@@ -924,7 +941,7 @@ namespace ChessCore.Controllers
                         vmOld.StringWhiteCPULevel = $"L {_CPULevel}";
                         vmOld.StringBlackCPULevel = $"L {0}";
                     }
-
+                    //re selection
                     return PartialView("Details", vmOld);
 
                 }
@@ -951,7 +968,8 @@ namespace ChessCore.Controllers
                 movedNewLocation = MainUtils.ToGridIndex;
             }
             var vm = new DetailsViewModel(MainUtils.VM.MainBord, MainUtils.FromGridIndex, posiblesMoveListSelectedPawn, movedOldLocationIndex, movedNewLocation);
-
+            vm.SelectedLevel = Utils.DeepLevel;
+            vm.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
 
             vm.DateTimeNow = dateTimeNow;
             vm.FromGridIndex = MainUtils.FromGridIndex;
@@ -987,7 +1005,9 @@ namespace ChessCore.Controllers
                 vm.StringWhiteCPULevel = $"L {_CPULevel}";
                 vm.StringBlackCPULevel = $"L {0}";
             }
-
+            if(isMove)
+                vm.IsMove = 1;
+            //selection et déplacment
             return PartialView("Details", vm);
         }
 

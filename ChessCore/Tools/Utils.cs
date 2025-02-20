@@ -8,15 +8,15 @@ namespace ChessCore.Tools
     public static class Utils
     {
         public static DateTime EnginStartTime { get; set; }
-        public static int LimitOfReflectionTimeInSecond { get; set; } = 24 * 60 * 60;
-        public static bool LimitOfReflectionTimeIsShow { get; set; } = false;
+        //public static int LimitOfReflectionTimeInSecond { get; set; } = 24 * 60 * 60;
+        //public static bool LimitOfReflectionTimeIsShow { get; set; } = false;
 
         //public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
         // public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
 
-        public static NodeCE RunEngine(IChessEngine chessEngine, string colore, BoardCE boardChess, int depthLevel = 6)
+        public static NodeCE RunEngine(IChessEngine chessEngine, string colore, BoardCE boardChess, int depthLevel = 6,int maxReflectionTimeInMinute = 2)
         {
-            return chessEngine.GetBestModeCE(colore, boardChess, depthLevel);
+            return chessEngine.GetBestModeCE(colore, boardChess, depthLevel,maxReflectionTimeInMinute);
         }
 
 
@@ -96,6 +96,7 @@ namespace ChessCore.Tools
         #endregion
 
         public static int DeepLevel { get; set; }
+        public static int SelectedReflectionTimeInMinute { get; set; } = 2;
         public static bool DeepLevelPrime { get; set; } = true;
         public static DateTime StartedProcessTime { get; set; }
         //Pour T41, on limite le temps de reflection, si le temps depasse le seul, on ne fait plus de verification, in Chess2Utils.TargetColorIsInChess() au niveau 4

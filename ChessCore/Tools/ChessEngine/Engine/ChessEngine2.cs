@@ -22,7 +22,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return this.GetType().Name;
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
         {
             var cpuColor = colore.First().ToString();
             _depthLevel = depthLevel;

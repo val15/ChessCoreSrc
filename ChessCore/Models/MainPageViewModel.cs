@@ -11,7 +11,9 @@ namespace ChessCore.Models
 
         public IChessEngine SelectedEngine { get; set; } = new ChessEngine3();
 
-        public int[] Levels = [1, 2, 3, 4, 5, 6];
+        public int[] Levels = [1, 2, 3, 4, 5, 6, 7];
+        public int[] ReflectionTimesInMinute = [1, 2, 5, 10,15,30,60];
+        public int SelectedReflectionTimeInMinute { get; set; }
 
         public int SelectedLevel { get; set; }
         public int SelectedWhiteLevel { get; set; }
