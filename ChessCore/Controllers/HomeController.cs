@@ -46,6 +46,14 @@ namespace ChessCore.Controllers
             var mainBord = new Board();
             mainBord.Init();
             MainUtils.VM = new MainPageViewModel(mainBord);
+            InitMainPageViewModel(MainUtils.VM);
+
+
+            return View(MainUtils.VM);
+        }
+
+        public void InitMainPageViewModel(MainPageViewModel mainViewModel) 
+        {
             MainUtils.VM.Engines.Add(new ChessEngine1());
             MainUtils.VM.Engines.Add(new ChessEngine2());
             MainUtils.VM.Engines.Add(new ChessEngine3());
@@ -53,10 +61,7 @@ namespace ChessCore.Controllers
             MainUtils.VM.SelectedLevel = 6;
             MainUtils.VM.SelectedReflectionTimeInMinute = 2;
             MainUtils.VM.SelectedWhiteLevel = 6;
-            MainUtils.VM.SelectedBlackLevel= 7;
-
-
-            return View(MainUtils.VM);
+            MainUtils.VM.SelectedBlackLevel = 7;
         }
 
 
@@ -498,6 +503,7 @@ namespace ChessCore.Controllers
                 MainUtils.VM.HuntingBoardBlackImageList = huntingBoardBlackImageList;
                 MainUtils.VM.MovingList = historyList;
                 MainUtils.VM.MainBord.CalculeScores(Utils.ComputerColor);
+                InitMainPageViewModel(MainUtils.VM);
                 //pour les scores
                 if (MainUtils.VM.MainBord.WhiteScore < MainUtils.VM.MainBord.BlackScore)
                     MainUtils.VM.BlackScore = (MainUtils.VM.MainBord.BlackScore - MainUtils.VM.MainBord.WhiteScore);
@@ -774,6 +780,8 @@ namespace ChessCore.Controllers
 
 
             byte[] fileBytes = System.IO.File.ReadAllBytes(MainUtils.ZipFilePath);
+
+
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, MainUtils.ZipFilePath);
 
         }
@@ -1111,7 +1119,7 @@ namespace ChessCore.Controllers
             ZipFile.CreateFromDirectory(zipDirPath, MainUtils.ZipFilePath);
 
 
-
+            MainUtils.VM.MainBord.MovingList = MainUtils.MovingList;
             byte[] fileBytes = System.IO.File.ReadAllBytes(MainUtils.ZipFilePath);
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, MainUtils.ZipFilePath);
         }

@@ -233,19 +233,14 @@
                     </div>
                     @*<button onclick="SavehistoryClicked()">download</button>*@
                     <a href="@Url.Action("Preview", "Home")">
-                        <button type="button">
-                            @*<i class="bi bi-camera"></i>*@
-                            Preview
+                        <button type="button" title="Preview" class="fas fa-backward">
                         </button>
                     </a>
                     @* <button onclick="SaveLoadingBoard()">save</button> *@
-                    <button class="fa fa-camera" onclick="Print();">
-                        print/save
+                    <button class="fa fa-camera" class="fa fa-save" onclick="Print();" title="print/save">
                     </button>
                     <a href="@Url.Action("Next", "Home")">
-                        <button type="button">
-                            @*<i class="bi bi-camera"></i>*@
-                            Next
+                        <button type="button" class="fas fa-forward" title="Next">
                         </button>
                     </a>
 
@@ -494,7 +489,7 @@
         }
     </select>
     <label>|</label>
-    <button onclick="start()" title="play">▶️</button>
+    <button onclick="start()" title="play" class="fas fa-play"></button>
 </div>
 <div id="dvPartial"></div>
 
