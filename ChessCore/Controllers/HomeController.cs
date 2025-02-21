@@ -73,8 +73,20 @@ namespace ChessCore.Controllers
         {
             try
             {
-                if (_isCHECKMATE)
-                    return null;
+                var whiteKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|W");
+                var blackKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|B");
+                if (whiteKing == null)
+                {
+                    Utils.WritelineAsync("Black Wins");
+                    return View("Result", "Black");
+                }
+                else if (blackKing == null)
+                {
+                    Utils.WritelineAsync("White Wins");
+                    return View("Result", "White");
+                }
+                //if (_isCHECKMATE)
+                //    return null;
                 MainUtils.CpuCount++;
                 //   var t_ = "cpu";
 
@@ -807,6 +819,18 @@ namespace ChessCore.Controllers
         [HttpPost]
         public ActionResult Details(int objId, string selectedEngine, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU, int FullCPUWhiteLevel, int FullCPUBlackLevel,int SelectedReflectionTimeInMinute)
         {
+            var whiteKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|W");
+            var blackKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|B");
+            if (whiteKing == null)
+            {
+                Utils.WritelineAsync("Black Wins");
+                return View("Result", "Black");
+            }
+            else if (blackKing == null)
+            {
+                Utils.WritelineAsync("White Wins");
+                return View("Result", "White");
+            }
             ////  GC.Collect();
             //var t_ = selectionLevel;
             // var t_ = isFullCPU;
