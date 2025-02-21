@@ -1,0 +1,44 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "Résultat de la partie";
+}
+
+<div class="result-container">
+    <h1 class="result-text">
+        @if (Model == "Black")
+        {
+            <span class="result-color" style="color: black" ;>@Model Wins! 🏆</span>
+        }
+        else
+        {
+            <span class="result-color" style="color: white" ;>@Model Wins! 🏆</span>
+        }
+
+    </h1>
+</div>
+
+<style>
+    .result-container {
+        text-align: center;
+        margin-top: 50px;
+        padding: 20px;
+        border-radius: 10px;
+        background: linear-gradient(to right, #ffcc00, #ff6600);
+        font-family: Arial, sans-serif;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .result-text {
+        font-size: 40px;
+        font-weight: bold;
+        margin-top: 20px;
+        text-transform: uppercase;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .result-color {
+        font-size: 44px;
+        font-weight: bold;
+    }
+</style>

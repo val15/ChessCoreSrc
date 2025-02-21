@@ -60,8 +60,8 @@ namespace ChessCore.Controllers
             MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.Last();
             MainUtils.VM.SelectedLevel = 6;
             MainUtils.VM.SelectedReflectionTimeInMinute = 2;
-            MainUtils.VM.SelectedWhiteLevel = 6;
-            MainUtils.VM.SelectedBlackLevel = 7;
+            MainUtils.VM.SelectedWhiteLevel = 4;
+            MainUtils.VM.SelectedBlackLevel = 5;
         }
 
 
@@ -213,8 +213,25 @@ namespace ChessCore.Controllers
         {
             try
             {
-                if (_isCHECKMATE)
-                    return null;
+                //WINER 
+                
+                var whiteKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|W");
+                var blackKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|B");
+                if (whiteKing==null)
+                {
+                    Utils.WritelineAsync("Black Wins");
+                    return View("Result", "Black");
+                }
+                else if (blackKing == null)
+                {
+                    Utils.WritelineAsync("White Wins");
+                    return View("Result", "White");
+                }
+                // return View("Losing");
+                //if (_isCHECKMATE)
+                //    return null;
+
+
                 MainUtils.CpuCount++;
                 if (MainUtils.CpuCount > 1)
                     return null;
