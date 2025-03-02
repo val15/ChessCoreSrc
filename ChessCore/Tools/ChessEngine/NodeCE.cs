@@ -1,4 +1,7 @@
-﻿namespace ChessCore.Tools.ChessEngine
+﻿using Microsoft.Extensions.FileSystemGlobbing;
+using System.Text.RegularExpressions;
+
+namespace ChessCore.Tools.ChessEngine
 {
     public class NodeCE
     {
@@ -10,8 +13,8 @@
         public int FromIndex { get; set; } // Index de départ (0-63)
         public int ToIndex { get; set; } // Index d'arrivée (0-63)
 
-        public string Location => GetPositionFromIndex(FromIndex); // Position d'origine en notation échiquier
-        public string BestChildPosition => GetPositionFromIndex(ToIndex); // Position de destination en notation échiquier
+        public string Location => Utils.GetPositionFromIndex(FromIndex); // Position d'origine en notation échiquier
+        public string BestChildPosition => Utils.GetPositionFromIndex(ToIndex); // Position de destination en notation échiquier
 
         public BoardCE BoardCE { get; set; }
         public NodeCE MaxNode { get; set; }
@@ -19,6 +22,24 @@
 
         public NodeCE()
         {
+
+        }
+        public NodeCE(string start, string end)
+        {
+            try
+            {
+                //var input = nodeCEString.Replace(" ", "").Replace("(", "").Replace(")", "");
+                //var data = input.Split(',');
+                FromIndex = Utils.GetIndexFromLocation(start);
+                ToIndex = Utils.GetIndexFromLocation(end);
+               
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Format invalide !");
+            }
+            
 
         }
 
@@ -36,16 +57,7 @@
         /// <summary>
         /// Convertit un index de l'échiquier (0-63) en position échiquier (ex : 0 => a8).
         /// </summary>
-        public static string GetPositionFromIndex(int index)
-        {
-            if (index < 0 || index > 63)
-                return null;
-
-            char file = (char)('a' + index % 8); // 'a' à 'h'
-            int rank = 8 - index / 8; // '8' à '1'
-
-            return $"{file}{rank}";
-        }
+       
 
         public override string ToString()
         {

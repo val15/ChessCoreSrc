@@ -806,6 +806,11 @@ namespace ChessCore.Tools
                 }
                 //  board.CalculeScores();
                 board.Print();
+
+                var bs = board.ToString();
+                Utils.WritelineAsync($"{board.ToString()}");
+                Utils.WritelineAsync($"{board.ConvertToFEN()}");
+
                 return board;
             }
             catch (Exception ex)
@@ -816,6 +821,8 @@ namespace ChessCore.Tools
 
         }
 
+
+    
         /*tsiry;19-11-2021
          * pour generer PawnList à part des caseList
          * */

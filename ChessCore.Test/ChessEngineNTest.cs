@@ -4,13 +4,13 @@ using ChessCore.Tools;
 namespace ChessCore.Test
 {
     [TestClass]
-    public class ChessEngine3Test
+    public class ChessEngineNTest
     {
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
-        private ChessEngine3 _chessEngine;
-        public ChessEngine3Test()
+        private ChessEngine3OLD _chessEngine;
+        public ChessEngineNTest()
         {
-             _chessEngine = new ChessEngine3();
+            _chessEngine = new ChessEngine3OLD();
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
@@ -154,7 +154,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Positions final du cavalier Blach ne doit pas etre  ni "a7" ni "c7"
@@ -248,7 +248,7 @@ namespace ChessCore.Test
             var pawnList = new List<Pawn>();
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
-            
+
             {
                 // var nodeResult = chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), true,null);
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -342,7 +342,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
 
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -434,7 +434,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Positions final du cavalier noir ne doit pas etre  ni "a2" ni "c2" 
@@ -457,7 +457,7 @@ namespace ChessCore.Test
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final de la reine Noir ne doit pas etre "g5"
@@ -544,7 +544,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final du rook blanch  ne doit pas etre "a7"
@@ -630,7 +630,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final du rook blanch  ne doit pas etre "a7"
@@ -715,7 +715,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Position final du rook blanch  ne doit pas etre "a7"
@@ -743,7 +743,7 @@ namespace ChessCore.Test
             var testName = "T05LeFousBlacheDoitSeSaccrifierPourProtegerLeRook";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c4");
@@ -814,7 +814,7 @@ namespace ChessCore.Test
             pawnList.AddRange(pawnListWhite);
             pawnList.AddRange(pawnListBlack);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual((nodeResult.EquivalentBestNodeCEList, 1););
@@ -923,7 +923,7 @@ namespace ChessCore.Test
             var testName = "T11LaReineBlancNeDoitPasAttaqueLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
@@ -940,7 +940,7 @@ namespace ChessCore.Test
             var testName = "T15LaReineBlanchNeDoitPasPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
 
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -960,7 +960,7 @@ namespace ChessCore.Test
             var testName = "T16SeulLePionDoitProtegerLeRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.Location, "g4");
@@ -985,7 +985,7 @@ namespace ChessCore.Test
             var testName = "T17LeRoirNoirNeDoitPasAttaquer";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1016,7 +1016,7 @@ namespace ChessCore.Test
             var testName = "T18suiteDe16LeCavalierNoirDoitPrendreLeFouBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1049,7 +1049,7 @@ namespace ChessCore.Test
             var testName = "T19bLeFouBlanchDoitnenacerLaReineOulePionDoitProtegerLeTour";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1090,7 +1090,7 @@ namespace ChessCore.Test
             var testName = "T20LePionDoitPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "d3");
@@ -1115,7 +1115,7 @@ namespace ChessCore.Test
             var testName = "T21LaNoirBlancheDoitSeMettreEnD3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1134,7 +1134,7 @@ namespace ChessCore.Test
             var testName = "T22LeBishopOuLeRoiNoirDoitPrendreLePion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 // chessEngine.DeepLevel = 5;
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -1159,7 +1159,7 @@ namespace ChessCore.Test
             var testName = "T23LeCavalierNoirNeDoitPasMenacerLeRoiBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "b3");
@@ -1180,7 +1180,7 @@ namespace ChessCore.Test
             var testName = "T24LeCavalierNoirNeDoitPasBouger";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1230,7 +1230,7 @@ namespace ChessCore.Test
             var testName = "T26LeCavalierNoirDoitBouger";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1247,9 +1247,12 @@ namespace ChessCore.Test
             var testName = "T01QuenLaReineNoirNeDoitPasPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+
+
+
 
 
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
@@ -1278,7 +1281,7 @@ namespace ChessCore.Test
             var testName = "T27LeBishopBlancDoitSeMettreEnA8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "a8" || nodeResult.BestChildPosition == "g7");
@@ -1300,7 +1303,7 @@ namespace ChessCore.Test
             var testName = "T28LePionNoirDoitPrendreLeCavalier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "d6");
@@ -1317,7 +1320,7 @@ namespace ChessCore.Test
             var testName = "T29PourProtegerDEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.Location == "f1" || nodeResult.Location == "d1" || nodeResult.BestChildPosition == "g5");
@@ -1338,7 +1341,7 @@ namespace ChessCore.Test
             var testName = "T30LaReineNoirNeDoitPasPrendreLeFouEnG4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g4");
@@ -1361,7 +1364,7 @@ namespace ChessCore.Test
             var testName = "T31LaReineNoirDoitPrendreLaReineBlanch";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "a8");
@@ -1377,7 +1380,7 @@ namespace ChessCore.Test
             var testName = "T32LaReineBlanchDoitAttaquerEnB7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
@@ -1397,7 +1400,7 @@ namespace ChessCore.Test
             var testName = "T33LaReineBlanchDoitAttaquerEnB7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "b7");
@@ -1411,7 +1414,7 @@ namespace ChessCore.Test
             var testName = "T35LePoinNoirNeDoitPasSeMettreEnG5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g5");
@@ -1436,7 +1439,7 @@ namespace ChessCore.Test
             var testName = "T36LePoinNoirNeDoitPasSeMettreEnD6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "d6");
@@ -1453,7 +1456,7 @@ namespace ChessCore.Test
             var testName = "T37LaTourDoitEtreProtegE";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1473,7 +1476,7 @@ namespace ChessCore.Test
             var testName = "T38LePionNoirNeDoitPasSeMettreSurA3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1490,7 +1493,7 @@ namespace ChessCore.Test
             var testName = "T39LePionNoirNeDoitPasSeMettreSurC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1507,7 +1510,7 @@ namespace ChessCore.Test
             var testName = "T40LePionNoirNeDoitPasSeMettreSurA2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1524,7 +1527,7 @@ namespace ChessCore.Test
             var testName = "T41LaReineBlancheDoitMenacerLeRoiEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -1546,7 +1549,7 @@ namespace ChessCore.Test
             var testName = "T44LePionNoirPasRamdumeB5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2048,7 +2051,7 @@ namespace ChessCore.Test
             var testName = "T49LesNoirsDoiventprotegerLeRoiMenacE";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2070,7 +2073,7 @@ namespace ChessCore.Test
             var testName = "T50LaToureNoirDoitSeMettreEnA7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "a7");
@@ -2088,7 +2091,7 @@ namespace ChessCore.Test
             var testName = "T52LaReineNoirNeDoitPasSeMettreEnC2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "c2");
@@ -2106,7 +2109,7 @@ namespace ChessCore.Test
             var testName = "T53LaPositionFinalNoirNeDoitEtreE6OuE5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 //var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2131,7 +2134,7 @@ namespace ChessCore.Test
             var testName = "T54ALesBlanchDoiventEviterLEvolutionDuPion";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 //var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2153,7 +2156,7 @@ namespace ChessCore.Test
             var testName = "T54BLaTourBlancDoitDoitSeMettreEnA2CarB1EstDejaMenaC";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2173,7 +2176,7 @@ namespace ChessCore.Test
             var testName = "T54CLePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "a1");
@@ -2190,7 +2193,7 @@ namespace ChessCore.Test
             var testName = "T54ELePionNoirDoitEvoluerDoitSeMettreEnA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2206,7 +2209,7 @@ namespace ChessCore.Test
             var testName = "T54FLaReineNoirDoitMenaverLeRoiBlanc";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2249,7 +2252,7 @@ namespace ChessCore.Test
             var testName = "T54DLaReinneNoirDoitSeMettreEnC4OuB1OuA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 //var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2274,7 +2277,7 @@ namespace ChessCore.Test
             var testName = "T54GLaReinneNoirDoitAttaquerEnC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 //var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestChildPosition, "h1");
@@ -2488,7 +2491,7 @@ namespace ChessCore.Test
             var testName = "T57SeulLeRookDoitBougerNotRandomD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.Location, "a8");
@@ -2508,7 +2511,7 @@ namespace ChessCore.Test
             var testName = "T59FinDePartieEviterMortDuRoiNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var randomList = nodeResult.EquivalentBestNodeCEList;
@@ -2530,7 +2533,7 @@ namespace ChessCore.Test
             var testName = "T61aPourBestSpecificPosition3White";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2555,7 +2558,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2580,7 +2583,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("e6", nodeResult.Location);
@@ -2605,7 +2608,7 @@ namespace ChessCore.Test
             var testName = "T62LePionNoirDoitAttaqueLaReineBlancEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2629,7 +2632,7 @@ namespace ChessCore.Test
             var testName = "T65LeRookBlanchNeDoitPasSeMettreEnA6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "a6");
@@ -2648,7 +2651,7 @@ namespace ChessCore.Test
             var testName = "T67EchecBlancLeRoiDoitSeMettreEnF3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("f3", nodeResult.BestChildPosition);
@@ -2667,7 +2670,7 @@ namespace ChessCore.Test
             var testName = "T67SuiteLaReineNoirDoitSeMettreEnE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual("d4", nodeResult.Location);
@@ -2690,7 +2693,7 @@ namespace ChessCore.Test
             var testName = "T68LeRoiBlanchNeDoitPasSeMettreEnG6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "g6");
@@ -2708,7 +2711,7 @@ namespace ChessCore.Test
             var testName = "T69LeRoiBanchNeDoitPasPrendreLePionEnG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2748,7 +2751,7 @@ namespace ChessCore.Test
             var testName = "T71LeRoisBlantNeDoitPasPrendreLeRookEnF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreNotEqual(nodeResult.BestChildPosition, "f5");
@@ -2766,7 +2769,7 @@ namespace ChessCore.Test
             var testName = "T72LaReineNoirDoitPrendreLePionEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2793,7 +2796,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2819,7 +2822,7 @@ namespace ChessCore.Test
             var testName = "T73LeFouNoirNeDoitPasPrendreLePionEnB2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2848,7 +2851,7 @@ namespace ChessCore.Test
             var testName = "T74LesBlanchsDoiventPrendreLePionEnD4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2868,7 +2871,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // var randomList = nodeResult.EquivalentBestNodeCEList;
@@ -2890,7 +2893,7 @@ namespace ChessCore.Test
             var testName = "T79LeRoisBlanchDoitSeMettreEnG1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var randomList = nodeResult.EquivalentBestNodeCEList;
@@ -2911,7 +2914,7 @@ namespace ChessCore.Test
             var testName = "T80LeRoiNoirDoitBougerEtLaReineNoirNeDoitPasSeMettreEn";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -2933,7 +2936,7 @@ namespace ChessCore.Test
             var testName = "T81LeCavalierBlanchNeDoitPasPrendreLaReinEtLesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3035,7 +3038,7 @@ namespace ChessCore.Test
             var testName = "T84EchecEtMatNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3052,7 +3055,7 @@ namespace ChessCore.Test
             var testName = "T84EchecEtMatNoir";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //  var randomList = nodeResult.EquivalentBestNodeCEList;
@@ -3072,7 +3075,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3098,7 +3101,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3121,7 +3124,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "f2");
@@ -3151,7 +3154,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3170,7 +3173,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
 
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "h3" || nodeResult.BestChildPosition == "e3" || nodeResult.BestChildPosition == "g3" || nodeResult.BestChildPosition == "d3");//e3 ou g3 
@@ -3188,7 +3191,7 @@ namespace ChessCore.Test
             var testName = "T88LesBlanchDoiventEviterLEchec";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3215,7 +3218,7 @@ namespace ChessCore.Test
             var testName = "T89LeFouNoirNeDoitPasSeMettreEnB4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3270,7 +3273,7 @@ namespace ChessCore.Test
             var testName = "T91LaReineNoirDoitSeMettreEnH5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3295,7 +3298,7 @@ namespace ChessCore.Test
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Le poin doit pas se mettre en d4
@@ -3320,7 +3323,7 @@ namespace ChessCore.Test
             var testName = "T92ABlackG8ToH8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3343,7 +3346,7 @@ namespace ChessCore.Test
             var testName = "T92BLeCavalierNoirDoitPartieDeF6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3364,7 +3367,7 @@ namespace ChessCore.Test
             var testName = "T93ALaReineNoirDoitSeMettreEnG3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3390,7 +3393,7 @@ namespace ChessCore.Test
             var testName = "T94LeCavalierNoirDoitPasPartirDeF3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3414,7 +3417,7 @@ namespace ChessCore.Test
             var testName = "T95LaReineNoirDoitSeMettreEnH1PourGagnier";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual("h1", nodeResult.BestChildPosition);//h1
@@ -3438,7 +3441,7 @@ namespace ChessCore.Test
             var testName = "T95SuiteWhiteE4ToG3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "g3" || nodeResult.BestChildPosition == "f2");//h1
@@ -3479,7 +3482,7 @@ namespace ChessCore.Test
             var testName = "T95SuiteSuiteBlackWin";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "h1" || nodeResult.BestChildPosition == "f2");
@@ -3497,7 +3500,7 @@ namespace ChessCore.Test
             var testName = "T95BLeCavalierBlanchDoitAttaquerEnF2";//WHITE MUST LOSE
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList), 3);
                 // Assert.AreEqual(nodeResult.BestChildPosition, "f2");
@@ -3523,7 +3526,7 @@ namespace ChessCore.Test
             var testName = "T96LeCavalierBlanchDoitSePettreEnC7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "c7");
@@ -3549,7 +3552,7 @@ namespace ChessCore.Test
             var testName = "T97AWhitePourAviterT97WhiteNotF1ToG2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3576,7 +3579,7 @@ namespace ChessCore.Test
             var testName = "T97BBlackWhinG4ToE2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.Location, "g4");
@@ -3602,7 +3605,7 @@ namespace ChessCore.Test
             var testName = "T98BlackE8ToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3642,7 +3645,7 @@ namespace ChessCore.Test
             var testName = "T99WhiteNotC7ToF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
@@ -3669,7 +3672,7 @@ namespace ChessCore.Test
             var testName = "T100BlackG6ToF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = Utils.RunEngine(_chessEngine, computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
@@ -3687,7 +3690,7 @@ namespace ChessCore.Test
             var testName = "T105BlackC6ToD4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreNotEqual(nodeResult.Location, "c7");
@@ -3710,7 +3713,7 @@ namespace ChessCore.Test
             var testName = "T106LaCavalierNoirDoitPrendreLaReineEnD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
 
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -3726,7 +3729,7 @@ namespace ChessCore.Test
             var testName = "T107LaReinneNoirDoitPartirDeD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
 
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -3758,7 +3761,7 @@ namespace ChessCore.Test
             var testName = "T109BlackNotB6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
 
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -3774,7 +3777,7 @@ namespace ChessCore.Test
             var testName = "T110WhiteKingNoToE1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
 
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
@@ -3791,7 +3794,7 @@ namespace ChessCore.Test
             var testName = "T111BlackNotToF5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual((nodeResult.EquivalentBestNodeCEList.Count, 1););
@@ -3807,7 +3810,7 @@ namespace ChessCore.Test
             var testName = "T112WhiteLePoinA3NeDoitPasPrendreLePionB4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual((nodeResult.EquivalentBestNodeCEList.Count, 1););
@@ -3822,7 +3825,7 @@ namespace ChessCore.Test
             var testName = "T113WhiteD1toMoveD1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.AreEqual(nodeResult.BestNodeEquivalentList.Count, 1);
@@ -3838,7 +3841,7 @@ namespace ChessCore.Test
             var testName = "T114_W_NotB3toF7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 // Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
@@ -3854,7 +3857,7 @@ namespace ChessCore.Test
             var testName = "T115W_F3toG5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count, 1);
@@ -3869,7 +3872,7 @@ namespace ChessCore.Test
             var testName = "T116W_notC3toD5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3886,7 +3889,7 @@ namespace ChessCore.Test
             var testName = "T117_W_toC3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3905,7 +3908,7 @@ namespace ChessCore.Test
             var testName = "T118_W_toB5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3924,7 +3927,7 @@ namespace ChessCore.Test
             var testName = "T119_W_notToC4";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3943,7 +3946,7 @@ namespace ChessCore.Test
             var testName = "T120_B_notToE3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3961,7 +3964,7 @@ namespace ChessCore.Test
             var testName = "T121_";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -3980,7 +3983,7 @@ namespace ChessCore.Test
             var testName = "T122_W_NotD2toE3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4001,7 +4004,7 @@ namespace ChessCore.Test
             var testName = "T123_B_";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4018,7 +4021,7 @@ namespace ChessCore.Test
             var testName = "T124_B_H8toF8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4036,7 +4039,7 @@ namespace ChessCore.Test
             var testName = "T125_B_toD2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4053,7 +4056,7 @@ namespace ChessCore.Test
             var testName = "T126_B_toF1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4086,7 +4089,7 @@ namespace ChessCore.Test
             var testName = "T128_W_NotToC1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var invalideNode = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => x.BestChildPosition == "c1");
@@ -4104,7 +4107,7 @@ namespace ChessCore.Test
             var testName = "T128B_B_A6toA1";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4121,7 +4124,7 @@ namespace ChessCore.Test
             var testName = "T129_W_B2toB3";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 var notValideNode = nodeResult.EquivalentBestNodeCEList.FirstOrDefault(x => (x.Location == "b2" && x.BestChildPosition == "b3") || (x.Location == "b2" && x.BestChildPosition == "a3"));
@@ -4138,7 +4141,7 @@ namespace ChessCore.Test
             var testName = "T130_W";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.BestChildPosition == "f2" || nodeResult.BestChildPosition == "e3");
@@ -4155,7 +4158,7 @@ namespace ChessCore.Test
             var testName = "T131_B_E8toD8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.EquivalentBestNodeCEList.Count(), 1);
@@ -4172,7 +4175,7 @@ namespace ChessCore.Test
             var testName = "T131B_W_B8toC8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "c8");
@@ -4189,7 +4192,7 @@ namespace ChessCore.Test
             var testName = "T132_B_toC6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.AreEqual(nodeResult.BestChildPosition, "c6");
@@ -4205,7 +4208,7 @@ namespace ChessCore.Test
             var testName = "T133_B_NotC5toE5AndNotC5toE7";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 //Assert.IsFalse(nodeResult.Location == "c5" && nodeResult.BestChildPosition == "e5");
@@ -4221,7 +4224,7 @@ namespace ChessCore.Test
             var testName = "T134_B_ToD2";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue((nodeResult.Location == "c5" && nodeResult.BestChildPosition == "c6")
@@ -4255,7 +4258,7 @@ namespace ChessCore.Test
             var testName = "T136_W_B4toA5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue((nodeResult.Location == "d5" && nodeResult.BestChildPosition == "f6") ||
@@ -4272,7 +4275,7 @@ namespace ChessCore.Test
             var testName = "T136B_W_D5toF6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.Location == "d5" && nodeResult.BestChildPosition == "f6");
@@ -4305,7 +4308,7 @@ namespace ChessCore.Test
             var testName = "T137_W_A3toD6";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4360,7 +4363,7 @@ namespace ChessCore.Test
             var testName = "T140_W_notE3toC5";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4377,7 +4380,7 @@ namespace ChessCore.Test
             var testName = "T141_W_notD3toD8";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4395,11 +4398,11 @@ namespace ChessCore.Test
             var testName = "T142_W_C7toC8_Win";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
-                Assert.IsTrue(nodeResult.Weight >= 9999); 
+                Assert.IsTrue(nodeResult.Weight >= 9999);
                 Assert.IsTrue(nodeResult.Location == "c7" && nodeResult.BestChildPosition == "c8");
 
             }
@@ -4414,7 +4417,7 @@ namespace ChessCore.Test
             var testName = "T143_B_B8to_ElseLose";
             var testPath = Path.Combine(testsDirrectory, testName);
             var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
-            
+
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
 
@@ -4437,7 +4440,7 @@ namespace ChessCore.Test
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
                 Assert.IsTrue(nodeResult.EquivalentBestNodeCEList.Count == 1);
                 Assert.AreEqual(nodeResult.BestChildPosition, "d6");
-                  
+
 
             }
         }
@@ -4472,7 +4475,7 @@ namespace ChessCore.Test
 
             {
                 var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
-                
+
                 Assert.IsTrue(nodeResult.Location == "g5" && nodeResult.BestChildPosition == "f3");
 
 
@@ -4611,3 +4614,4 @@ namespace ChessCore.Test
 
 
 }
+

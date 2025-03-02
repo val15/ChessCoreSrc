@@ -17,6 +17,12 @@
             return this.GetType().Name;
         }
 
+        public string GetShortName()
+        {
+           
+            return Utils.ExtractUppercaseLettersAndDigits(GetName());
+        }
+
         public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 3, int maxReflectionTimeInMinute = 2)
         {
 

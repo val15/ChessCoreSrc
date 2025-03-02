@@ -16,6 +16,11 @@ namespace ChessCore.Tools.ChessEngine.Engine
         {
             return this.GetName();
         }
+
+        public string GetShortName()
+        {
+            return Utils.ExtractUppercaseLettersAndDigits(GetName());
+        }
         public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 5, int maxReflectionTimeInSecond = 60 * 2)
         {
             var cpuColor = colore.First().ToString();

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text;
+using System.Text.RegularExpressions;
 using ChessCore.Tools.ChessEngine;
 using ChessCore.Tools.ChessEngine.Engine;
 
@@ -19,6 +21,184 @@ namespace ChessCore.Tools
             return chessEngine.GetBestModeCE(colore, boardChess, depthLevel,maxReflectionTimeInMinute);
         }
 
+        public static string ExtractUCIMove(string response)
+        {
+           
+
+            string pattern = @"\b[a-h][1-8][a-h][1-8]\b";
+            Match match = Regex.Match(response, pattern);
+
+            if (match.Success)
+            {
+                return match.Value;
+               
+            }
+            else
+            {
+                throw new ArgumentException("Aucun mouvement UCI trouvé !");
+            }
+        }
+
+        public static (string start, string end) ExtractStockfishMove(string response)
+        {
+            // Définir l'expression régulière pour capturer le mouvement d'échecs
+            string pattern = @"\b(\d+\.\s*[KQRBN]?[a-h][1-8]|[KQRBN]?[a-h][1-8]|[a-h][1-8][a-h][1-8]|[KQRBN]?[a-h]x[a-h][1-8]|[a-h]x[a-h][1-8]|[a-h][1-8]=[QRBN]|O-O-O|O-O|\.{3}[a-h][1-8])\b";
+            Regex regex = new Regex(pattern);
+
+            // Rechercher le mouvement dans la réponse
+            Match match = regex.Match(response);
+            if (match.Success)
+            {
+                return (match.Value.Substring(0,2),match.Value.Substring(2, 4));
+            }
+            else
+            {
+                throw new ArgumentException("Aucun mouvement d'échecs trouvé dans la réponse.");
+            }
+        }
+
+
+        public static (string start, string end) InterpretStockMove(string move)
+        {
+            // Vérifier que le coup est au format attendu
+            if (string.IsNullOrWhiteSpace(move) || move.Length < 2)
+            {
+                throw new ArgumentException("Le format du coup est invalide.");
+            }
+
+            // Extraire la partie du coup après le numéro de coup, s'il y en a un
+            var movePart = move.Contains('.') ? move.Substring(move.IndexOf('.') + 1).Trim() : move.Trim();
+
+            // Déterminer la position de départ et d'arrivée
+            string start = string.Empty;
+            string end = string.Empty;
+
+            if (movePart == "O-O")
+            {
+                // Petit roque
+                start = "e1";
+                end = "g1";
+            }
+            else if (movePart == "O-O-O")
+            {
+                // Grand roque
+                start = "e1";
+                end = "c1";
+            }
+            else if (movePart.Contains("="))
+            {
+                // Promotion de pion
+                end = movePart.Substring(0, 2);
+                start = end[0] + "7";
+            }
+            else if (movePart.Contains("x"))
+            {
+                // Capture
+                end = movePart.Substring(movePart.IndexOf('x') + 1, 2);
+                start = movePart[0] + (end[1] == '8' ? "7" : "2");
+            }
+            else if (movePart.Length == 2)
+            {
+                // Mouvement de pion
+                end = movePart;
+                start = end[0] + (end[1] == '4' ? "2" : "7");
+            }
+            else if (movePart.Length == 3)
+            {
+                // Mouvement de pièce
+                char piece = movePart[0];
+                end = movePart.Substring(1, 2);
+
+                // Déterminer la position de départ en fonction de la pièce
+                switch (piece)
+                {
+                    case 'N': // Cavalier
+                        start = DetermineKnightStartPosition(end);
+                        break;
+                    case 'B': // Fou
+                        start = DetermineBishopStartPosition(end);
+                        break;
+                    case 'R': // Tour
+                        start = DetermineRookStartPosition(end);
+                        break;
+                    case 'Q': // Dame
+                        start = DetermineQueenStartPosition(end);
+                        break;
+                    case 'K': // Roi
+                        start = DetermineKingStartPosition(end);
+                        break;
+                    default:
+                        throw new ArgumentException("Le format du coup est invalide.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Le format du coup est invalide.");
+            }
+
+            return (start, end);
+        }
+
+        // Fonctions pour déterminer la position de départ des pièces
+        private static string DetermineKnightStartPosition(string end)
+        {
+            // Logique pour déterminer la position de départ du cavalier
+            // Par exemple, si le cavalier se déplace vers c6, il peut venir de b8 ou d8
+            // Vous pouvez ajouter la logique pour déterminer la position correcte en fonction de l'état du plateau
+            return "b8"; // Exemple de position de départ
+        }
+
+        private static string DetermineBishopStartPosition(string end)
+        {
+            // Logique pour déterminer la position de départ du fou
+            return "c1"; // Exemple de position de départ
+        }
+
+        private static string DetermineRookStartPosition(string end)
+        {
+            // Logique pour déterminer la position de départ de la tour
+            return "a1"; // Exemple de position de départ
+        }
+
+        private static string DetermineQueenStartPosition(string end)
+        {
+            // Logique pour déterminer la position de départ de la dame
+            return "d1"; // Exemple de position de départ
+        }
+
+        private static string DetermineKingStartPosition(string end)
+        {
+            // Logique pour déterminer la position de départ du roi
+            return "e1"; // Exemple de position de départ
+        }
+
+
+
+        public static string GetPositionFromIndex(int index)
+        {
+            if (index < 0 || index > 63)
+                return null;
+
+            char file = (char)('a' + index % 8); // 'a' à 'h'
+            int rank = 8 - index / 8; // '8' à '1'
+
+            return $"{file}{rank}";
+        }
+
+        public static string ExtractUppercaseLettersAndDigits(string input)
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (char c in input)
+            {
+                if (char.IsUpper(c) || char.IsDigit(c))
+                {
+                    result.Append(c);
+                }
+            }
+
+            return result.ToString();
+        }
 
         public static string GenerateKeyForPossibleMoves(string casesToString, int fromIndex)
         {

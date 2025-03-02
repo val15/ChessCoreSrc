@@ -71,6 +71,8 @@
         var computerColor = document.getElementById("computerColor");
         var whiteLevel = document.getElementById("FullCPUWhiteLevel");
         var blackLevel = document.getElementById("FullCPUBlackLevel");
+         var whiteEngine = document.getElementById("FullCPUWhiteEngine");
+        var blackEngine = document.getElementById("FullCPUBlackEngine");
 
         function toggleLevels() {
             if (checkboxIsFullCPU.checked) {
@@ -78,6 +80,8 @@
                 computerColor.disabled = true;
                 whiteLevel.disabled = false;
                 blackLevel.disabled = false;
+                whiteEngine.disabled = false;
+                blackEngine.disabled = false;
 
 
 
@@ -86,6 +90,8 @@
                 computerColor.disabled = false;
                 whiteLevel.disabled = true;
                 blackLevel.disabled = true;
+                whiteEngine.disabled = true;
+                blackEngine.disabled = true;
 
             }
         }
@@ -114,6 +120,8 @@
         //TODO remmetre le leve
         var selectedLevel = $('#level').val();
         var selectedEngine = $('#engine').val();
+        var selectedWhiteEngine = $('#FullCPUWhiteEngine').val();
+        var selectedBlackEngine = $('#FullCPUBlackEngine').val();
         var SelectedReflectionTimeInMinute = $('#MaxReflectionTimeInMinute').val();
         var FullCPUBlackLevel = $('#FullCPUBlackLevel').val();
         var FullCPUWhiteLevel = $('#FullCPUWhiteLevel').val();
@@ -121,6 +129,9 @@
         //alert(computerColor);
         var data = { objId: -1, whiteTimeInSecond: 0, blackTimeInSecond: 0,
             SelectedEngine: selectedEngine,
+            SelectedWhiteEngine: selectedWhiteEngine,
+            SelectedBlackEngine: selectedBlackEngine,
+
             CPUColor: computerColor, selectedLevel: selectedLevel, 
             isFullCPU: isFullCPU, FullCPUWhiteLevel: FullCPUWhiteLevel, FullCPUBlackLevel: FullCPUBlackLevel,
             SelectedReflectionTimeInMinute: SelectedReflectionTimeInMinute
@@ -407,8 +418,8 @@
     <select id="engine" name="SelectedEngine" title="Chess Engine">
         @foreach (var engine in Model.Engines)
         {
-            <option value="@engine.GetName()" selected="@(engine == Model.SelectedEngine ? "selected" : null)">
-                @engine.GetName()
+            <option value="@engine.GetShortName()" selected="@(engine == Model.SelectedEngine ? "selected" : null)">
+                @engine.GetShortName()
             </option>
         }
     </select>
@@ -461,7 +472,17 @@
     
     <label>|</label>
     <label for="FullCPUWhiteLevel" title="White level" class="fa-solid fa-robot" style=" color: white;"></label>
-    <select id="FullCPUWhiteLevel" name="SelectedWhiteLevel" title="White level">
+    <label for="FullCPUWhiteEngine" title="Chess Engine"> ⚙️</label>
+    <select id="FullCPUWhiteEngine" name="SelectedFullCPUWhiteEngine" title="White Chess Engine">
+        @foreach (var engine in Model.Engines)
+        {
+            <option value="@engine.GetShortName()" selected="@(engine == Model.SelectedWhiteEngine ? "selected" : null)">
+                @engine.GetShortName()
+            </option>
+        }
+    </select>
+
+   <select id="FullCPUWhiteLevel" name="SelectedWhiteLevel" title="White level">
         @foreach (var level in Model.Levels)
         {
             <option value="@level" selected="@(level == Model.SelectedWhiteLevel? "selected" : null)">
@@ -480,6 +501,16 @@
         <option selected value="6">6</option>
     </select> *@
     <label for="FullCPUBlackLevel" title="Black level" class="fa-solid fa-robot" style=" color: black;"></label>
+    <label for="FullCPUBlackEngine" title="Black Chess Engine"> ⚙️</label>
+    <select id="FullCPUBlackEngine" name="SelectedFullCPUBlackEngine" title="Black Chess Engine">
+        @foreach (var engine in Model.Engines)
+        {
+            <option value="@engine.GetShortName()" selected="@(engine == Model.SelectedBlackEngine ? "selected" : null)">
+                @engine.GetShortName()
+            </option>
+        }
+    </select>
+    
     <select id="FullCPUBlackLevel" name="SelectedBlackLevel" title="Black level">
         @foreach (var level in Model.Levels)
         {

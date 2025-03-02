@@ -20,6 +20,10 @@ namespace ChessCore.Tools.ChessEngine.Engine
         {
             return this.GetType().Name;
         }
+        public string GetShortName()
+        {
+            return Utils.ExtractUppercaseLettersAndDigits(GetName());
+        }
         // Structure pour stocker plus d'informations dans la table de transposition
         private struct TranspositionEntry
         {

@@ -10,6 +10,8 @@ namespace ChessCore.Models
         public List<IChessEngine> Engines { get; set; } = new List<IChessEngine>();
 
         public IChessEngine SelectedEngine { get; set; } = new ChessEngine3();
+        public IChessEngine SelectedWhiteEngine { get; set; } = new ChessEngine3();
+        public IChessEngine SelectedBlackEngine { get; set; } = new ChessEngine3();
 
         public int[] Levels = [1, 2, 3, 4, 5, 6, 7];
         public int[] ReflectionTimesInMinute = [1, 2, 5, 10,15,30,60];

@@ -43,6 +43,7 @@ namespace ChessCore.Controllers
         {
 
             //INIT ALL
+            MainUtils.VM = null;
             var mainBord = new Board();
             mainBord.Init();
             MainUtils.VM = new MainPageViewModel(mainBord);
@@ -57,11 +58,15 @@ namespace ChessCore.Controllers
             MainUtils.VM.Engines.Add(new ChessEngine1());
             MainUtils.VM.Engines.Add(new ChessEngine2());
             MainUtils.VM.Engines.Add(new ChessEngine3());
-            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.Last();
+            //MainUtils.VM.Engines.Add(new ChessEngineLLM());
+
+            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines[2]; //.Last();
+            MainUtils.VM.SelectedWhiteEngine = MainUtils.VM.Engines[2]; //.Last();
+            MainUtils.VM.SelectedBlackEngine = MainUtils.VM.Engines[2]; //.Last();
             MainUtils.VM.SelectedLevel = 6;
             MainUtils.VM.SelectedReflectionTimeInMinute = 2;
-            MainUtils.VM.SelectedWhiteLevel = 4;
-            MainUtils.VM.SelectedBlackLevel = 5;
+            MainUtils.VM.SelectedWhiteLevel = 5;
+            MainUtils.VM.SelectedBlackLevel = 6;
         }
 
 
@@ -101,7 +106,8 @@ namespace ChessCore.Controllers
 
 
                 var currentBoard = new BoardCE(MainUtils.VM.MainBord.GetCases());
-
+                currentBoard.Print();
+                var dsf = currentBoard.ToString();
                 if (currentBoard.IsKingInCheck(MainUtils.CPUColor) || currentBoard.IsKingInCheck(MainUtils.CPUColor))
                 {
                     Utils.WritelineAsync("CHECKMATE");
@@ -266,22 +272,26 @@ namespace ChessCore.Controllers
 
                 Utils.WritelineAsync($"Current turn = {MainUtils.CurrentTurnColor} => normlaEngine");
 
+                NodeCE bestNode;
                 var depthLevel = 3;
                 if (MainUtils.CPUColor == "W")
                 {
                     depthLevel = MainUtils.FullCPUWhiteLevel;
+                    bestNode = Utils.RunEngine(MainUtils.VM.SelectedWhiteEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel, Utils.SelectedReflectionTimeInMinute);
+
                 }
                 else
                 {
                     depthLevel = MainUtils.FullCPUBlackLevel;
+                    bestNode = Utils.RunEngine(MainUtils.VM.SelectedBlackEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel, Utils.SelectedReflectionTimeInMinute);
+
 
                 }
 
 
 
-                NodeCE bestNode;
 
-                bestNode = Utils.RunEngine(MainUtils.VM.SelectedEngine, MainUtils.CurrentTurnColor, new BoardCE(MainUtils.VM.MainBord.GetCases()), depthLevel,Utils.SelectedReflectionTimeInMinute);
+
 
 
 
@@ -817,7 +827,7 @@ namespace ChessCore.Controllers
 
 
         [HttpPost]
-        public ActionResult Details(int objId, string selectedEngine, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU, int FullCPUWhiteLevel, int FullCPUBlackLevel,int SelectedReflectionTimeInMinute)
+        public ActionResult Details(int objId, string selectedEngine, string selectedWhiteEngine, string selectedBlackEngine, int whiteTimeInSecond, int blackTimeInSecond, string CPUColor, int selectedLevel, bool isFullCPU, int FullCPUWhiteLevel, int FullCPUBlackLevel,int SelectedReflectionTimeInMinute)
         {
             var whiteKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|W");
             var blackKing = MainUtils.VM.Cases.FirstOrDefault(x => x == "K|B");
@@ -837,11 +847,18 @@ namespace ChessCore.Controllers
             MainUtils.IsFullCPU = isFullCPU;
             MainUtils.FullCPUWhiteLevel = FullCPUWhiteLevel;
             MainUtils.FullCPUBlackLevel = FullCPUBlackLevel;
+            MainUtils.FullCPUBlackLevel = FullCPUBlackLevel;
 
-            if(selectedEngine !=null)
-                MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedEngine);
+            if (selectedEngine !=null)
+                MainUtils.VM.SelectedEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedEngine || x.GetShortName() == selectedEngine);
+            if (selectedWhiteEngine != null)
+                MainUtils.VM.SelectedWhiteEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedWhiteEngine || x.GetShortName() == selectedWhiteEngine);
+            if (selectedBlackEngine != null)
+                MainUtils.VM.SelectedBlackEngine = MainUtils.VM.Engines.FirstOrDefault(x => x.GetName() == selectedBlackEngine || x.GetShortName() == selectedBlackEngine);
 
-            if(SelectedReflectionTimeInMinute!=0)
+
+
+            if (SelectedReflectionTimeInMinute!=0)
                 Utils.SelectedReflectionTimeInMinute = SelectedReflectionTimeInMinute;
             if (selectedLevel != -1)
                 _CPULevel = _whiteCPULevel = _blackCPULevel = MainUtils.DeepLevel = Utils.DeepLevel = selectedLevel;
