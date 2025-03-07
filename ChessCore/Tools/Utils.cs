@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using ChessCore.Tools.ChessEngine;
-using ChessCore.Tools.ChessEngine.Engine;
+using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 
 namespace ChessCore.Tools
 {

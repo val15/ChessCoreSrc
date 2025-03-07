@@ -1,4 +1,4 @@
-﻿namespace ChessCore.Tools.ChessEngine.Engine
+﻿namespace ChessCore.Tools.ChessEngine.Engine.Interfaces
 {
     public interface IChessEngine : IDisposable
     {

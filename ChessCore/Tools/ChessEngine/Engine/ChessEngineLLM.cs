@@ -1,4 +1,5 @@
 ﻿#pragma warning disable SKEXP0001  // Désactive l'avertissement SKEXP0001
+using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Ollama;

@@ -1,4 +1,5 @@
-﻿using ComputeSharp;
+﻿using ChessCore.Tools.ChessEngine.Engine.Interfaces;
+using ComputeSharp;
 using ComputeSharp.Descriptors;
 using ComputeSharp.Interop;
 

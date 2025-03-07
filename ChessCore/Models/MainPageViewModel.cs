@@ -1,6 +1,7 @@
 ﻿using ChessCore.Tools;
 using ChessCore.Tools.ChessEngine;
 using ChessCore.Tools.ChessEngine.Engine;
+using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 
 namespace ChessCore.Models
 {

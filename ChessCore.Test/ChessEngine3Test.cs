@@ -4529,6 +4529,18 @@ namespace ChessCore.Test
                 Assert.IsFalse(nodeResult.Location == "c6" && nodeResult.BestChildPosition == "b4");
             }
         }
+        [TestMethod]
+        public void T147_B_NotC8toC5()
+        {
+            var computerColore = "Black";
+            var testName = "T147_B_NotC8toC5";
+            var testPath = Path.Combine(testsDirrectory, testName);
+            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+            {
+                var nodeResult = _chessEngine.GetBestModeCE(computerColore, Chess2Utils.GenerateBoardFormPawnListCE(pawnList));
+                Assert.IsFalse(nodeResult.Location == "c8" && nodeResult.BestChildPosition == "c5");
+            }
+        }
 
         /*tsiry;19-07-2022*/
         /*    [TestMethod]

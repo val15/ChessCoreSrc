@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using ChessCore.Tools.ChessEngine.Engine.Interfaces;
+using System.Collections.Concurrent;
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {
@@ -27,7 +28,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return Utils.ExtractUppercaseLettersAndDigits(GetName());
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 7, int maxReflectionTimeInMinute = 2)
         {
             MAX_SEARCH_TIME_S = maxReflectionTimeInMinute * 60;
             _startTime = DateTime.UtcNow;

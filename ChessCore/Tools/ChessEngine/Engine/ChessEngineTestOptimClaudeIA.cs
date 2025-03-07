@@ -1,5 +1,6 @@
 ﻿
 
+using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;

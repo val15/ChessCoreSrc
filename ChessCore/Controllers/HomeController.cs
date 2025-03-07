@@ -63,7 +63,7 @@ namespace ChessCore.Controllers
             MainUtils.VM.SelectedEngine = MainUtils.VM.Engines[2]; //.Last();
             MainUtils.VM.SelectedWhiteEngine = MainUtils.VM.Engines[2]; //.Last();
             MainUtils.VM.SelectedBlackEngine = MainUtils.VM.Engines[2]; //.Last();
-            MainUtils.VM.SelectedLevel = 6;
+            MainUtils.VM.SelectedLevel = 7;
             MainUtils.VM.SelectedReflectionTimeInMinute = 2;
             MainUtils.VM.SelectedWhiteLevel = 5;
             MainUtils.VM.SelectedBlackLevel = 6;

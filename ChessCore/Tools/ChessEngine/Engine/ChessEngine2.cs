@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessCore.Tools.ChessEngine.Engine.Interfaces;
+using System;
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {

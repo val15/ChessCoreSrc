@@ -1,5 +1,6 @@
 ﻿
 
+using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 using System.Collections.Concurrent;
 
 namespace ChessCore.Tools.ChessEngine.Engine
