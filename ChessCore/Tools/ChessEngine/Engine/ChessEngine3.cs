@@ -28,7 +28,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             return Utils.ExtractUppercaseLettersAndDigits(GetName());
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 7, int maxReflectionTimeInMinute = 2)
+        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
         {
             MAX_SEARCH_TIME_S = maxReflectionTimeInMinute * 60;
             _startTime = DateTime.UtcNow;
@@ -145,7 +145,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             var boardHash = ComputeBoardHash(board, depth, cpuColor);
 
             if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
-                return cachedScore;
+               return cachedScore;
 
             var currentValue = board.CalculateBoardCEScore(cpuColor, opponentColor) / 10;
 
@@ -159,9 +159,19 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 return score;
             }
 
+
             if (depth >= _depthLevel - 2)
             {
-                if (board.IsKingInCheck(cpuColor)) return -9999;
+                if (board.IsKingInCheck(cpuColor))
+                {
+                  
+                    if (board._cases[61] == "K|W")
+                    {
+                        var vd = board._cases[61];
+                    }
+                    return -9999;
+                }
+                   
                 if (board.IsKingInCheck(opponentColor)) return 9999;
             }
 

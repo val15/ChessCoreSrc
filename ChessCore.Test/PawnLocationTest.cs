@@ -9,6 +9,19 @@ namespace ChessCore.Test
         private string testsDirrectory = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Path.Combine(Environment.CurrentDirectory)).ToString()).ToString()).ToString(), "TESTS");
 
 
+
+        [TestMethod]
+        public void T148_W_G1toF1LoadStringToBoardAnWhitIsNotInChess()
+        {
+
+          
+            var boarString = "__;__;__;__;__;__;T|W;__;P|B;P|B;P|B;K|B;__;P|B;__;__;P|W;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;__;P|W;__;P|B;__;__;P|W;__;__;__;__;P|W;__;__;__;T|W;__;B|W;__;__;K|W;__;Q|B;";
+
+            var boad = Chess2Utils.GenerateBoardFormString(boarString);
+            var result = boad.IsKingInCheck("W");
+            Assert.IsFalse(result);
+        }
+
         [TestMethod]
         public void T121_W_GetMalus()
         {

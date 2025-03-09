@@ -309,7 +309,8 @@ namespace ChessCore.Tools.ChessEngine
                             alierPossibleMoves.RemoveAll(x => x.FromIndex == kingPosible.FromIndex && x.ToIndex == kingPosible.ToIndex);
                         }
 
-
+                       // if(move.ToIndex == )
+                        
                         //si un de ses mouvement est dans tokingIndexPath
                         foreach (var toOpponentKingPathIndex in toOpponentKingPathIndexList)
                         {
@@ -782,14 +783,26 @@ namespace ChessCore.Tools.ChessEngine
 
             foreach (int direction in directions)
             {
+                if(direction == -1)
+                {
+                    var fdf = 0;
+                }
                 List<int> pathToOpponentKingIndex = new List<int>();
                 int currentIndex = fromIndex;
                 while (true)
                 {
                     currentIndex += direction;
 
+                    if (currentIndex == opponentKingIndex)
+                        return pathToOpponentKingIndex;
+
                     if (!IsWithinBounds(currentIndex) || IsEdgeCase(fromIndex, currentIndex, direction))
+                    {
+                        var df = pathToOpponentKingIndex;
+                     //   return pathToOpponentKingIndex;
                         break;
+                    }
+                       
 
                     if (_cases[currentIndex] == "__")
                     {
@@ -801,12 +814,13 @@ namespace ChessCore.Tools.ChessEngine
                         if (!_cases[currentIndex].EndsWith(pieceColor)) // Capture
                         {
                             pathToOpponentKingIndex.Add(currentIndex);
-                            if (currentIndex == opponentKingIndex)
-                                return pathToOpponentKingIndex;
+                          
                         }
                         break; // Bloqué par une pièce
                     }
+                  
                 }
+               
             }
 
             return new List<int>();
@@ -911,12 +925,18 @@ namespace ChessCore.Tools.ChessEngine
                 List<int> pathToOpponentKingIndex = new List<int>();
                 int currentIndex = fromIndex;
 
+                if (currentIndex == opponentKingIndex)
+                    return pathToOpponentKingIndex;
+
                 while (true)
                 {
                     int currentRow = currentIndex / 8;
                     int currentCol = currentIndex % 8;
 
                     currentIndex += direction;
+
+                    if (currentIndex == opponentKingIndex)
+                        return pathToOpponentKingIndex;
 
                     if (!IsWithinBounds(currentIndex))
                         break;
@@ -938,8 +958,8 @@ namespace ChessCore.Tools.ChessEngine
                         if (!_cases[currentIndex].EndsWith(pieceColor))
                         {
                             pathToOpponentKingIndex.Add(currentIndex);
-                            if (currentIndex == opponentKingIndex)
-                                return pathToOpponentKingIndex;
+                            //if (currentIndex == opponentKingIndex)
+                            //    return pathToOpponentKingIndex;
                         }
                         break; // Arrêt si une pièce bloque la route
                     }

@@ -822,7 +822,42 @@ namespace ChessCore.Tools
         }
 
 
-    
+        public static BoardCE GenerateBoardFormString(string boadCEString)
+        {
+
+            try
+            {
+                var board = new BoardCE();
+                board._cases = boadCEString.Split(';');
+                ////foreach (var c in caseList)
+                //for (int index = 0; index < caseList.Count; index++)
+                //{
+                //    var c = caseList[index];
+                //    if (c == "__")
+                //        continue;
+                //   var data = c.Split('|');
+                //    board.InsertPawn(index, data[0], data[1]);
+                //}
+                //  board.CalculeScores();
+                board.Print();
+
+                var bs = board.ToString();
+                Utils.WritelineAsync($"{board.ToString()}");
+                Utils.WritelineAsync($"{board.ConvertToFEN()}");
+
+                return board;
+            }
+            catch (Exception ex)
+            {
+                Utils.WritelineAsync(ex.ToString());
+                return null;
+            }
+
+        }
+
+
+
+
         /*tsiry;19-11-2021
          * pour generer PawnList à part des caseList
          * */
