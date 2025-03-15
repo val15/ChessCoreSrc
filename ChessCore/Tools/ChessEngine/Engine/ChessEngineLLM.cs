@@ -44,8 +44,9 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
             _chatService = new OllamaChatCompletionService(_modelName, httpClient);
             _history = new();
-            //var systemMessage = "Vous êtes un assistant d'échecs compétent. Vous pouvez analyser des positions d'échecs, proposer des coups et discuter de stratégies. Vous utiliserez le moteur Stockfish pour valider vos analyses et suggestions.";
-           // _history.AddSystemMessage(modelFileContent);
+          //  var systemMessage = "Vous êtes un assistant d'échecs compétent. Vous pouvez analyser des positions d'échecs, proposer des coups et discuter de stratégies. Vous utiliserez le moteur Stockfish pour valider vos analyses et suggestions.";
+            var systemMessage = "Vous êtes un moteur d'échecs intelligent. Votre rôle est de jouer aux échecs en tant que joueur expérimenté. Voici les règles que vous devez suivre :\r\n\r\n1. **Règles du jeu** :\r\n   - Les échecs se jouent sur un plateau de 8x8 cases.\r\n   - Chaque joueur commence avec 16 pièces : 1 roi, 1 dame, 2 tours, 2 fous, 2 cavaliers et 8 pions.\r\n   - Le but du jeu est de mettre le roi adverse en échec et mat.\r\n   - Les pièces se déplacent comme suit :\r\n     - **Pion** : Avance d'une case (ou deux cases au premier coup), capture en diagonale.\r\n     - **Tour** : Se déplace horizontalement ou verticalement.\r\n     - **Cavalier** : Se déplace en \"L\" (2 cases dans une direction, puis 1 case perpendiculairement).\r\n     - **Fou** : Se déplace en diagonale.\r\n     - **Dame** : Combine les mouvements de la tour et du fou.\r\n     - **Roi** : Se déplace d'une case dans n'importe quelle direction.\r\n\r\n2. **Format du plateau** :\r\n   - Le plateau est représenté par une notation FEN (Forsyth-Edwards Notation). Voici un exemple de FEN pour la position initiale :\r\n     ```\r\n     rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\r\n     ```\r\n   - Le FEN décrit la position des pièces, le joueur dont c'est le tour, les droits de roque, la case en prise en passant, le nombre de demi-coups, et le nombre de coups complets.\r\n\r\n3. **Votre tâche** :\r\n   - Je vais vous donner une position FEN du plateau.\r\n   - Vous devez analyser la position et générer un coup valide pour le joueur dont c'est le tour.\r\n   - Le coup doit être donné en notation algébrique standard (par exemple, \"e2e4\" pour déplacer un pion de e2 à e4).\r\n   - **Vous jouez les [BLANCS/NOIRS]**. (Remplacez [BLANCS/NOIRS] par la couleur que Llama 3 doit jouer.)\r\n\r\n4. **Exemple d'interaction** :\r\n   - Moi : Voici la position FEN : `rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1`\r\n   - Vous : Le coup recommandé est `e2e4`.\r\n\r\n5. **Précisions supplémentaires** :\r\n   - Si la position est un échec et mat, indiquez \"Échec et mat\".\r\n   - Si la position est un pat, indiquez \"Pat\".\r\n   - Si un roque est possible, vous pouvez le suggérer (par exemple, \"O-O\" pour le petit roque ou \"O-O-O\" pour le grand roque).";
+            _history.AddSystemMessage(systemMessage);
 
 
         }
@@ -73,9 +74,9 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
                 var startTime = DateTime.Now;
 
-                var color = "White";
+                var color = "blancs";
                 if (cpuColor == "B")
-                    color = "Black";
+                    color = "noirs";
 
                 Console.WriteLine(_modelName);
                 NodeCE bestNodeCE = null;
@@ -86,11 +87,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     var FEN = board.ConvertToFEN();
 
 
-                    var prompt = $"Position FEN: {FEN} Side to move: {color} Analyze this chess position and provide the best move for {color} in UCI format. Remember:" +
-      $"1.Only output a single UCI move(e.g. 'e2e4')" +
-      $"2.Ensure the move is legal for {color}" +
-      $"3.Use proper UCI format(e.g: 'e2e4', 'g1f3', 'e1g1')" +
-      $"Your move:";
+                    var prompt = $"Voici la position FEN: {FEN} Vous jouez les {color}.";
 
 
                     Utils.WritelineAsync($"prompt : {prompt}");

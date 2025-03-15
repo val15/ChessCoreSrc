@@ -33,7 +33,7 @@ namespace ChessCore.Tools.ChessEngine
             return result;
         }
 
-        public string ConvertToFEN()
+        public string ConvertToFENoldbug()
         {
             string[] piecesMapping = new string[] { "K", "Q", "R", "B", "N", "P" };
             string[] boardRows = this.ToString().Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
@@ -104,6 +104,93 @@ namespace ChessCore.Tools.ChessEngine
             return $"{fen} {turn} {castling} {enPassant} {halfmoveClock} {fullmoveNumber}";
         }
 
+        public string ConvertToFEN()
+        {
+            // Tableau de correspondance des pièces
+            string[] boardRows = this.ToString().Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+            // Tableau 8x8 pour représenter le plateau
+            string[,] chessboard = new string[8, 8];
+
+            // Remplir le tableau avec les pièces ou les cases vides
+            for (int i = 0; i < boardRows.Length; i++)
+            {
+                int row = i / 8;
+                int col = i % 8;
+
+                if (boardRows[i] == "__")
+                {
+                    chessboard[row, col] = ""; // Case vide
+                }
+                else
+                {
+                    string[] parts = boardRows[i].Split('|');
+                    string piece = parts[0];
+                    string color = parts[1];
+
+                    string fenPiece = piece switch
+                    {
+                        "T" => "R", // Tour
+                        "C" => "N", // Cavalier
+                        "B" => "B", // Fou
+                        "Q" => "Q", // Dame
+                        "K" => "K", // Roi
+                        "P" => "P", // Pion
+                        _ => "?"    // Inconnu (ne devrait pas arriver)
+                    };
+
+                    if (color == "B") fenPiece = fenPiece.ToLower(); // Noirs en minuscules
+                    chessboard[row, col] = fenPiece;
+                }
+            }
+
+            // Construire la notation FEN pour les pièces
+            string fen = "";
+            for (int row = 0; row < 8; row++)
+            {
+                int emptyCount = 0;
+                for (int col = 0; col < 8; col++)
+                {
+                    string val = chessboard[row, col];
+
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        emptyCount++;
+                    }
+                    else
+                    {
+                        if (emptyCount > 0)
+                        {
+                            fen += emptyCount.ToString();
+                            emptyCount = 0;
+                        }
+                        fen += val;
+                    }
+                }
+                if (emptyCount > 0) fen += emptyCount.ToString();
+                if (row < 7) fen += "/";
+            }
+
+            // Déterminer les droits de roque
+            string castling = "";
+            if (chessboard[0, 0] == "R") castling += "Q"; // Roque côté dame pour les blancs
+            if (chessboard[0, 7] == "R") castling += "K"; // Roque côté roi pour les blancs
+            if (chessboard[7, 0] == "r") castling += "q"; // Roque côté dame pour les noirs
+            if (chessboard[7, 7] == "r") castling += "k"; // Roque côté roi pour les noirs
+            if (string.IsNullOrEmpty(castling)) castling = "-";
+
+            // Déterminer la prise en passant (à adapter selon votre logique)
+            string enPassant = "-"; // Par défaut, pas de prise en passant
+
+            // Déterminer le nombre de demi-coups depuis la dernière prise ou poussée de pion
+            int halfmoveClock = 0; // À adapter selon votre logique
+
+            // Déterminer le numéro du coup complet
+            int fullmoveNumber = 1; // À adapter selon votre logique
+
+            // Retourner le FEN complet
+            return $"{fen} w {castling} {enPassant} {halfmoveClock} {fullmoveNumber}";
+        }
 
 
         public BoardCE()

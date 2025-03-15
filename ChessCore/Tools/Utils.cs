@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using ChessCore.Tools.ChessEngine;
@@ -15,6 +14,25 @@ namespace ChessCore.Tools
 
         //public static ConcurrentDictionary<string, PossibleMoves> PossibleMovesList { get; set; } = new ConcurrentDictionary<string, PossibleMoves>();
         // public static ConcurrentDictionary<string, IsKingInCheck> IsKingInCheckList { get; set; } = new ConcurrentDictionary<string, IsKingInCheck>();
+        public static string GetStockfishDir()
+        {
+            var assembly = AppDomain.CurrentDomain
+                .GetAssemblies()
+                .SingleOrDefault(a => a.GetName().Name == "Stockfish.NET");
+            var location = assembly?.Location;
+           
+            string path = null;
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                //  path = $@"{dir}\Stockfish.NET.Tests\Stockfish\win\stockfish_12_win_x64\stockfish_20090216_x64.exe";
+                path = $@"stockfish-windows-x86-64-avx2.exe";
+            }
+            else
+            {
+                path = "stockfish-ubuntu-x86-64-avx2";
+            }
+            return path;
+        }
 
         public static NodeCE RunEngine(IChessEngine chessEngine, string colore, BoardCE boardChess, int depthLevel = 6,int maxReflectionTimeInMinute = 2)
         {

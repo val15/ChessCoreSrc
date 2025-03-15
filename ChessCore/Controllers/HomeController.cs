@@ -55,17 +55,19 @@ namespace ChessCore.Controllers
 
         public void InitMainPageViewModel(MainPageViewModel mainViewModel) 
         {
-            MainUtils.VM.Engines.Add(new ChessEngine1());
-            MainUtils.VM.Engines.Add(new ChessEngine2());
+            //MainUtils.VM.Engines.Add(new ChessEngine1());
+            //MainUtils.VM.Engines.Add(new ChessEngine2());
             MainUtils.VM.Engines.Add(new ChessEngine3());
+            MainUtils.VM.Engines.Add(new ChessEngine3S());
+            MainUtils.VM.Engines.Add(new ChessEngineStockfish());
             //MainUtils.VM.Engines.Add(new ChessEngineLLM());
 
-            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines[2]; //.Last();
-            MainUtils.VM.SelectedWhiteEngine = MainUtils.VM.Engines[2]; //.Last();
+            MainUtils.VM.SelectedEngine = MainUtils.VM.Engines[1]; //.Last();
+            MainUtils.VM.SelectedWhiteEngine = MainUtils.VM.Engines[1]; //.Last();
             MainUtils.VM.SelectedBlackEngine = MainUtils.VM.Engines[2]; //.Last();
-            MainUtils.VM.SelectedLevel = 7;
+            MainUtils.VM.SelectedLevel = 6;
             MainUtils.VM.SelectedReflectionTimeInMinute = 2;
-            MainUtils.VM.SelectedWhiteLevel = 5;
+            MainUtils.VM.SelectedWhiteLevel = 6;
             MainUtils.VM.SelectedBlackLevel = 6;
         }
 
@@ -303,16 +305,24 @@ namespace ChessCore.Controllers
                     var winVM = new DetailsViewModel();
                     winVM.SelectedLevel = Utils.DeepLevel;
                     winVM.SelectedReflectionTimeInMinute = Utils.SelectedReflectionTimeInMinute;
-                    if (MainUtils.CPUColor == "W")
-                        winVM.StringWinnerColor = "Balck WIN";
-                    else
-                        winVM.StringWinnerColor = "White WIN";
-                    winVM.IsCHECKMATE = true;
-                    return PartialView("Details", winVM);
                     //if (MainUtils.CPUColor == "W")
-                    //    return Content("<xml>Balck WIN</xml>");
+                    //    winVM.StringWinnerColor = "Balck WIN";
                     //else
-                    //    return Content("<xml>White WIN\"</xml>");
+                    //    winVM.StringWinnerColor = "White WIN";
+                    //winVM.IsCHECKMATE = true;
+                    //return PartialView("Details", winVM);
+
+                    if (MainUtils.CPUColor == "B")
+                    {
+                        Utils.WritelineAsync("Black Wins");
+                        return View("Result", "Black");
+                    }
+                    else
+                    {
+                        Utils.WritelineAsync("White Wins");
+                        return View("Result", "White");
+                    }
+
 
                 }
                 fromIndex = CoordTools.GetIndexFromLocation(bestNode.Location);//int
