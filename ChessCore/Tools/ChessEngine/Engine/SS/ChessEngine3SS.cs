@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessCore.Tools.ChessEngine.Engine.Interfaces;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection.Emit;
@@ -81,6 +82,14 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
             _cases = new string[64];
             // Par exemple, initialiser avec une position vide ou la position de départ
         }
+
+
+        public BoardCE(string[] cases)
+        {
+            _cases = cases;
+        }
+
+
 
         // Clone crée une copie superficielle sûre du plateau
         public BoardCE Clone()
@@ -362,12 +371,12 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
     }
 
     // --- Interface du moteur d'échecs ---
-    public interface IChessEngine : IDisposable
-    {
-        string GetName();
-        string GetShortName();
-        NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2);
-    }
+    //public interface IChessEngine : IDisposable
+    //{
+    //    string GetName();
+    //    string GetShortName();
+    //    NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2);
+    //}
 
     // --- Classe utilitaire ---
     public static class Utils
@@ -424,7 +433,7 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
         public string GetName() => GetType().Name;
         public string GetShortName() => Utils.ExtractUppercaseLettersAndDigits(GetName());
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
+        public NodeCE GetBestModeCECustum(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
         {
             _maxSearchTimeSeconds = maxReflectionTimeInMinute * 60;
             _startTime = DateTime.UtcNow;
@@ -770,6 +779,28 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
             hash ^= depth << 24;
             hash ^= color.GetHashCode() << 32;
             return hash;
+        }
+
+        public ChessEngine.NodeCE GetBestModeCE(string colore, ChessEngine.BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
+        {
+           
+            
+            string opponentColor = boardChess.GetOpponentColor(colore);
+
+            Utils.WritelineAsync($"{GetName()}");
+            Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
+            Utils.WritelineAsync($"MAX_SEARCH_TIME_S :  {maxReflectionTimeInMinute}");
+            Utils.WritelineAsync($"cpuColor :  {colore}");
+            Utils.WritelineAsync($"opponentColor :  {opponentColor}");
+
+
+            var boardCustum = new BoardCE(boardChess._cases);
+            var bestNodeTemp = GetBestModeCECustum(colore, boardCustum, depthLevel, maxReflectionTimeInMinute);
+            //public NodeCE(BoardCE boardCE, Move move, int weight, int level, TimeSpan reflectionTime= new TimeSpan())
+
+            var bestNode = new ChessEngine.NodeCE(boardChess, bestNodeTemp.Move,depthLevel, bestNodeTemp.Weight, bestNodeTemp.ReflectionTime);
+            return bestNode;
+            //throw new NotImplementedException();
         }
     }
 }

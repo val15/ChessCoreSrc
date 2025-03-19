@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.FileSystemGlobbing;
+﻿using ChessCore.Tools.ChessEngine.Engine.SS;
+using Microsoft.Extensions.FileSystemGlobbing;
 using System.Text.RegularExpressions;
 
 namespace ChessCore.Tools.ChessEngine
@@ -52,12 +53,32 @@ namespace ChessCore.Tools.ChessEngine
             Level = level;
             ReflectionTime = reflectionTime;
         }
+        public NodeCE(BoardCE boardCE, ChessCore.Tools.ChessEngine.Engine.SS.Move move, int weight, int level, TimeSpan reflectionTime = new TimeSpan())
+        {
+            BoardCE = boardCE;
+            FromIndex = move.FromIndex;
+            ToIndex = move.ToIndex;
+            Weight = weight;
+            Level = level;
+            ReflectionTime = reflectionTime;
+        }
+
+        public NodeCE(Move move, int weight, int level, TimeSpan reflectionTime = new TimeSpan())
+        {
+          //  BoardCE = boardCE;
+            FromIndex = move.FromIndex;
+            ToIndex = move.ToIndex;
+            Weight = weight;
+            Level = level;
+            ReflectionTime = reflectionTime;
+        }
+
 
 
         /// <summary>
         /// Convertit un index de l'échiquier (0-63) en position échiquier (ex : 0 => a8).
         /// </summary>
-       
+
 
         public override string ToString()
         {
