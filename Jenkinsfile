@@ -42,8 +42,8 @@ pipeline {
             steps {
                 script {
                     // Arrêter et supprimer le conteneur existant (si nécessaire)
-                  //  bat 'docker stop chessCoreJenkins || echo "Aucun conteneur à arrêter"'
-                   // bat 'docker rm chessCoreJenkins || echo "Aucun conteneur à supprimer"'
+                    bat 'docker stop chessCoreJenkins || echo "Aucun conteneur à arrêter"'
+                    bat 'docker rm chessCoreJenkins || echo "Aucun conteneur à supprimer"'
                     
                     // Démarrer un nouveau conteneur
                     bat "docker run -d -p 8282:80 --name chessCoreJenkins %DOCKER_IMAGE%"
