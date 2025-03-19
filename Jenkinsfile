@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "chessCoreJenkins:latest"
+        DOCKER_IMAGE = "chess_core_jenkins:latest"
     }
 
     stages {
