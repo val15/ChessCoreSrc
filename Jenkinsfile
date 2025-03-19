@@ -41,8 +41,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Exemple : Copie des fichiers sur un serveur distant via SSH/SCP
-                bat 'scp -r ./publish C:\ChessCoreProd'
-                
+                //bat 'scp -r ./publish user@server:/chemin/vers/dossier'
+                 bat '''
+            powershell -Command "New-Item -Path 'C:\\ChessCoreProd' -ItemType Directory -Force"
+            powershell -Command "Copy-Item -Path '.\\publish\\*' -Destination 'C:\\ChessCoreProd' -Recurse -Force"
+        '''
                 // Ou déploiement sur Azure/AWS avec des commandes CLI
                 // bat 'az webapp deploy ...'
             }
