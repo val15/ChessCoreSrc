@@ -1,53 +1,54 @@
 pipeline {
-    agent any // Exécute le pipeline sur n'importe quel agent Jenkins disponible
+    agent any
+
+    environment {
+        // Nom de l'image Docker (ex: monapp:latest)
+        DOCKER_IMAGE = "monapp:latest"
+    }
 
     stages {
-        // Étape 1 : Récupération du code depuis GitHub
+        // Étape 1 : Récupération du code
         stage('Checkout') {
             steps {
-                checkout scm // Clone le dépôt Git défini dans la configuration Jenkins
+                checkout scm
             }
         }
 
-        // Étape 2 : Restauration des dépendances .NET
-        stage('Restore Dependencies') {
-            steps {
-                bat 'dotnet restore' // Sur Windows, utilisez "bat". Sur Linux, utilisez "sh".
-            }
-        }
-
-        // Étape 3 : Compilation du projet
-        stage('Build') {
+        // Étape 2 : Build .NET
+        stage('Build .NET') {
             steps {
                 bat 'dotnet build --configuration Release'
             }
         }
 
-        // Étape 4 : Exécution des tests TODO A DECOMMENTER
-      //  stage('Test') {
-      //      steps {
-      //          bat 'dotnet test'
-      //      }
-     //   }
-
-        // Étape 5 : Publication des artefacts
+        // Étape 3 : Publication des fichiers
         stage('Publish') {
             steps {
                 bat 'dotnet publish --configuration Release --output ./publish'
             }
         }
 
-        // Étape 6 : Déploiement (à personnaliser selon votre besoin)
-        stage('Deploy') {
+        // Étape 4 : Build de l'image Docker
+        stage('Build Docker Image') {
             steps {
-                // Exemple : Copie des fichiers sur un serveur distant via SSH/SCP
-                //bat 'scp -r ./publish user@server:/chemin/vers/dossier'
-                 bat '''
-            powershell -Command "New-Item -Path 'C:\\ChessCoreProd' -ItemType Directory -Force"
-            powershell -Command "Copy-Item -Path '.\\publish\\*' -Destination 'C:\\ChessCoreProd' -Recurse -Force"
-        '''
-                // Ou déploiement sur Azure/AWS avec des commandes CLI
-                // bat 'az webapp deploy ...'
+                script {
+                    // Construire l'image Docker
+                    bat "docker build -t %DOCKER_IMAGE% ."
+                }
+            }
+        }
+
+        // Étape 5 : Déploiement du conteneur Docker
+        stage('Deploy Docker') {
+            steps {
+                script {
+                    // Arrêter et supprimer le conteneur existant (si nécessaire)
+                    bat 'docker stop monapp || echo "Aucun conteneur à arrêter"'
+                    bat 'docker rm monapp || echo "Aucun conteneur à supprimer"'
+                    
+                    // Démarrer un nouveau conteneur
+                    bat "docker run -d -p 8282:82 --name monapp %DOCKER_IMAGE%"
+                }
             }
         }
     }
