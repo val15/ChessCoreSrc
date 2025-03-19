@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // Nom de l'image Docker (ex: monapp:latest)
-        DOCKER_IMAGE = "monapp:latest"
+        DOCKER_IMAGE = "chessCoreJenkins:latest"
     }
 
     stages {
@@ -47,7 +46,7 @@ pipeline {
                    // bat 'docker rm chessCoreJenkins || echo "Aucun conteneur à supprimer"'
                     
                     // Démarrer un nouveau conteneur
-                    bat "docker run -d -p 8282:82 --name chessCoreJenkins %DOCKER_IMAGE%"
+                    bat "docker run -d -p 8282:80 --name chessCoreJenkins %DOCKER_IMAGE%"
                 }
             }
         }
