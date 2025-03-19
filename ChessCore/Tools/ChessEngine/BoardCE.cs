@@ -739,6 +739,10 @@ namespace ChessCore.Tools.ChessEngine
 
             return CloneAndMove(move.FromIndex, move.ToIndex);
         }
+        public BoardCE Clone()
+        {
+            return new BoardCE(this);
+        }
 
         public List<int> GetCasesIndexForColor(string color)
         {

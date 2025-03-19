@@ -12,8 +12,8 @@ namespace Stockfish.Core
         /// 
         /// </summary>
         /// //ORIGINAL
-        private const int MAX_TRIES = 200;
-//        private const int MAX_TRIES = 400;
+      //  private const int MAX_TRIES = 200;
+        private const int MAX_TRIES = 400;
 
         /// <summary>
         /// 

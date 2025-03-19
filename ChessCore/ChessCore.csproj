@@ -12,6 +12,8 @@
     <Compile Remove="Tools\Chess2UtilsNotStaticOptimize - Copy.cs" />
     <Compile Remove="Tools\ChessEngineBUGGPT.cs" />
     <Compile Remove="Tools\ChessEngine\ChessEngineALL.cs" />
+    <Compile Remove="Tools\ChessEngine\Engine\ChessEngine3S - Copy.cs" />
+    <Compile Remove="Tools\ChessEngine\Engine\ChessEngine3SS - Copy.cs" />
   </ItemGroup>
 
   <ItemGroup>

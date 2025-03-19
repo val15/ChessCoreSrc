@@ -821,6 +821,74 @@ namespace ChessCore.Tools
 
         }
 
+        public static ChessCore.Tools.ChessEngine.Engine.SS.BoardCE GenerateBoardFormPawnListCESS(List<Pawn> pawns)
+        {
+
+            try
+            {
+                var board = new ChessCore.Tools.ChessEngine.Engine.SS.BoardCE();
+                foreach (var pawn in pawns)
+                {
+                    if (String.IsNullOrEmpty(pawn.Location))
+                        continue;
+                    var index = Coord.ToList().IndexOf(pawn.Location);
+                    if (index == -1)
+                        continue;
+                    var color = pawn.Colore[0].ToString();
+                    var name = "P";
+                    //Pawn
+                    //SimplePawn => P
+                    //Knight => C
+                    //Bishop => B
+                    //Rook => T
+                    //Queen => Q
+                    //King => K
+
+                    //Color
+                    //Black => B
+                    //White => W
+                    switch (pawn.Name)
+                    {
+                        case "Knight":
+                            name = "C";
+                            break;
+                        case "Bishop":
+                            name = "B";
+                            break;
+                        case "Rook":
+                            name = "T";
+                            break;
+                        case "Queen":
+                            name = "Q";
+                            break;
+                        case "King":
+                            name = "K";
+                            break;
+                    }
+
+
+
+                    board.InsertPawn(index, name, color);
+                }
+                //  board.CalculeScores();
+                board.Print();
+
+                var bs = board.ToString();
+                Utils.WritelineAsync($"{board.ToString()}");
+                Utils.WritelineAsync($"{board.ConvertToFEN()}");
+
+                return board;
+            }
+            catch (Exception ex)
+            {
+                Utils.WritelineAsync(ex.ToString());
+                return null;
+            }
+
+        }
+
+
+
 
         public static BoardCE GenerateBoardFormString(string boadCEString)
         {
