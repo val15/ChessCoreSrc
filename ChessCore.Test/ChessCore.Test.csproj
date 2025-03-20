@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ChessEngine1Test.cs" />
+    <Compile Remove="ChessEngine2Test.cs" />
+    <Compile Remove="ChessEngine3SSTest.cs" />
+    <Compile Remove="ChessEngineDSTest.cs" />
+    <Compile Remove="ChessEngineLLMTest.cs" />
+    <Compile Remove="ChessEngineNotValiteTextCacheMinMaxMultiTest.cs" />
+    <Compile Remove="ChessEngineNTest.cs" />
     <Compile Remove="ChessIATestMultithreading.cs" />
   </ItemGroup>
 

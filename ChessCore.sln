@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessCore", "ChessCore\Ches
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessCore.Test", "ChessCore.Test\ChessCore.Test.csproj", "{CDF30BC3-BCDA-43AC-B6AF-D41AB5B2125E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPU_TEST", "GPU_TEST\GPU_TEST.csproj", "{F6DF9690-32FE-41D3-B13D-063BDB87314A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{015BDDBF-B9FE-4A74-B808-4736DB36DDD9}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -18,8 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		DockerComposeUp.bat = DockerComposeUp.bat
 		DockerComposeUp.sh = DockerComposeUp.sh
 		Dockerfile = Dockerfile
+		JenkinsfileDocker = JenkinsfileDocker
 		JenkinsfileWinLocal = JenkinsfileWinLocal
-		JenkinsfileDocker. = JenkinsfileDocker.
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -39,10 +37,6 @@ Global
 		{CDF30BC3-BCDA-43AC-B6AF-D41AB5B2125E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDF30BC3-BCDA-43AC-B6AF-D41AB5B2125E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDF30BC3-BCDA-43AC-B6AF-D41AB5B2125E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6DF9690-32FE-41D3-B13D-063BDB87314A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6DF9690-32FE-41D3-B13D-063BDB87314A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6DF9690-32FE-41D3-B13D-063BDB87314A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6DF9690-32FE-41D3-B13D-063BDB87314A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{180F02E1-A765-62AE-4DA1-9BBD425CDFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{180F02E1-A765-62AE-4DA1-9BBD425CDFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{180F02E1-A765-62AE-4DA1-9BBD425CDFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU

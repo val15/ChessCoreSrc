@@ -76,6 +76,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
         private NodeCE SearchRoot(BoardCE board, int depth, string color)
         {
+            var allNode = new List<NodeCE>();
             var moves = OrderMoves(board.GetPossibleMovesForColor(color, true), board, color);
             var bestValue = int.MinValue;
             NodeCE bestNode = null;
@@ -92,12 +93,26 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     bestValue = value;
                     bestNode = new NodeCE(clonedBoard, move, value, depth, DateTime.UtcNow - _startTime);
                     Utils.WritelineAsync($"{bestNode}");
+                    allNode.Add(bestNode);
+                    
                 }
 
                 // Mise à jour de l'historique
                 _historyHeuristic[move.FromIndex, move.ToIndex] += depth * depth;
             }
+            bestNode.AllNodeCEList = allNode;
+            var equivalentBestNodeCEList = allNode.Where(x => x.Weight == bestValue).ToList();
 
+            if(equivalentBestNodeCEList.Count>1)
+            {
+                Utils.WritelineAsync($"bestNodeCEList :");
+                foreach (var node in equivalentBestNodeCEList)
+                {
+                    Utils.WritelineAsync($"{node}");
+                }
+                return equivalentBestNodeCEList[(new Random()).Next(equivalentBestNodeCEList.Count)];
+
+            }
             return bestNode;
         }
 
@@ -303,6 +318,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
             if ((DateTime.UtcNow - _startTime).TotalMilliseconds > _maxSearchTimeMs)
             {
                 _timeExpired = true;
+                Utils.WritelineAsync($"REFLECTION TIME EXPIRED");
                 return true;
             }
             return false;

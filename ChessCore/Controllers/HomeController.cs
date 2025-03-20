@@ -58,7 +58,7 @@ namespace ChessCore.Controllers
             //MainUtils.VM.Engines.Add(new ChessEngine1());
             //MainUtils.VM.Engines.Add(new ChessEngine2());
             MainUtils.VM.Engines.Add(new ChessEngine3());
-            MainUtils.VM.Engines.Add(new Tools.ChessEngine.Engine.SS.ChessEngine3SS());
+            MainUtils.VM.Engines.Add(new ChessEngine3S());
             MainUtils.VM.Engines.Add(new ChessEngineStockfish());
             //MainUtils.VM.Engines.Add(new ChessEngineLLM());
 
