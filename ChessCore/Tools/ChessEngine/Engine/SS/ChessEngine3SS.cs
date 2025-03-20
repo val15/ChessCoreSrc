@@ -235,25 +235,8 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
         public string GetOpponentColor(string color) => color == "W" ? "B" : "W";
 
         // Génère une liste de coups possibles pour la couleur donnée (implémentation simplifiée)
+       
         public List<Move> GetPossibleMovesForColorOLD(string color, bool includeSpecial = false)
-        {
-            var moves = new List<Move>();
-            for (int i = 0; i < _cases.Length; i++)
-            {
-                if (_cases[i] != null && _cases[i].Contains("|" + color))
-                {
-                    // Pour simplifier, générer des coups vers toutes les autres cases
-                    for (int j = 0; j < _cases.Length; j++)
-                    {
-                        if (i != j)
-                            moves.Add(new Move { FromIndex = i, ToIndex = j });
-                    }
-                }
-            }
-            return moves;
-        }
-
-        public List<Move> GetPossibleMovesForColor(string color, bool includeSpecial = false)
         {
             var moves = new List<Move>();
 
@@ -333,6 +316,271 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
                             break;
 
                         // Vous pouvez ajouter ici les cas pour "B" (Fou), "Q" (Dame) et "K" (Roi)
+                        default:
+                            break;
+                    }
+                }
+            }
+            return moves;
+        }
+
+        public List<Move> GetPossibleMovesForColor(string color, bool includeSpecial = false)
+        {
+            var moves = new List<Move>();
+
+            for (int i = 0; i < _cases.Length; i++)
+            {
+                string piece = _cases[i];
+                // On considère qu'une case est occupée par une pièce si elle n'est pas "__"
+                // et qu'elle se termine par "|color".
+                if (piece != null && !piece.Equals("__") && piece.EndsWith("|" + color))
+                {
+                    string pieceType = piece.Split('|')[0];
+                    int row = i / 8;
+                    int col = i % 8;
+
+                    switch (pieceType)
+                    {
+                        case "P":
+                            // Pion
+                            if (color == "W")
+                            {
+                                // Déplacement avant
+                                int forward = i - 8;
+                                if (_cases[forward] == null)
+                                    continue;
+                                if (forward >= 0 && _cases[forward].Equals("__"))
+                                {
+                                    moves.Add(new Move { FromIndex = i, ToIndex = forward });
+                                    // Double déplacement initial (si le pion est sur la 7ème rangée, row == 6)
+                                    if (row == 6)
+                                    {
+                                        int forward2 = i - 16;
+                                        if (_cases[forward2] == null)
+                                            continue;
+                                        if (_cases[i - 8].Equals("__") && _cases[forward2].Equals("__"))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = forward2 });
+                                    }
+                                }
+                                // Captures diagonales
+                                if (row - 1 >= 0 && col - 1 >= 0)
+                                {
+                                    int diagLeft = i - 8 - 1;
+                                    if (_cases[diagLeft] == null)
+                                        continue;
+                                    if (!_cases[diagLeft].Equals("__") && !_cases[diagLeft].EndsWith("|W"))
+                                        moves.Add(new Move { FromIndex = i, ToIndex = diagLeft });
+                                }
+                                if (row - 1 >= 0 && col + 1 < 8)
+                                {
+                                    int diagRight = i - 8 + 1;
+                                    if (_cases[diagRight] == null)
+                                        continue;
+                                    if (!_cases[diagRight].Equals("__") && !_cases[diagRight].EndsWith("|W"))
+                                        moves.Add(new Move { FromIndex = i, ToIndex = diagRight });
+                                }
+                            }
+                            else // Pour les noirs
+                            {
+                                int forward = i + 8;
+                                if (_cases[forward] == null)
+                                    continue;
+                                if (forward < 64 && _cases[forward].Equals("__"))
+                                {
+                                    moves.Add(new Move { FromIndex = i, ToIndex = forward });
+                                    // Double déplacement initial (pour les noirs sur la 2ème rangée, row == 1)
+                                    if (row == 1)
+                                    {
+                                        int forward2 = i + 16;
+                                        if (_cases[forward2] == null)
+                                            continue;
+                                        if (_cases[i + 8].Equals("__") && _cases[forward2].Equals("__"))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = forward2 });
+                                    }
+                                }
+                                // Captures diagonales
+                                if (row + 1 < 8 && col - 1 >= 0)
+                                {
+                                    int diagLeft = i + 8 - 1;
+                                    if (_cases[diagLeft] == null)
+                                        continue;
+                                    if (!_cases[diagLeft].Equals("__") && !_cases[diagLeft].EndsWith("|B"))
+                                        moves.Add(new Move { FromIndex = i, ToIndex = diagLeft });
+                                }
+                                if (row + 1 < 8 && col + 1 < 8)
+                                {
+                                    int diagRight = i + 8 + 1;
+                                    if (_cases[diagRight] == null)
+                                        continue;
+                                    if (!_cases[diagRight].Equals("__") && !_cases[diagRight].EndsWith("|B"))
+                                        moves.Add(new Move { FromIndex = i, ToIndex = diagRight });
+                                }
+                            }
+                            break;
+
+                        case "N":
+                            // Cavalier : 8 mouvements possibles
+                            int[] knightMovesRow = { -2, -1, 1, 2, 2, 1, -1, -2 };
+                            int[] knightMovesCol = { 1, 2, 2, 1, -1, -2, -2, -1 };
+                            for (int j = 0; j < 8; j++)
+                            {
+                                int newRow = row + knightMovesRow[j];
+                                int newCol = col + knightMovesCol[j];
+                                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8)
+                                {
+                                    int newIndex = newRow * 8 + newCol;
+                                    // La case est vide ou contient une pièce ennemie
+                                    if (_cases[newIndex].Equals("__") || !_cases[newIndex].EndsWith("|" + color))
+                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                }
+                            }
+                            break;
+
+                        case "B":
+                            // Fou : déplacements diagonaux
+                            int[] diagRow = { -1, -1, 1, 1 };
+                            int[] diagCol = { -1, 1, 1, -1 };
+                            for (int d = 0; d < 4; d++)
+                            {
+                                int newRow = row;
+                                int newCol = col;
+                                while (true)
+                                {
+                                    newRow += diagRow[d];
+                                    newCol += diagCol[d];
+                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
+                                        break;
+                                    int newIndex = newRow * 8 + newCol;
+                                    if (_cases[newIndex] == null)
+                                        continue;
+                                    if (_cases[newIndex].Equals("__"))
+                                    {
+                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                    }
+                                    else
+                                    {
+                                        if (!_cases[newIndex].EndsWith("|" + color))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case "R":
+                            // Tour : déplacements verticaux et horizontaux
+                            int[] straightRow = { -1, 1, 0, 0 };
+                            int[] straightCol = { 0, 0, -1, 1 };
+                            for (int d = 0; d < 4; d++)
+                            {
+                                int newRow = row;
+                                int newCol = col;
+                                while (true)
+                                {
+                                    newRow += straightRow[d];
+                                    newCol += straightCol[d];
+                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
+                                        break;
+                                    int newIndex = newRow * 8 + newCol;
+                                    if (_cases[newIndex].Equals("__"))
+                                    {
+                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                    }
+                                    else
+                                    {
+                                        if (!_cases[newIndex].EndsWith("|" + color))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case "Q":
+                            // Dame : combinaison du fou et de la tour.
+                            // On déclare ici les tableaux pour les déplacements diagonaux et droits.
+                            int[] qDiagRow = { -1, -1, 1, 1 };
+                            int[] qDiagCol = { -1, 1, 1, -1 };
+                            int[] qStraightRow = { -1, 1, 0, 0 };
+                            int[] qStraightCol = { 0, 0, -1, 1 };
+
+                            // Diagonaux
+                            for (int d = 0; d < 4; d++)
+                            {
+                                int newRow = row;
+                                int newCol = col;
+                                while (true)
+                                {
+                                    newRow += qDiagRow[d];
+                                    newCol += qDiagCol[d];
+                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
+                                        break;
+                                    int newIndex = newRow * 8 + newCol;
+                                    if (_cases[newIndex] == null)
+                                        continue;
+                                    if (_cases[newIndex].Equals("__"))
+                                    {
+                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                    }
+                                    else
+                                    {
+                                        if (!_cases[newIndex].EndsWith("|" + color))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                        break;
+                                    }
+                                }
+                            }
+                            // Verticaux et horizontaux
+                            for (int d = 0; d < 4; d++)
+                            {
+                                int newRow = row;
+                                int newCol = col;
+                                while (true)
+                                {
+                                    newRow += qStraightRow[d];
+                                    newCol += qStraightCol[d];
+                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
+                                        break;
+                                    int newIndex = newRow * 8 + newCol;
+                                    if (_cases[newIndex] == null)
+                                        continue;
+                                    if (_cases[newIndex].Equals("__"))
+                                    {
+                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                    }
+                                    else
+                                    {
+                                        if (!_cases[newIndex].EndsWith("|" + color))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case "K":
+                            // Roi : déplacement d'un pas dans toutes les directions
+                            for (int dr = -1; dr <= 1; dr++)
+                            {
+                                for (int dc = -1; dc <= 1; dc++)
+                                {
+                                    if (dr == 0 && dc == 0)
+                                        continue;
+                                    int newRow = row + dr;
+                                    int newCol = col + dc;
+                                    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8)
+                                    {
+                                        int newIndex = newRow * 8 + newCol;
+                                        if (_cases[newIndex] == null)
+                                            continue;
+                                        if (_cases[newIndex].Equals("__") || !_cases[newIndex].EndsWith("|" + color))
+                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
+                                    }
+                                }
+                            }
+                            // Le roque n'est pas implémenté ici.
+                            break;
+
                         default:
                             break;
                     }
@@ -781,7 +1029,7 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
             return hash;
         }
 
-        public ChessEngine.NodeCE GetBestModeCE(string colore, ChessEngine.BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
+        public ChessEngine.NodeCE GetBestModeCE(string colore, ChessEngine.BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2*10)
         {
            
             

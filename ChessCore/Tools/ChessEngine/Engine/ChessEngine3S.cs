@@ -1,259 +1,311 @@
 ﻿using ChessCore.Tools.ChessEngine.Engine.Interfaces;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChessCore.Tools.ChessEngine.Engine
 {
     public class ChessEngine3S : IChessEngine
     {
-        // Pool d'objets pour réduire les allocations mémoire
-        private static readonly ObjectPool<BoardCE> _boardPool = new ObjectPool<BoardCE>(() => new BoardCE());
+        private enum NodeType { Exact, LowerBound, UpperBound }
+        private const int TranspositionTableSize = 1 << 20;
 
-        // Table de transposition pour mettre en cache les états évalués
-        private readonly ConcurrentDictionary<long, int> _transpositionTable = new ConcurrentDictionary<long, int>();
+        private struct TranspositionEntry
+        {
+            public ulong Hash;
+            public int Depth;
+            public int Value;
+            public NodeType Type;
+            public Move BestMove;
+        }
 
-        private static readonly object lockObj = new object();
-        private int _depthLevel = 0;
+        private readonly TranspositionEntry[] _transpositionTable = new TranspositionEntry[TranspositionTableSize];
+        private readonly ulong[,,] _zobristTable = new ulong[8, 8, 16];
+        private readonly int[,] _historyHeuristic = new int[64, 64];
+        private Move[] _killerMoves = new Move[2];
+
+        private int _searchDepth;
         private DateTime _startTime;
-        private int MAX_SEARCH_TIME_S = 60 * 5;
-        private bool _isExperedReflectionTime = false;
+        private int _maxSearchTimeMs = 5000;
+        private bool _timeExpired;
+        private int _nodesVisited;
 
+        public ChessEngine3S()
+        {
+            InitializeZobrist();
+        }
         public void Dispose() { }
-
         public string GetName()
         {
             return this.GetType().Name;
         }
-
         public string GetShortName()
         {
             return Utils.ExtractUppercaseLettersAndDigits(GetName());
         }
 
-        public NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
+        public NodeCE GetBestModeCE(string color, BoardCE board, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
         {
-            MAX_SEARCH_TIME_S = maxReflectionTimeInMinute * 60;
+            _maxSearchTimeMs = maxReflectionTimeInMinute * 60 * 1000;
             _startTime = DateTime.UtcNow;
-            _isExperedReflectionTime = false;
-            var cpuColor = colore.First().ToString();
-            _depthLevel = depthLevel;
-            string opponentColor = boardChess.GetOpponentColor(cpuColor);
+            _timeExpired = false;
+            _nodesVisited = 0;
+
+
+
+         
+            var cpuColor = color.First().ToString();
+            
+            string opponentColor = board.GetOpponentColor(cpuColor);
 
             Utils.WritelineAsync($"{GetName()}");
             Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
-            Utils.WritelineAsync($"MAX_SEARCH_TIME_S :  {MAX_SEARCH_TIME_S}");
+            Utils.WritelineAsync($"MAX_SEARCH_TIME_S :  {_maxSearchTimeMs * 1000}");
             Utils.WritelineAsync($"cpuColor :  {cpuColor}");
             Utils.WritelineAsync($"opponentColor :  {opponentColor}");
 
-            NodeCE bestOfBest = null;
-            for (int currentDepth = 1; currentDepth <= depthLevel; currentDepth++)
+
+            NodeCE bestNode = null;
+            // Recherche itérative avec gestion du temps
+            for (var depth = 1; depth <= depthLevel; depth++)
             {
-                if (isReflextionLimitExpered()) break;
-                bestOfBest = FindBestMode(boardChess, currentDepth, cpuColor);
+                if (_timeExpired) break;
+
+                var result = SearchRoot(board, depth, cpuColor);
+                if (!_timeExpired) bestNode = result;
             }
-            return bestOfBest;
+            return bestNode;
         }
 
-        public NodeCE FindBestMode(BoardCE board, int depthLevel, string cpuColor)
+        private NodeCE SearchRoot(BoardCE board, int depth, string color)
         {
-            var startTime = DateTime.UtcNow;
-            var possibleMoves = board.GetPossibleMovesForColor(cpuColor, true);
-            Move bestMove = null;
-            int bestValue = int.MinValue;
+            var moves = OrderMoves(board.GetPossibleMovesForColor(color, true), board, color);
+            var bestValue = int.MinValue;
             NodeCE bestNode = null;
-            var allNode = new List<NodeCE>();
-            var equivalentBestNodeCEList = new List<NodeCE>();
 
-            Parallel.ForEach(possibleMoves, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, move =>
+            foreach (var move in moves)
             {
-                if (isReflextionLimitExpered())
-                {
-                    return;
-                }
+                if (_timeExpired) break;
 
-                int value = 0;
                 var clonedBoard = board.CloneAndMove(move);
-                var opponentColor = board.GetOpponentColor(cpuColor);
-                value = MinMaxWithAlphaBeta(clonedBoard, depthLevel - 1, int.MinValue, int.MaxValue, false, cpuColor);
+                var value = -NegaMax(clonedBoard, depth - 1, int.MinValue + 1, int.MaxValue - 1, board.GetOpponentColor(color));
 
-                var elapsed = DateTime.UtcNow - startTime;
-                var currentNode = new NodeCE(clonedBoard, move, value, depthLevel, elapsed);
-
-                var isMenaced = clonedBoard.TargetIndexIsMenaced(currentNode.ToIndex, opponentColor);
-                if (isMenaced)
+                if (value > bestValue)
                 {
-                    value -= clonedBoard.GetPieceValue(clonedBoard._cases[currentNode.ToIndex]) / 9;
-                    currentNode.Weight = value;
+                    bestValue = value;
+                    bestNode = new NodeCE(clonedBoard, move, value, depth, DateTime.UtcNow - _startTime);
+                    Utils.WritelineAsync($"{bestNode}");
                 }
 
-                lock (lockObj)
+                // Mise à jour de l'historique
+                _historyHeuristic[move.FromIndex, move.ToIndex] += depth * depth;
+            }
+
+            return bestNode;
+        }
+
+        private int NegaMax(BoardCE board, int depth, int alpha, int beta, string color)
+        {
+            _nodesVisited++;
+            if (CheckTimeLimit() || depth <= 0)
+                return QuiescenceSearch(board, alpha, beta, color);
+
+            var originalAlpha = alpha;
+            var hash = ComputeZobristHash(board);
+
+            // Vérification de la table de transposition
+            ref var entry = ref _transpositionTable[hash % TranspositionTableSize];
+            if (entry.Hash == hash && entry.Depth >= depth)
+            {
+                if (entry.Type == NodeType.Exact)
+                    return entry.Value;
+                if (entry.Type == NodeType.LowerBound)
+                    alpha = Math.Max(alpha, entry.Value);
+                else if (entry.Type == NodeType.UpperBound)
+                    beta = Math.Min(beta, entry.Value);
+
+                if (alpha >= beta)
+                    return entry.Value;
+            }
+
+            var moves = OrderMoves(board.GetPossibleMovesForColor(color), board, color);
+            if (moves.Count == 0)
+                return board.IsKingInCheck(color) ? -99999 + _searchDepth : 0;
+
+            var bestValue = int.MinValue;
+            var bestMove = new Move();
+            var isCheck = board.IsKingInCheck(color);
+
+            // Null Move Pruning
+            if (!isCheck && depth >= 3)
+            {
+                var nullBoard = board.Clone();
+               // nullBoard.SwitchPlayer();
+               var oppColor = nullBoard.GetOpponentColor(color);
+                var nullValue = -NegaMax(nullBoard, depth - 1 - 2, -beta, -beta + 1, oppColor);
+                if (nullValue >= beta)
+                    return beta;
+            }
+
+            for (int i = 0; i < moves.Count; i++)
+            {
+                var move = moves[i];
+                var clonedBoard = board.CloneAndMove(move);
+                int value;
+
+                // Late Move Reduction
+                if (i > 3 && depth < 6 && !isCheck && !move.IsCapture)
                 {
-                    allNode.Add(currentNode);
-                    if (value > bestValue)
+                    value = -NegaMax(clonedBoard, depth - 2, -alpha - 1, -alpha, clonedBoard.GetOpponentColor(color));
+                    if (value > alpha)
+                        value = -NegaMax(clonedBoard, depth - 1, -beta, -alpha, clonedBoard.GetOpponentColor(color));
+                }
+                else
+                {
+                    value = -NegaMax(clonedBoard, depth - 1, -beta, -alpha, clonedBoard.GetOpponentColor(color));
+                }
+
+                if (value > bestValue)
+                {
+                    bestValue = value;
+                    bestMove = move;
+                    if (value > alpha)
                     {
-                        bestValue = value;
-                        bestMove = move;
-                        bestNode = currentNode;
-                        Utils.WritelineAsync($"{currentNode} *");
+                        alpha = value;
+                        if (alpha >= beta)
+                        {
+                            // Mise à jour des killer moves
+                            if (!move.IsCapture)
+                            {
+                                _killerMoves[1] = _killerMoves[0];
+                                _killerMoves[0] = move;
+                            }
+                            break;
+                        }
                     }
                 }
-            });
-
-            equivalentBestNodeCEList = allNode.Where(x => x.Weight == bestValue).ToList();
-
-            if (equivalentBestNodeCEList.Count > 1)
-            {
-                Utils.WritelineAsync($"bestNodeCEList calcul immediatelyWeight:");
-
-                for (int i = 0; i < equivalentBestNodeCEList.Count; i++)
-                {
-                    var node = equivalentBestNodeCEList[i];
-                    var cloanBoard = board.CloneAndMove(node.FromIndex, node.ToIndex);
-                    var opponentColor = board.GetOpponentColor(cpuColor);
-                    var immediatelyWeight = cloanBoard.CalculateBoardCEScore(cpuColor, opponentColor);
-                    equivalentBestNodeCEList[i].Weight += immediatelyWeight / 10;
-                }
-                bestValue = equivalentBestNodeCEList.Max(x => x.Weight);
-                equivalentBestNodeCEList = equivalentBestNodeCEList.Where(x => x.Weight == bestValue).ToList();
             }
 
-            Utils.WritelineAsync($"bestNodeCEList :");
-            foreach (var node in equivalentBestNodeCEList)
+            // Mise à jour de la table de transposition
+            entry = new TranspositionEntry
             {
-                Utils.WritelineAsync($"{node}");
-            }
+                Hash = hash,
+                Depth = depth,
+                Value = bestValue,
+                Type = bestValue <= originalAlpha ? NodeType.UpperBound :
+                       bestValue >= beta ? NodeType.LowerBound : NodeType.Exact,
+                BestMove = bestMove
+            };
 
-            var bestNodeCE = equivalentBestNodeCEList[(new Random()).Next(equivalentBestNodeCEList.Count)];
-
-            bestNodeCE.EquivalentBestNodeCEList = equivalentBestNodeCEList;
-            bestNodeCE.AllNodeCEList = allNode;
-            var elapsed = DateTime.UtcNow - startTime;
-
-            if (_isExperedReflectionTime)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Utils.WritelineAsync("REFLECTION TIME LIMIT EXPERED");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-
-            Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
-            bestNodeCE.ReflectionTime = elapsed;
-
-            return bestNodeCE;
+            return bestValue;
         }
 
-        private int MinMaxWithAlphaBeta(BoardCE board, int depth, int alpha, int beta, bool maximizingPlayer, string cpuColor)
+        private int QuiescenceSearch(BoardCE board, int alpha, int beta, string color)
         {
-            var opponentColor = board.GetOpponentColor(cpuColor);
+            var standPat = Evaluate(board, color);
+            if (standPat >= beta)
+                return beta;
+            if (alpha < standPat)
+                alpha = standPat;
 
-            if (isReflextionLimitExpered())
-                return board.CalculateBoardCEScore(cpuColor, opponentColor);
+            var moves = board.GetPossibleMovesForColor(color, true)
+                .Where(m => m.IsCapture)
+                .OrderByDescending(m => m.CapturedPieceValue)
+                .ToList();
 
-            var boardHash = ComputeBoardHash(board, depth, cpuColor);
-
-            if (_transpositionTable.TryGetValue(boardHash, out int cachedScore))
-                return cachedScore;
-
-            var currentValue = board.CalculateBoardCEScore(cpuColor, opponentColor) / 10;
-
-            if (depth == 0 || board.IsGameOver())
+            foreach (var move in moves)
             {
-                if (_transpositionTable.TryGetValue(boardHash, out cachedScore))
-                    return cachedScore;
+                var clonedBoard = board.CloneAndMove(move);
+                var value = -QuiescenceSearch(clonedBoard, -beta, -alpha, clonedBoard.GetOpponentColor(color));
 
-                int score = board.CalculateBoardCEScore(cpuColor, opponentColor);
-                _transpositionTable[boardHash] = score;
-                return score;
+                if (value >= beta)
+                    return beta;
+                if (value > alpha)
+                    alpha = value;
             }
 
-            if (depth >= _depthLevel - 2)
-            {
-                if (board.IsKingInCheck(cpuColor))
-                {
-                    return -9999;
-                }
-
-                if (board.IsKingInCheck(opponentColor)) return 9999;
-            }
-
-            string currentPlayer = maximizingPlayer ? cpuColor : opponentColor;
-            List<Move> moves = OrderMoves(board.GetPossibleMovesForColor(currentPlayer), board, currentPlayer);
-
-            if (maximizingPlayer)
-            {
-                int bestValue = int.MinValue;
-                foreach (Move move in moves)
-                {
-                    var clonedBoard = board.CloneAndMove(move);
-                    var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, false, cpuColor);
-
-                    bestValue = Math.Max(bestValue, value);
-                    alpha = Math.Max(alpha, bestValue);
-
-                    if (beta <= alpha) break; // Élagage alpha-bêta
-                }
-                return bestValue + currentValue;
-            }
-            else
-            {
-                int bestValue = int.MaxValue;
-                foreach (Move move in moves)
-                {
-                    var clonedBoard = board.CloneAndMove(move);
-                    var value = MinMaxWithAlphaBeta(clonedBoard, depth - 1, alpha, beta, true, cpuColor);
-
-                    bestValue = Math.Min(bestValue, value);
-                    beta = Math.Min(beta, bestValue);
-
-                    if (beta <= alpha) break; // Élagage alpha-bêta
-                }
-                return bestValue + currentValue;
-            }
-        }
-
-        private bool isReflextionLimitExpered()
-        {
-            if (DateTime.UtcNow - _startTime > TimeSpan.FromSeconds(MAX_SEARCH_TIME_S))
-            {
-                _isExperedReflectionTime = true;
-                return true;
-            }
-            return false;
+            return alpha;
         }
 
         private List<Move> OrderMoves(List<Move> moves, BoardCE board, string color)
         {
-            return moves.OrderByDescending(move =>
+            return moves.OrderByDescending(m =>
             {
-                var capturedPiece = board._cases[move.ToIndex];
-                if (capturedPiece != null)
-                    return board.GetPieceValue(capturedPiece) * 10; // Prioriser les captures
+                int score = 0;
 
-                // Prioriser les coups qui mettent le roi en échec
-                var clonedBoard = board.CloneAndMove(move);
-                if (clonedBoard.IsKingInCheck(board.GetOpponentColor(color)))
-                    return 1000;
+                // Meilleur coup de la table de transposition
+                if (m.Equals(_transpositionTable[ComputeZobristHash(board) % TranspositionTableSize].BestMove))
+                    score += 10000;
 
-                return 0;
+                // Captures
+                if (m.IsCapture)
+                    score += m.CapturedPieceValue * 10 - m.PieceValue;
+
+                // Killer moves
+                if (_killerMoves.Contains(m))
+                    score += 9000;
+
+                // Histoire des coups
+                score += _historyHeuristic[m.FromIndex, m.ToIndex];
+
+                return score;
             }).ToList();
         }
 
-        private long ComputeBoardHash(BoardCE board, int depth, string color)
+        private int Evaluate(BoardCE board, string color)
         {
-            long hash = 0;
-            for (int i = 0; i < board._cases.Length; i++)
+            int score = 0;
+            // Implémentez ici une évaluation plus sophistiquée avec :
+            // - Tables de position par pièce
+            // - Mobilité
+            // - Structure de pions
+            // - Sécurité du roi
+            return board.CalculateBoardCEScore(color, board.GetOpponentColor(color));
+        }
+
+        private void InitializeZobrist()
+        {
+            var rng = new Random();
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                    for (int k = 0; k < 16; k++)
+                        _zobristTable[i, j, k] = (ulong)rng.NextInt64();
+        }
+
+        private ulong ComputeZobristHash(BoardCE board)
+        {
+            ulong hash = 0;
+            for (int i = 0; i < 64; i++)
             {
-                if (board._cases[i] != null)
+                var piece = board._cases[i];
+                if (piece != "__")
                 {
-                    hash ^= (long)board._cases[i].GetHashCode() << (i % 16);
+                    var parts = piece.Split('|');
+                    hash ^= _zobristTable[i % 8, i / 8, GetPieceCode(parts[0], parts[1])];
                 }
             }
-            hash ^= depth << 24;
-            hash ^= color.GetHashCode() << 32;
             return hash;
+        }
+
+        private int GetPieceCode(string piece, string color)
+        {
+            return piece[0] switch
+            {
+                'P' => 0 + (color == "W" ? 0 : 6),
+                'N' => 1 + (color == "W" ? 0 : 6),
+                'B' => 2 + (color == "W" ? 0 : 6),
+                'R' => 3 + (color == "W" ? 0 : 6),
+                'Q' => 4 + (color == "W" ? 0 : 6),
+                'K' => 5 + (color == "W" ? 0 : 6),
+                _ => 0
+            };
+        }
+
+        private bool CheckTimeLimit()
+        {
+            if ((DateTime.UtcNow - _startTime).TotalMilliseconds > _maxSearchTimeMs)
+            {
+                _timeExpired = true;
+                return true;
+            }
+            return false;
         }
     }
 }

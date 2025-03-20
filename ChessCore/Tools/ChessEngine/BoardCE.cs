@@ -806,7 +806,7 @@ namespace ChessCore.Tools.ChessEngine
             int forwardIndex = fromIndex + 8 * direction;
             if (IsWithinBounds(forwardIndex) && _cases[forwardIndex] == "__")
             {
-                moves.Add(new Move(fromIndex, forwardIndex));
+                moves.Add(new Move(fromIndex, forwardIndex, this));
             }
 
             // Mouvement double depuis la position initiale
@@ -815,7 +815,7 @@ namespace ChessCore.Tools.ChessEngine
                 int doubleForwardIndex = fromIndex + 16 * direction;
                 if (IsWithinBounds(doubleForwardIndex) && _cases[forwardIndex] == "__" && _cases[doubleForwardIndex] == "__")
                 {
-                    moves.Add(new Move(fromIndex, doubleForwardIndex));
+                    moves.Add(new Move(fromIndex, doubleForwardIndex, this));
                 }
             }
 
@@ -827,7 +827,7 @@ namespace ChessCore.Tools.ChessEngine
 
                 if (IsWithinBounds(diagIndex) && diagCol >= 0 && diagCol < 8 && _cases[diagIndex] != "__" && !_cases[diagIndex].EndsWith(pieceColor))
                 {
-                    moves.Add(new Move(fromIndex, diagIndex));
+                    moves.Add(new Move(fromIndex, diagIndex,this));
                 }
             }
 
@@ -851,13 +851,13 @@ namespace ChessCore.Tools.ChessEngine
 
                     if (_cases[currentIndex] == "__")
                     {
-                        moves.Add(new Move(fromIndex, currentIndex));
+                        moves.Add(new Move(fromIndex, currentIndex,this));
                     }
                     else
                     {
                         if (!_cases[currentIndex].EndsWith(pieceColor)) // Capture
                         {
-                            moves.Add(new Move(fromIndex, currentIndex));
+                            moves.Add(new Move(fromIndex, currentIndex, this));
                         }
                         break; // Bloqué par une pièce
                     }
@@ -951,7 +951,7 @@ namespace ChessCore.Tools.ChessEngine
 
                 if (IsWithinBounds(newIndex) && newCol >= 0 && newCol < 8 && (_cases[newIndex] == "__" || !_cases[newIndex].EndsWith(pieceColor)))
                 {
-                    moves.Add(new Move(fromIndex, newIndex));
+                    moves.Add(new Move(fromIndex, newIndex, this));
                 }
             }
 
@@ -988,14 +988,14 @@ namespace ChessCore.Tools.ChessEngine
 
                     if (_cases[currentIndex] == "__")
                     {
-                        moves.Add(new Move(fromIndex, currentIndex));
+                        moves.Add(new Move(fromIndex, currentIndex, this));
                     }
                     else
                     {
                         // Si la case contient une pièce adverse
                         if (!_cases[currentIndex].EndsWith(pieceColor))
                         {
-                            moves.Add(new Move(fromIndex, currentIndex));
+                            moves.Add(new Move(fromIndex, currentIndex, this));
                         }
                         break; // Arrêt si une pièce bloque la route
                     }
@@ -1094,7 +1094,7 @@ namespace ChessCore.Tools.ChessEngine
                 int targetIndex = fromIndex + direction;
                 if (IsWithinBounds(targetIndex) && (_cases[targetIndex] == "__" || !_cases[targetIndex].EndsWith(pieceColor)))
                 {
-                    moves.Add(new Move(fromIndex, targetIndex));
+                    moves.Add(new Move(fromIndex, targetIndex, this));
                 }
             }
 
@@ -1143,7 +1143,7 @@ namespace ChessCore.Tools.ChessEngine
             int forwardIndex = fromIndex + direction * 8;
             if (IsValidIndex(forwardIndex) && _cases[forwardIndex] == "__")
             {
-                moves.Add(new Move(fromIndex, forwardIndex));
+                moves.Add(new Move(fromIndex, forwardIndex, this));
             }
 
             // Mouvement initial (deux pas en avant)
@@ -1152,7 +1152,7 @@ namespace ChessCore.Tools.ChessEngine
                 int doubleForwardIndex = fromIndex + direction * 16;
                 if (IsValidIndex(doubleForwardIndex) && _cases[doubleForwardIndex] == "__" && _cases[forwardIndex] == "__")
                 {
-                    moves.Add(new Move(fromIndex, doubleForwardIndex));
+                    moves.Add(new Move(fromIndex, doubleForwardIndex, this));
                 }
             }
 
@@ -1165,7 +1165,7 @@ namespace ChessCore.Tools.ChessEngine
                     string targetColor = _cases[captureLeftIndex].Split('|')[1];
                     if (targetColor != color) // Vérifie que la cible appartient à l'adversaire
                     {
-                        moves.Add(new Move(fromIndex, captureLeftIndex));
+                        moves.Add(new Move(fromIndex, captureLeftIndex, this));
                     }
                 }
             }
@@ -1179,7 +1179,7 @@ namespace ChessCore.Tools.ChessEngine
                     string targetColor = _cases[captureRightIndex].Split('|')[1];
                     if (targetColor != color) // Vérifie que la cible appartient à l'adversaire
                     {
-                        moves.Add(new Move(fromIndex, captureRightIndex));
+                        moves.Add(new Move(fromIndex, captureRightIndex, this));
                     }
                 }
             }
@@ -1210,7 +1210,7 @@ namespace ChessCore.Tools.ChessEngine
                 int toIndex = fromIndex + offset;
                 if (IsInsideBoard(toIndex) && !IsSameColor(toIndex, pieceColor) && IsValidKnightMove(fromIndex, toIndex))
                 {
-                    moves.Add(new Move(fromIndex, toIndex));
+                    moves.Add(new Move(fromIndex, toIndex, this));
                 }
             }
 
@@ -1243,7 +1243,7 @@ namespace ChessCore.Tools.ChessEngine
                 int toIndex = fromIndex + offset;
                 if (IsInsideBoard(toIndex) && !IsSameColor(toIndex, pieceColor) && IsValidKingMove(fromIndex, toIndex))
                 {
-                    moves.Add(new Move(fromIndex, toIndex));
+                    moves.Add(new Move(fromIndex, toIndex, this));
                 }
             }
 
