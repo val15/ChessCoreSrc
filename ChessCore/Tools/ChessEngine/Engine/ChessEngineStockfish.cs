@@ -1,6 +1,8 @@
 ﻿
 using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 using Stockfish.Core;
+using System;
+using System.Xml.Linq;
 
 
 
@@ -84,14 +86,36 @@ namespace ChessCore.Tools.ChessEngine.Engine
                     finalFENWithColore = finalFENWithColore.Replace("w", "b");
                 _stockfish.SetFenPosition(finalFENWithColore);
 
-                var bestMoveString = _stockfish.GetBestMove();
+                var bestMoveAndInfoString = _stockfish.GetBestMove();
+               
+                var infoData = bestMoveAndInfoString.Split(";");
+                
+               
 
-                bestNodeCE = new NodeCE(bestMoveString.Substring(0, 2), bestMoveString.Substring(2, 2));
+
+
+                var info = infoData[0];
+                Utils.WritelineAsync($"Stockfish : {info}");
+
+                var depth = string.Empty;
+                var weight = string.Empty;
+
+                var finalInfoLineData = info.Split(' ');
+                depth = finalInfoLineData[2];
+                weight = finalInfoLineData[9];
+
+                var bestMoveString = infoData[1];
+
+
+                bestNodeCE = new NodeCE(bestMoveString.Substring(0, 2), bestMoveString.Substring(2, 2),Int32.Parse(weight),Int32.Parse(depth));
 
 
                 var elapsed = DateTime.Now - startTime;
                 Utils.WritelineAsync($"REFLECTION TIME: {elapsed}");
                 bestNodeCE.ReflectionTime = elapsed;
+
+                Utils.WritelineAsync($"bestNodeCEList :");
+                Utils.WritelineAsync($"{bestNodeCE}");
 
                 return bestNodeCE;
             }

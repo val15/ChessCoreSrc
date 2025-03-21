@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 
 namespace Stockfish.Core
 {
@@ -71,51 +72,84 @@ namespace Stockfish.Core
             return _process.StandardOutput.ReadLine();
         }
 
-        public List<string> ReadAllLines(int liens)
+        public string ReadAllOutputOLD()
         {
             if (_process.StandardOutput == null)
             {
-                throw new NullReferenceException("Le flux StandardOutput est null.");
+                throw new NullReferenceException("Le StandardOutput est null.");
             }
-
-            List<string> lines = new List<string>();
-
-            //while (!_process.StandardOutput.EndOfStream)
-            // {
-
-            for (int i = 0; i < liens; i++)
-            {
-                lines.Add(_process.StandardOutput.ReadLine());
-            }
-            //lines.Add(_process.StandardOutput.ReadLine());
-            //}
-
-            return lines;
+            var allLines = _process.StandardOutput.ReadToEnd();
+            return allLines;
         }
 
 
-        public List<string> ReadLastLinesOLD(int numberOfLines)
+        public async Task<string> ReadAllOutputAsync(int timeoutMilliseconds = 500)
         {
             if (_process.StandardOutput == null)
             {
-                throw new NullReferenceException();
+                throw new NullReferenceException("StandardOutput is null.");
             }
 
-            var lines = new Queue<string>();
+            var output = new StringBuilder();
+            // Crée un token de cancellation pour arrêter après timeoutMilliseconds sans nouvelle donnée
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(timeoutMilliseconds);
 
-            while (!_process.StandardOutput.EndOfStream)
+            try
             {
-                string line = _process.StandardOutput.ReadLine();
-
-                if (lines.Count >= numberOfLines)
+                while (!cts.Token.IsCancellationRequested)
                 {
-                    lines.Dequeue(); // Supprime l'ancienne ligne pour ne garder que les X dernières
+                    // Vérifie s'il y a des données disponibles dans le buffer
+                    if (_process.StandardOutput.Peek() > -1)
+                    {
+                        string line = await _process.StandardOutput.ReadLineAsync();
+                        if (line == null)
+                        {
+                            break; // fin du flux
+                        }
+                        output.AppendLine(line);
+                        // Réinitialise le timer dès qu'on lit une ligne
+                        cts.CancelAfter(timeoutMilliseconds);
+                    }
+                    else
+                    {
+                        // Petite pause pour éviter de boucler en continu
+                        await Task.Delay(50, cts.Token);
+                    }
                 }
-                lines.Enqueue(line);
+            }
+            catch (OperationCanceledException)
+            {
+                // Le délai d'attente est écoulé, on quitte la boucle et on retourne ce qui a été lu
             }
 
-            return lines.ToList(); // Convertit la file en liste pour le retour
+            return output.ToString();
         }
+        public async Task<string> ReadAllOutputUntilBestmoveAsync()
+        {
+            if (_process.StandardOutput == null)
+            {
+                throw new NullReferenceException("StandardOutput is null.");
+            }
+
+            var output = new StringBuilder();
+            while (true)
+            {
+                string line = await _process.StandardOutput.ReadLineAsync();
+                if (line == null)
+                {
+                    break; // Fin du flux
+                }
+                output.AppendLine(line);
+                // Si la ligne contient "bestmove", on arrête la lecture
+                if (line.Contains("bestmove"))
+                {
+                    break;
+                }
+            }
+            return output.ToString();
+        }
+
 
         public List<string> ReadLastLines(int x)
         {

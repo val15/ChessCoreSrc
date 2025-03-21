@@ -33,7 +33,8 @@ namespace ChessCore.Tools.ChessEngine
                 //var data = input.Split(',');
                 FromIndex = Utils.GetIndexFromLocation(start);
                 ToIndex = Utils.GetIndexFromLocation(end);
-               
+                
+
             }
             catch (Exception)
             {
@@ -41,6 +42,26 @@ namespace ChessCore.Tools.ChessEngine
                 Console.WriteLine("Format invalide !");
             }
             
+
+        }
+        public NodeCE(string start, string end, int weight, int level)
+        {
+            try
+            {
+                //var input = nodeCEString.Replace(" ", "").Replace("(", "").Replace(")", "");
+                //var data = input.Split(',');
+                FromIndex = Utils.GetIndexFromLocation(start);
+                ToIndex = Utils.GetIndexFromLocation(end);
+                Weight = weight;
+                Level = level;
+
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Format invalide !");
+            }
+
 
         }
 

@@ -1,6 +1,10 @@
 ﻿using Stockfish.Exceptions;
 using Stockfish.Models;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
 using Color = Stockfish.Models.Color;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq;
 
 namespace Stockfish.Core
 {
@@ -209,6 +213,45 @@ namespace Stockfish.Core
           
         }
 
+        private string readAllLinesText()
+        {
+            try
+            {
+                var data =   _stockfish.ReadAllOutputUntilBestmoveAsync().Result;
+                return data;
+                
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error in readLineAsList: " + ex.Message);
+                return null;
+            }
+
+        }
+
+
+        private List<string> readAllLines()
+        {
+            try
+            {
+                var data = _stockfish.ReadAllOutputUntilBestmoveAsync().Result;
+                var allLines = data.Trim().Split('\n').ToList();
+
+
+                return allLines;
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error in readLineAsList: " + ex.Message);
+                return null;
+            }
+
+        }
+
+
 
         private List<string> readLinesAsList(int lines)
         {
@@ -330,6 +373,55 @@ namespace Stockfish.Core
                         throw new MaxTriesException();
                     }
 
+                    var bestMove = string.Empty;
+                    
+
+                    var alllDataLiens = readAllLines();
+
+                    var finalInfoLine = alllDataLiens[alllDataLiens.Count-2];
+                    var bestNodeLine = alllDataLiens.Last();
+                   
+
+                    var bestNodeData = bestNodeLine.Split(' ');
+                   
+                    if (bestNodeData[0] == "bestmove")
+                    {
+                        //var dd = readLinesAsList(2);
+                        if (bestNodeData[1] == "(none)")
+                        {
+                            return null;
+                        }
+
+                        bestMove= bestNodeData[1];
+                        return $"{finalInfoLine};{bestMove}";
+                    }
+
+                    
+
+                    tries++;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+            
+        }
+        public string GetBestMoveOld()
+        {
+            try
+            {
+                go();
+                var tries = 0;
+                while (true)
+                {
+                    if (tries > MAX_TRIES)
+                    {
+                        throw new MaxTriesException();
+                    }
+
+                    
                     var data = readLineAsList();
                     //var dd = readLinesAsList(2);
                     if (data[0] == "bestmove")
@@ -339,7 +431,7 @@ namespace Stockfish.Core
                         {
                             return null;
                         }
-                        var t = data;
+
                         return data[1];
                     }
 
@@ -351,7 +443,7 @@ namespace Stockfish.Core
 
                 return null;
             }
-            
+
         }
 
         /// <summary>

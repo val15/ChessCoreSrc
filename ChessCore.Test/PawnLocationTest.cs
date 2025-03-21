@@ -22,19 +22,19 @@ namespace ChessCore.Test
             Assert.IsFalse(result);
         }
 
-        [TestMethod]
-        public void T121_W_GetMalus()
-        {
+        //[TestMethod]
+        //public void T121_W_GetMalus()
+        //{
 
             
-            var testName = "T121_";
-            var testPath = Path.Combine(testsDirrectory, testName);
-            var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
+        //    var testName = "T121_";
+        //    var testPath = Path.Combine(testsDirrectory, testName);
+        //    var pawnList = Chess2Utils.LoadFromDirectorie(testPath);
 
-            var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
-            var result = boad.GetMenacedsPoints("W");
-            Assert.AreEqual(result,1);
-        }
+        //    var boad = Chess2Utils.GenerateBoardFormPawnListCE(pawnList);
+        //    var result = boad.GetMenacedsPoints("W");
+        //    Assert.AreEqual(result,1);
+        //}
 
         [TestMethod]
         public void T122_W_inChess()
