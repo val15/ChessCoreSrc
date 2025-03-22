@@ -1,8 +1,6 @@
 ﻿
 using ChessCore.Tools.ChessEngine.Engine.Interfaces;
 using Stockfish.Core;
-using System;
-using System.Xml.Linq;
 
 
 

@@ -58,13 +58,13 @@ namespace ChessCore.Controllers
             //MainUtils.VM.Engines.Add(new ChessEngine1());
             //MainUtils.VM.Engines.Add(new ChessEngine2());
             MainUtils.VM.Engines.Add(new ChessEngine3());
-            MainUtils.VM.Engines.Add(new ChessEngine3S());
+           // MainUtils.VM.Engines.Add(new ChessEngine3S());
             MainUtils.VM.Engines.Add(new ChessEngineStockfish());
             //MainUtils.VM.Engines.Add(new ChessEngineLLM());
 
             MainUtils.VM.SelectedEngine = MainUtils.VM.Engines[1]; //.Last();
             MainUtils.VM.SelectedWhiteEngine = MainUtils.VM.Engines[1]; //.Last();
-            MainUtils.VM.SelectedBlackEngine = MainUtils.VM.Engines[2]; //.Last();
+            MainUtils.VM.SelectedBlackEngine = MainUtils.VM.Engines[0]; //.Last();
             MainUtils.VM.SelectedLevel = 6;
             MainUtils.VM.SelectedReflectionTimeInMinute = 2;
             MainUtils.VM.SelectedWhiteLevel = 6;
