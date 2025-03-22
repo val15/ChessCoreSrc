@@ -93,7 +93,7 @@ namespace ChessCore.Tools.ChessEngine.Engine
 
 
                 var info = infoData[0];
-                Utils.WritelineAsync($"Stockfish : {info}");
+                Utils.WritelineAsync($"Stockfish : {info.Trim()}");
 
                 var depth = string.Empty;
                 var weight = string.Empty;
@@ -102,8 +102,10 @@ namespace ChessCore.Tools.ChessEngine.Engine
                 depth = finalInfoLineData[2];
                 weight = finalInfoLineData[9];
 
-                var bestMoveString = infoData[1];
-
+                var bestMoveDataString = infoData[1];
+                Utils.WritelineAsync($"{bestMoveDataString.Trim()}");
+                var bestMoveDate = bestMoveDataString.Split(" ");
+                var bestMoveString = bestMoveDate[1];
 
                 bestNodeCE = new NodeCE(bestMoveString.Substring(0, 2), bestMoveString.Substring(2, 2),Int32.Parse(weight),Int32.Parse(depth));
 

@@ -392,8 +392,8 @@ namespace Stockfish.Core
                             return null;
                         }
 
-                        bestMove= bestNodeData[1];
-                        return $"{finalInfoLine};{bestMove}";
+                       // bestMove= bestNodeData[1];
+                        return $"{finalInfoLine};{bestNodeLine}";
                     }
 
                     
