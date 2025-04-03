@@ -46,7 +46,7 @@ pipeline {
                     bat 'docker rm chessCoreJenkins || exit 0'
                     
                     // Démarrer un nouveau conteneur
-                    bat "docker run -d -p 8282:8085 --name chessCoreJenkins %DOCKER_IMAGE%"
+                    bat "docker run -d -p 8282:8080 --name chessCoreJenkins %DOCKER_IMAGE%"
                 }
             }
         }
