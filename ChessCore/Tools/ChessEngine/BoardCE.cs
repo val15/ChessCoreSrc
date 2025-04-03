@@ -33,77 +33,7 @@ namespace ChessCore.Tools.ChessEngine
             return result;
         }
 
-        public string ConvertToFENoldbug()
-        {
-            string[] piecesMapping = new string[] { "K", "Q", "R", "B", "N", "P" };
-            string[] boardRows = this.ToString().Split(';').Where(s => !string.IsNullOrEmpty(s)).ToArray();
-
-            string[,] chessboard = new string[8, 8];
-            for (int i = 0; i < boardRows.Length; i++)
-            {
-                int row = i / 8;
-                int col = i % 8;
-
-                if (boardRows[i] == "__")
-                {
-                    chessboard[row, col] = "1";
-                }
-                else
-                {
-                    string[] parts = boardRows[i].Split('|');
-                    string piece = parts[0];
-                    string color = parts[1];
-
-                    string fenPiece = piece switch
-                    {
-                        "T" => "R",
-                        "C" => "N",
-                        "B" => "B",
-                        "Q" => "Q",
-                        "K" => "K",
-                        "P" => "P",
-                        _ => "?"
-                    };
-
-                    if (color == "B") fenPiece = fenPiece.ToLower(); // Noirs en minuscules
-                    chessboard[row, col] = fenPiece;
-                }
-            }
-
-            // Construire la notation FEN
-            string fen = "";
-            for (int row = 0; row < 8; row++)
-            {
-                int emptyCount = 0;
-                for (int col = 0; col < 8; col++)
-                {
-                    string val = chessboard[row, col];
-
-                    if (val == "1") emptyCount++;
-                    else
-                    {
-                        if (emptyCount > 0)
-                        {
-                            fen += emptyCount.ToString();
-                            emptyCount = 0;
-                        }
-                        fen += val;
-                    }
-                }
-                if (emptyCount > 0) fen += emptyCount.ToString();
-                if (row < 7) fen += "/";
-            }
-
-            // Ajout des autres infos (à adapter selon ton besoin)
-            string turn = "w"; // Blancs commencent
-            string castling = "KQkq"; // Tous les roques sont possibles (à ajuster selon la position)
-            string enPassant = "-"; // Pas de prise en passant
-            int halfmoveClock = 0; // Nombre de coups depuis la dernière prise ou poussée de pion
-            int fullmoveNumber = 1; // Numéro du coup
-
-            return $"{fen} {turn} {castling} {enPassant} {halfmoveClock} {fullmoveNumber}";
-        }
-
+      
         public string ConvertToFEN()
         {
             // Tableau de correspondance des pièces

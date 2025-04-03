@@ -13,8 +13,10 @@
     <Compile Remove="Tools\ChessEngineBUGGPT.cs" />
     <Compile Remove="Tools\ChessEngine\ChessEngineALL.cs" />
     <Compile Remove="Tools\ChessEngine\Engine\ChessEngine3S - Copy %282%29.cs" />
+    <Compile Remove="Tools\ChessEngine\Engine\ChessEngine3S - Copy %283%29.cs" />
     <Compile Remove="Tools\ChessEngine\Engine\ChessEngine3S - Copy.cs" />
     <Compile Remove="Tools\ChessEngine\Engine\ChessEngine3SS - Copy.cs" />
+    <Compile Remove="Tools\ChessEngine\Engine\SS\ChessEngine3SS - Copy.cs" />
   </ItemGroup>
 
   <ItemGroup>

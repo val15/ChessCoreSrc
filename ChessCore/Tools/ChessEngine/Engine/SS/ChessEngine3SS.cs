@@ -6,121 +6,722 @@ using System.Reflection.Emit;
 
 namespace ChessCore.Tools.ChessEngine.Engine.SS
 {
-    // --- Classe d'ObjectPool (implémentation simplifiée) ---
+    public class ChessEngine3SS
+    {
+        // --- Transposition Table Entry ---
+        private enum TTBound : byte { Lower, Upper, Exact }
+
+        private struct TTEntry
+        {
+            // Use packing or smaller types if memory becomes an issue
+            public long ZobristHash; // Store hash to detect collisions (Type 1 hash)
+            public short Score;      // Score relative to the side to move
+            public short Depth;      // Depth searched from this position
+            public TTBound Bound;    // Type of score (Exact, Lower, Upper)
+            public ushort BestMoveHash; // Hash/identifier of the best move found (optional but good)
+
+            // Simple hash for the move (e.g., (from << 8) | to)
+            // Requires Move struct/class to have a way to generate this short hash
+            public static ushort MoveToShortHash(Move move)
+            {
+                if (move == null) return 0;
+                // Example: simple hashing, adjust based on your Move implementation
+                return (ushort)((move.FromIndex << 8) | move.ToIndex);
+            }
+            public static Move ShortHashToMove(ushort hash, BoardCE board, string color)
+            {
+                if (hash == 0) return null;
+                int from = hash >> 8;
+                int to = hash & 0xFF;
+                // This part is tricky - need to reconstruct the full move details
+                // It might be better to store the full Move object or more details if memory allows,
+                // or require the BoardCE to validate if a move from->to is legal for the color.
+                // For now, just return a basic move; validation needed later.
+                var piece = board._cases[from];
+                if (piece == null || !piece.EndsWith($"|{color}")) return null; // Ensure piece exists and belongs to player
+                return new Move(from, to, piece); // Assuming Move constructor
+            }
+        }
+
+        // Increased TT size, adjust based on available memory (needs power of 2 for masking)
+        private const int TranspositionTableSize = 1024 * 1024 * 128; // Example: 128M entries
+        private readonly TTEntry[] _transpositionTable = new TTEntry[TranspositionTableSize]; // Use array for performance
+        private readonly object _ttLock = new object(); // Simple lock for TT access (can be bottleneck)
+                                                        // Consider more advanced concurrent structures if needed
+
+        // --- Killer Moves --- (Store 2 per ply)
+        private const int MaxSearchDepth = 64; // Max practical search depth
+        private readonly Move[,] _killerMoves = new Move[MaxSearchDepth, 2];
+
+        // --- Search State ---
+        private int _targetDepth = 6;
+        private long _nodeCount = 0;
+        private DateTime _startTime;
+        private TimeSpan _maxSearchTime;
+        private bool _stopSearch = false;
+        private string _engineColor = "W"; // Default or set in GetBestModeCE
+
+        // --- Object Pooling (Keep if BoardCE cloning is expensive) ---
+        // private static readonly ObjectPool<BoardCE> _boardPool = new ObjectPool<BoardCE>(() => new BoardCE());
+
+        public void Dispose() { }
+
+        public string GetName() => "ChessEngineStockfishInspired";
+        public string GetShortName() => "CESI"; // Or Utils.ExtractUppercaseLettersAndDigits(GetName());
+
+        public NodeCE GetBestModeCE(string color, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
+        {
+            try
+            {
+                _engineColor = color.First().ToString().ToUpper();
+                _targetDepth = depthLevel;
+                _maxSearchTime = TimeSpan.FromMinutes(maxReflectionTimeInMinute);
+                _startTime = DateTime.UtcNow;
+                _stopSearch = false;
+                _nodeCount = 0;
+                // Clear killers for a new search
+                Array.Clear(_killerMoves, 0, _killerMoves.Length);
+                // TT clearing is optional - can persist between moves, but clear hash collisions part
+                // Consider clearing only entries with ZobristHash = 0 or using generation counters.
+
+                string opponentColor = boardChess.GetOpponentColor(_engineColor);
+
+                Utils.WritelineAsync($"{GetName()}");
+                Utils.WritelineAsync($"Target Depth: {_targetDepth}");
+                Utils.WritelineAsync($"Max Search Time: {_maxSearchTime}");
+                Utils.WritelineAsync($"Engine Color: {_engineColor}");
+                Utils.WritelineAsync($"Opponent Color: {opponentColor}");
+
+                NodeCE bestNodeOverall = null;
+                var searchTimer = Stopwatch.StartNew();
+
+                // --- Iterative Deepening Loop ---
+                for (int currentDepth = 1; currentDepth <= _targetDepth; currentDepth++)
+                {
+                    if (_stopSearch) break; // Check if time is up before starting iteration
+
+                    var stopwatch = Stopwatch.StartNew();
+                    int score = AlphaBetaNegaMax(boardChess, currentDepth, 0, -Constants.CheckmateScore, Constants.CheckmateScore, _engineColor);
+                    stopwatch.Stop();
+
+                    // Check time *after* completing a depth
+                    if (DateTime.UtcNow - _startTime >= _maxSearchTime)
+                    {
+                        _stopSearch = true;
+                        Utils.WritelineAsync("Time limit reached during search.");
+                    }
+
+                    // Retrieve best move from TT for the root position (if available and depth matches)
+                    Move bestMoveThisIteration = GetBestMoveFromTT(boardChess);
+
+                    if (bestMoveThisIteration != null)
+                    {
+                        // Update the overall best node found so far
+                        var elapsed = DateTime.UtcNow - _startTime;
+                        bestNodeOverall = new NodeCE(boardChess.CloneAndMove(bestMoveThisIteration), // Careful with cloning here if TT move is enough
+                                                     bestMoveThisIteration,
+                                                     score, // Score is from engine's perspective
+                                                     currentDepth,
+                                                     elapsed);
+
+                        // Log information about this iteration
+                        Utils.WritelineAsync($"Depth {currentDepth} | Score: {FormatScore(score)} | Best Move: {bestMoveThisIteration} | Nodes: {_nodeCount} | Time: {stopwatch.ElapsedMilliseconds}ms");
+                    }
+                    else
+                    {
+                        // This shouldn't happen if search completed unless no legal moves
+                        Utils.WritelineAsync($"WARN: No best move found at depth {currentDepth}. Score: {FormatScore(score)}");
+                        if (bestNodeOverall == null && currentDepth == 1)
+                        {
+                            // Handle no legal moves case / stalemate / checkmate
+                            var possibleMoves = boardChess.GetPossibleMovesForColor(_engineColor, true);
+                            if (!possibleMoves.Any())
+                            {
+                                Utils.WritelineAsync("No legal moves available.");
+                                return new NodeCE(boardChess, null, score, currentDepth, DateTime.UtcNow - _startTime); // Return node indicating no move
+                            }
+                            // else: something unexpected happened, maybe TT issue or search bug
+                        }
+                    }
+
+
+                    // Early exit if mate is found
+                    if (IsCheckmateScore(score) && currentDepth >= 1)
+                    {
+                        Utils.WritelineAsync($"Checkmate found at depth {currentDepth}.");
+                        break;
+                    }
+                }
+                searchTimer.Stop();
+
+                if (_stopSearch && bestNodeOverall != null)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Utils.WritelineAsync("SEARCH STOPPED DUE TO TIME LIMIT");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else if (bestNodeOverall == null)
+                {
+                    Utils.WritelineAsync("ERROR: No best move could be determined.");
+                    // Fallback: pick a random legal move?
+                    var moves = boardChess.GetPossibleMovesForColor(_engineColor, true);
+                    if (moves.Any())
+                    {
+                        bestNodeOverall = new NodeCE(boardChess, moves.First(), 0, 0, TimeSpan.Zero); // Placeholder
+                    }
+                    else
+                    {
+                        // Truly no moves (mate/stalemate)
+                        bestNodeOverall = new NodeCE(boardChess, null, Evaluate(boardChess, _engineColor), 0, TimeSpan.Zero);
+                    }
+                }
+
+                Utils.WritelineAsync($"Total Reflection Time: {searchTimer.Elapsed}");
+                Utils.WritelineAsync($"Total Nodes Searched: {_nodeCount}");
+                bestNodeOverall.ReflectionTime = searchTimer.Elapsed;
+                // We don't have the full list of root nodes and weights like before easily,
+                // but IDDFS provides the principal variation's score and move.
+                // bestNodeOverall.AllNodeCEList = ... (Could be populated if needed, but less relevant in IDDFS)
+                // bestNodeOverall.EquivalentBestNodeCEList = ... (Could store PV from TT if needed)
+
+                return bestNodeOverall;
+
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+          
+        }
+
+        // --- Core Search Function (NegaMax Alpha-Beta) ---
+        private int AlphaBetaNegaMax(BoardCE board, int depth, int ply, int alpha, int beta, string playerColor)
+        {
+            _nodeCount++;
+
+            // Check for time limit periodically (e.g., every 2048 nodes)
+            if ((_nodeCount & 2047) == 0 && DateTime.UtcNow - _startTime >= _maxSearchTime)
+            {
+                _stopSearch = true;
+                return 0; // Return neutral score on timeout
+            }
+            if (_stopSearch) return 0;
+
+            // --- Mate Distance Pruning ---
+            // If we found mate earlier, adjust alpha/beta to find shorter mates
+            alpha = Math.Max(alpha, -Constants.CheckmateScore + ply);
+            beta = Math.Min(beta, Constants.CheckmateScore - ply);
+            if (alpha >= beta) return alpha; // Pruned by mate distance
+
+            // --- Transposition Table Lookup ---
+            long boardHash = board.GetZobristHash(); // Assuming BoardCE provides this
+            int ttIndex = (int)((ulong)boardHash % (ulong)TranspositionTableSize);
+            TTEntry ttEntry = _transpositionTable[ttIndex]; // Read might not need lock if writes are careful
+            Move ttBestMove = null;
+
+            // Lock is needed for read/write consistency if multi-threading search later
+            // For single thread IDDFS, it's mainly for collision detection check
+            lock (_ttLock)
+            {
+                ttEntry = _transpositionTable[ttIndex];
+                if (ttEntry.ZobristHash == boardHash && ttEntry.Depth >= depth)
+                {
+                    // Use TT score if depth is sufficient
+                    switch (ttEntry.Bound)
+                    {
+                        case TTBound.Exact: return ttEntry.Score;
+                        case TTBound.Lower: alpha = Math.Max(alpha, ttEntry.Score); break;
+                        case TTBound.Upper: beta = Math.Min(beta, ttEntry.Score); break;
+                    }
+                    if (alpha >= beta) return ttEntry.Score; // Cutoff based on TT info
+                }
+                // Try to get the best move from TT even if depth isn't sufficient for score cutoff
+                if (ttEntry.ZobristHash == boardHash && ttEntry.BestMoveHash != 0)
+                {
+                    ttBestMove = TTEntry.ShortHashToMove(ttEntry.BestMoveHash, board, playerColor);
+                    // TODO: Validate ttBestMove is legal here? Or rely on OrderMoves validation.
+                }
+            }
+
+
+            // --- Base Case: Depth Reached or Game Over ---
+            if (depth <= 0)
+            {
+                // return Evaluate(board, playerColor); // Switch to Quiescence Search
+                return QuiescenceSearch(board, ply, alpha, beta, playerColor);
+            }
+
+            if (board.IsGameOver()) // Check for Checkmate/Stalemate
+            {
+                string opponentColor = board.GetOpponentColor(playerColor);
+                if (board.IsKingInCheck(playerColor))
+                    return -Constants.CheckmateScore + ply; // Penalize mate score by ply (shorter mates are better)
+                else
+                    return Constants.DrawScore; // Stalemate
+            }
+
+
+            // --- Search Moves ---
+            int bestScore = -Constants.InfiniteScore; // Start with lowest possible score
+            Move bestMove = null;
+            TTBound currentBound = TTBound.Upper; // Assume alpha cutoff initially (all moves failed to raise alpha)
+
+            string oppColor = board.GetOpponentColor(playerColor);
+            List<Move> moves = OrderMoves(board.GetPossibleMovesForColor(playerColor, true), board, playerColor, ply, ttBestMove);
+            int movesSearched = 0;
+
+            foreach (Move move in moves)
+            {
+                // --- Make Move ---
+                // BoardCE nextBoard = _boardPool.Get(); // Get from pool if using
+                // nextBoard.CopyFrom(board); // Need efficient copy or clone
+                // nextBoard.MakeMove(move);
+                BoardCE nextBoard = board.CloneAndMove(move); // Use existing clone method
+
+                // --- Recursive Call (PVS style - simplified here) ---
+                int score;
+                // Basic NegaMax call:
+                score = -AlphaBetaNegaMax(nextBoard, depth - 1, ply + 1, -beta, -alpha, oppColor);
+
+                // --- Unmake Move / Release Board ---
+                // nextBoard.UnmakeMove(move); // If using make/unmake
+                // _boardPool.Release(nextBoard); // Release back to pool
+
+                movesSearched++;
+
+                // --- Update Best Score & Alpha ---
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestMove = move; // Store the best move found so far
+
+                    if (score > alpha)
+                    {
+                        alpha = score;
+                        currentBound = TTBound.Exact; // Found a move that improves alpha, potential PV node
+
+                        // --- Beta Cutoff ---
+                        if (alpha >= beta)
+                        {
+                            // Store Killer Move (only if it's a quiet move)
+                            if (!move.IsCaptureOrPromotion(board)) // Assuming Move has this info or board can tell
+                                StoreKillerMove(ply, move);
+
+                            currentBound = TTBound.Lower; // This move caused a cutoff (fail-high)
+                            bestScore = beta; // Or alpha? Stockfish often returns the bound causing cutoff. Use beta for fail-high.
+                            break; // Prune remaining moves
+                        }
+                    }
+                }
+            }
+
+            // --- Handle No Legal Moves (Checkmate/Stalemate) ---
+            // This check should ideally happen before move generation, but double-check here
+            if (movesSearched == 0)
+            {
+                if (board.IsKingInCheck(playerColor))
+                    return -Constants.CheckmateScore + ply; // Checkmate
+                else
+                    return Constants.DrawScore; // Stalemate
+            }
+
+            // --- Store Result in Transposition Table ---
+            // Avoid overwriting deeper searches with shallower ones if TT entry exists
+            // Simple strategy: always replace for now, or use replacement schemes (e.g., depth-preferred)
+            lock (_ttLock)
+            {
+                // Only write if the new entry is from a deeper search or equally deep exact score
+                var existingEntry = _transpositionTable[ttIndex];
+                if (existingEntry.ZobristHash != boardHash || depth >= existingEntry.Depth || currentBound == TTBound.Exact)
+                {
+                    _transpositionTable[ttIndex] = new TTEntry
+                    {
+                        ZobristHash = boardHash,
+                        Score = (short)bestScore, // Use the actual best score found or the bound (beta)
+                        Depth = (short)depth,
+                        Bound = currentBound,
+                        BestMoveHash = TTEntry.MoveToShortHash(bestMove)
+                    };
+                }
+            }
+
+
+            return bestScore; // Return the best score found for this node
+        }
+
+        // --- Quiescence Search ---
+        private int QuiescenceSearch(BoardCE board, int ply, int alpha, int beta, string playerColor)
+        {
+            _nodeCount++;
+            if ((_nodeCount & 2047) == 0 && DateTime.UtcNow - _startTime >= _maxSearchTime)
+            {
+                _stopSearch = true;
+                return 0;
+            }
+            if (_stopSearch) return 0;
+
+            // --- Stand Pat Score ---
+            // The score if we don't make any more captures/promotions
+            int standPatScore = Evaluate(board, playerColor);
+
+            // --- Delta Pruning (Simple Version) ---
+            // If stand-pat score is already high enough, assume no capture will make it worse
+            if (standPatScore >= beta)
+                return beta; // Fail-high
+
+            // If stand-pat score is significantly worse than alpha, can we even reach alpha with a capture?
+            const int BigDelta = 900; // Value of a queen (adjust as needed)
+            if (standPatScore < alpha - BigDelta)
+            {
+                // return alpha; // Fail-low - commented out, less safe than beta cutoff
+            }
+
+
+            if (standPatScore > alpha)
+                alpha = standPatScore; // Update alpha with the best score found so far
+
+
+            // --- Generate & Order Captures/Promotions ---
+            string oppColor = board.GetOpponentColor(playerColor);
+            // Need a specific move gen function for only noisy moves
+            List<Move> noisyMoves = OrderMoves(board.GetNoisyMovesForColor(playerColor), board, playerColor, ply, null); // No TT move needed here usually
+
+
+            foreach (Move move in noisyMoves)
+            {
+                // --- Make Move ---
+                BoardCE nextBoard = board.CloneAndMove(move);
+
+                // --- Recursive Call ---
+                int score = -QuiescenceSearch(nextBoard, ply + 1, -beta, -alpha, oppColor);
+
+                // --- Unmake Move --- (handled by clone)
+
+                // --- Update Alpha ---
+                if (score > alpha)
+                {
+                    alpha = score;
+                    // --- Beta Cutoff ---
+                    if (alpha >= beta)
+                    {
+                        return beta; // Fail-high, cutoff
+                    }
+                }
+            }
+
+            // If no captures improved alpha, return the best score found (which could be the stand-pat score)
+            return alpha;
+        }
+
+
+        // --- Move Ordering ---
+        private List<Move> OrderMoves(List<Move> moves, BoardCE board, string color, int ply, Move ttBestMove)
+        {
+            if (!moves.Any()) return moves;
+
+            var moveScores = new Dictionary<Move, int>();
+
+            foreach (var move in moves)
+            {
+                int score = 0;
+
+                // 1. TT Move
+                if (move.Equals(ttBestMove)) // Requires proper Move equality comparison
+                {
+                    score = 100000;
+                }
+                else
+                {
+                    // 2. Captures (MVV-LVA)
+                    string capturedPiece = board._cases[move.ToIndex];
+                    if (capturedPiece != null)
+                    {
+                        int victimValue = board.GetPieceBaseValue(capturedPiece); // Base value (P=100, N=300...)
+                        int attackerValue = board.GetPieceBaseValue(board._cases[move.FromIndex]);
+                        score = (victimValue * 100) - attackerValue + 10000; // Prioritize captures highly, then by MVV-LVA
+                    }
+                    else // Quiet Moves
+                    {
+                        // 3. Killer Moves
+                        if (ply < MaxSearchDepth)
+                        { // Check bounds
+                            if (move.Equals(_killerMoves[ply, 0])) score = 9000;
+                            else if (move.Equals(_killerMoves[ply, 1])) score = 8500;
+                        }
+
+                        // 4. History Heuristic (Not implemented here - would need a history table)
+                        // score += _historyTable[move.FromIndex, move.ToIndex];
+
+                        // 5. Other heuristics (e.g., promotions, checks - less critical if QSearch handles them)
+                        // if (move.IsPromotion) score += 9500; // Promotions are usually good
+                    }
+                }
+                moveScores[move] = score;
+            }
+
+            // Sort moves descending by score
+            // Using LINQ OrderByDescending is simple but might be slow for large move lists
+            // A custom sort or bucket sort could be faster
+            return moves.OrderByDescending(m => moveScores[m]).ToList();
+        }
+
+        // --- Killer Move Storage ---
+        private void StoreKillerMove(int ply, Move move)
+        {
+            if (ply >= MaxSearchDepth) return; // Bounds check
+
+            // Avoid storing the same move twice
+            if (!move.Equals(_killerMoves[ply, 0]))
+            {
+                // Shift existing killer
+                _killerMoves[ply, 1] = _killerMoves[ply, 0];
+                // Store new killer
+                _killerMoves[ply, 0] = move;
+            }
+        }
+
+
+        // --- Evaluation Wrapper ---
+        private int Evaluate(BoardCE board, string playerColor)
+        {
+            // Evaluation should be relative to the current player
+            string opponentColor = board.GetOpponentColor(playerColor);
+            int score = board.CalculateBoardCEScore(playerColor, opponentColor);
+
+            // Simple NegaMax requires score relative to side-to-move.
+            // If CalculateBoardCEScore provides absolute score (e.g. White's perspective), adjust it.
+            // Assuming CalculateBoardCEScore IS relative to playerColor:
+            return score;
+
+            // If CalculateBoardCEScore is always White's score:
+            // return (playerColor == "W") ? score : -score;
+        }
+
+        // --- Helper Methods ---
+        private Move GetBestMoveFromTT(BoardCE board)
+        {
+            long boardHash = board.GetZobristHash();
+            int ttIndex = (int)((ulong)boardHash % (ulong)TranspositionTableSize);
+            Move bestMove = null;
+            lock (_ttLock)
+            { // Lock needed for consistency
+                var ttEntry = _transpositionTable[ttIndex];
+                if (ttEntry.ZobristHash == boardHash && ttEntry.BestMoveHash != 0)
+                {
+                    bestMove = TTEntry.ShortHashToMove(ttEntry.BestMoveHash, board, _engineColor); // Use engine color at root
+                                                                                                   // TODO: Validate move is legal here?
+                    if (bestMove != null && !board.IsMoveLegal(bestMove, _engineColor))
+                    {
+                        // Log or handle invalid TT move
+                        // Utils.WritelineAsync($"Warning: Invalid TT move {bestMove} for hash {boardHash}");
+                        bestMove = null;
+                    }
+                }
+            }
+            return bestMove;
+        }
+
+        private bool IsCheckmateScore(int score)
+        {
+            return Math.Abs(score) > Constants.CheckmateScore - MaxSearchDepth; // Check if score is near checkmate value
+        }
+
+        private string FormatScore(int score)
+        {
+            if (IsCheckmateScore(score))
+            {
+                int sign = Math.Sign(score);
+                // Calculate moves to mate from the score
+                int movesToMate = (Constants.CheckmateScore - Math.Abs(score) + 1) / 2; // +1 because ply starts at 0
+                return $"Mate in {movesToMate * sign}"; // Negative if engine is getting mated
+            }
+            return score.ToString(); // Centipawn score
+        }
+
+        // --- Constants --- (Define appropriately)
+        private static class Constants
+        {
+            public const int InfiniteScore = 30000;
+            public const int CheckmateScore = 29000; // Must be less than infinite, allow for ply differences
+            public const int DrawScore = 0;
+        }
+
+        // Assumed methods in BoardCE (Needs implementation details):
+        // - long GetZobristHash()
+        // - int GetPieceBaseValue(string piece) -> e.g., Pawn=100, Knight=300... (ignores position)
+        // - List<Move> GetNoisyMovesForColor(string color) -> Returns only captures/promotions
+        // - bool IsMoveLegal(Move move, string color)
+        // - bool IsCaptureOrPromotion(Move move) -> Add this helper to Move or BoardCE
+        // - bool IsGameOver() -> Checks mate/stalemate
+        // - bool IsKingInCheck(string color)
+        // - int CalculateBoardCEScore(string myColor, string opponentColor) -> MUST BE FAST!
+        // - BoardCE CloneAndMove(Move move) -> Efficiently clones and makes move
+        // - (Optional) MakeMove(Move move) / UnmakeMove(Move move) -> For performance if cloning is slow
+        // - (Optional) GetPieceValue(string piece) -> Used in old code, might differ from GetPieceBaseValue
+
+        // Assumed methods/properties in Move:
+        // - int FromIndex
+        // - int ToIndex
+        // - string Piece  (optional, can get from board)
+        // - bool Equals(object obj) -> Correctly compare moves
+        // - int GetHashCode() -> Consistent with Equals
+        // - bool IsCaptureOrPromotion(BoardCE board) -> Helper method needed
+
+    }
+
+    // --- Minimal Object Pool (Example - keep if needed) ---
     public class ObjectPool<T> where T : new()
     {
-        private ConcurrentBag<T> _objects = new ConcurrentBag<T>();
-        private Func<T> _objectGenerator;
+        private readonly ConcurrentBag<T> _objects = new ConcurrentBag<T>();
+        private readonly Func<T> _objectGenerator;
+
         public ObjectPool(Func<T> objectGenerator)
         {
-            _objectGenerator = objectGenerator;
+            _objectGenerator = objectGenerator ?? throw new ArgumentNullException(nameof(objectGenerator));
         }
-        public T GetObject()
-        {
-            if (_objects.TryTake(out T item))
-                return item;
-            return _objectGenerator();
-        }
-        public void PutObject(T item)
-        {
-            _objects.Add(item);
-        }
+
+       // public T Get() => _objects.TryPop(out T item) ? item : _objectGenerator();
+
+        public void Release(T item) => _objects.Add(item);
     }
 
-    // --- Classe représentant un coup ---
-    public class Move
+    // --- Utils Placeholder ---
+    public static class Utils
     {
-        public int FromIndex { get; set; }
-        public int ToIndex { get; set; }
+        public static void WritelineAsync(string message) => Console.WriteLine(message); // Replace with async logging if needed
+        public static string ExtractUppercaseLettersAndDigits(string s) => new string(s.Where(c => char.IsUpper(c) || char.IsDigit(c)).ToArray());
+    }
 
+    // --- Move Placeholder --- (Ensure this matches your actual Move class/struct)
+    public class Move // Or struct? Structs are better for perf if small and passed often
+    {
+        public int FromIndex { get; }
+        public int ToIndex { get; }
+        public string Piece { get; } // Piece being moved (e.g., "P|W")
+        // Add promotion piece info if applicable
+
+        public Move(int from, int to, string piece)
+        {
+            FromIndex = from;
+            ToIndex = to;
+            Piece = piece;
+        }
+
+        // Implement Equals and GetHashCode for Dictionary keys and Killer Move comparison
         public override bool Equals(object obj)
         {
-            if (obj is Move other)
-                return FromIndex == other.FromIndex && ToIndex == other.ToIndex;
-            return false;
+            return obj is Move move &&
+                   FromIndex == move.FromIndex &&
+                   ToIndex == move.ToIndex; // Potentially add PromotionPiece equality if needed
         }
-        public override int GetHashCode() => (FromIndex, ToIndex).GetHashCode();
-    }
 
-    // --- Classe représentant un nœud de la recherche ---
-    public class NodeCE
-    {
-        public BoardCE Board;
-        public List<NodeCE> EquivalentBestNodeCEList { get; set; }
-        public List<NodeCE> AllNodeCEList { get; set; } = new List<NodeCE>();
-        public Move Move;
-        public int Weight;
-        public int Depth;
-        public TimeSpan ReflectionTime;
-        public string Location => Utils.GetPositionFromIndex(Move.FromIndex); // Position d'origine en notation échiquier
-        public string BestChildPosition => Utils.GetPositionFromIndex(Move.ToIndex); // Position de destination en notation échiquier
+        public override int GetHashCode()
+        {
+            // Simple hash combining FromIndex and ToIndex
+            return HashCode.Combine(FromIndex, ToIndex); // Use System.HashCode for better distribution
+                                                         // Or return (FromIndex << 8) | ToIndex; if indices are < 256
+        }
+
+        public bool IsCaptureOrPromotion(BoardCE board)
+        {
+            // Promotion check (e.g., pawn reaching last rank)
+            // Simplified check - needs proper logic based on your board representation
+            char pieceType = Piece[0];
+            if (pieceType == 'P')
+            {
+                int targetRank = ToIndex / 8;
+                if ((Piece.EndsWith("W") && targetRank == 7) || (Piece.EndsWith("B") && targetRank == 0))
+                {
+                    return true; // Is promotion
+                }
+            }
+            // Capture check
+            return board._cases[ToIndex] != null;
+        }
+
 
         public override string ToString()
         {
-            return $"{Depth}:   {Location} ({Move.FromIndex}) => {BestChildPosition} ({Move.ToIndex}) : {Weight} ({ReflectionTime.ToString(@"hh\:mm\:ss")})".ToUpper();
+            // Convert FromIndex/ToIndex to algebraic notation (e.g., "e2e4")
+            return $"{IndexToAlgebraic(FromIndex)}{IndexToAlgebraic(ToIndex)}";
         }
-        public NodeCE(BoardCE board, Move move, int weight, int depth, TimeSpan reflectionTime)
+
+        private static string IndexToAlgebraic(int index)
         {
-            Board = board;
-            Move = move;
-            Weight = weight;
-            Depth = depth;
-            ReflectionTime = reflectionTime;
+            if (index < 0 || index > 63) return "??";
+            int file = index % 8;
+            int rank = index / 8;
+            return $"{(char)('a' + file)}{rank + 1}";
         }
     }
 
-    // --- Implémentation simplifiée et sûre du plateau d'échecs ---
+    // --- NodeCE Placeholder --- (Ensure this matches your actual NodeCE class)
+    public class NodeCE
+    {
+        public BoardCE Board { get; } // Consider not storing the full board if memory is tight
+        public Move Move { get; }
+        public int Weight { get; set; }
+        public int Depth { get; }
+        public TimeSpan Elapsed { get; }
+        public TimeSpan ReflectionTime { get; set; }
+        public List<NodeCE> EquivalentBestNodeCEList { get; set; } = new List<NodeCE>();
+        public List<NodeCE> AllNodeCEList { get; set; } = new List<NodeCE>(); // May not be populated by IDDFS
+
+        public int FromIndex => Move?.FromIndex ?? -1;
+        public int ToIndex => Move?.ToIndex ?? -1;
+        public string Location => ChessCore.Tools.Utils.GetPositionFromIndex(Move.FromIndex); // Position d'origine en notation échiquier
+        public string BestChildPosition => ChessCore.Tools.Utils.GetPositionFromIndex(Move.ToIndex); // Position de destination en notation échiquier
+
+
+
+        public NodeCE(BoardCE board, Move move, int weight, int depth, TimeSpan elapsed)
+        {
+            Board = board; // This might store the board *after* the move
+            Move = move;
+            Weight = weight;
+            Depth = depth;
+            Elapsed = elapsed;
+        }
+        public override string ToString()
+        {
+            return $"Move: {Move}, Score: {Weight}, Depth: {Depth}, Elapsed: {Elapsed.TotalMilliseconds:F0}ms";
+        }
+    }
+
+    // --- BoardCE Placeholder --- (Key methods needed by the engine)
     public class BoardCE
     {
-        // _cases représente le plateau (64 cases) ; on utilise ici des chaînes
-        public string[] _cases;
-
-
+        public string[] _cases = new string[64]; // Example representation
 
         public BoardCE()
         {
-            _cases = new string[64];
-            // Par exemple, initialiser avec une position vide ou la position de départ
-        }
-
-
-        public BoardCE(string[] cases)
-        {
-            _cases = cases;
-        }
-
-
-
-        // Clone crée une copie superficielle sûre du plateau
-        public BoardCE Clone()
-        {
-            var clone = new BoardCE();
-            clone._cases = (string[])this._cases.Clone();
-            return clone;
-        }
-
-        // CloneAndMove crée un clone et effectue le coup
-        public BoardCE CloneAndMove(Move move)
-        {
-            if (move.FromIndex < 0 || move.FromIndex >= _cases.Length ||
-                move.ToIndex < 0 || move.ToIndex >= _cases.Length)
-                throw new ArgumentOutOfRangeException("Indices invalides pour le mouvement.");
-
-            var clone = Clone();
-            clone._cases[move.ToIndex] = clone._cases[move.FromIndex];
-            clone._cases[move.FromIndex] = null;
-            return clone;
-        }
-
-        public string ToString()
-        {
-            var result = "";
-            foreach (var caseContaint in _cases.ToList())
+            for (int i = 0; i < 64; i++)
             {
-                result += caseContaint + ";";
-
+                _cases[i] = $"__";
             }
-            return result;
+        }
+        public void Print()
+        {
+            Utils.WritelineAsync("_____________________________________________________________________");
+            for (int y = 0; y < 8; y++)
+            {
+                var line = "";
+                for (int x = 0; x < 8; x++)
+                {
+                    var index = x + y * 8;
+                    var data = _cases[index];
+                    line += $"{data}\t";
+                }
+                Utils.WritelineAsync(line);
+            }
+            Utils.WritelineAsync("_____________________________________________________________________");
+        }
+
+
+        public void InsertPawn(int index, string pieceType, string color)
+        {
+            _cases[index] = $"{pieceType}|{color}";
         }
         public string ConvertToFEN()
         {
@@ -209,846 +810,70 @@ namespace ChessCore.Tools.ChessEngine.Engine.SS
             // Retourner le FEN complet
             return $"{fen} w {castling} {enPassant} {halfmoveClock} {fullmoveNumber}";
         }
-        public void Print()
+
+
+
+        // MUST IMPLEMENT:
+        public virtual long GetZobristHash()
         {
-            Utils.WritelineAsync("_____________________________________________________________________");
-            for (int y = 0; y < 8; y++)
-            {
-                var line = "";
-                for (int x = 0; x < 8; x++)
-                {
-                    var index = x + y * 8;
-                    var data = _cases[index];
-                    line += $"{data}\t";
-                }
-                Utils.WritelineAsync(line);
-            }
-            Utils.WritelineAsync("_____________________________________________________________________");
-        }
-        public void InsertPawn(int index, string pieceType, string color)
-        {
-            _cases[index] = $"{pieceType}|{color}";
-        }
-
-
-        // Renvoie la couleur opposée (suppose "W" ou "B")
-        public string GetOpponentColor(string color) => color == "W" ? "B" : "W";
-
-        // Génère une liste de coups possibles pour la couleur donnée (implémentation simplifiée)
-       
-        public List<Move> GetPossibleMovesForColorOLD(string color, bool includeSpecial = false)
-        {
-            var moves = new List<Move>();
-
-            for (int i = 0; i < _cases.Length; i++)
-            {
-                if (_cases[i] != null && _cases[i].EndsWith("|" + color))
-                {
-                    string pieceType = _cases[i].Split('|')[0];
-                    int row = i / 8;
-                    int col = i % 8;
-
-                    switch (pieceType)
-                    {
-                        case "P":
-                            // Pour un pion : 
-                            // - Si blanc, déplacement vers le haut (row - 1) si la case est vide.
-                            // - Si noir, déplacement vers le bas (row + 1).
-                            if (color == "W")
-                            {
-                                int newRow = row - 1;
-                                if (newRow >= 0)
-                                {
-                                    int newIndex = newRow * 8 + col;
-                                    if (_cases[newIndex] == null)
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                }
-                            }
-                            else // noir
-                            {
-                                int newRow = row + 1;
-                                if (newRow < 8)
-                                {
-                                    int newIndex = newRow * 8 + col;
-                                    if (_cases[newIndex] == null)
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                }
-                            }
-                            break;
-
-                        case "R":
-                            // Pour une tour : explorer dans les 4 directions (verticales et horizontales)
-                            int[] dRow = { -1, 1, 0, 0 };
-                            int[] dCol = { 0, 0, -1, 1 };
-                            for (int d = 0; d < 4; d++)
-                            {
-                                int newRow = row;
-                                int newCol = col;
-                                while (true)
-                                {
-                                    newRow += dRow[d];
-                                    newCol += dCol[d];
-                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
-                                        break;
-                                    int newIndex = newRow * 8 + newCol;
-                                    moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                    // Si une pièce est rencontrée, on ne peut pas aller plus loin dans cette direction.
-                                    if (_cases[newIndex] != null)
-                                        break;
-                                }
-                            }
-                            break;
-
-                        case "C":
-                            // Pour un cavalier : 8 mouvements possibles
-                            int[] knightMovesRow = { -2, -1, 1, 2, 2, 1, -1, -2 };
-                            int[] knightMovesCol = { 1, 2, 2, 1, -1, -2, -2, -1 };
-                            for (int m = 0; m < 8; m++)
-                            {
-                                int newRow = row + knightMovesRow[m];
-                                int newCol = col + knightMovesCol[m];
-                                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8)
-                                {
-                                    int newIndex = newRow * 8 + newCol;
-                                    moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                }
-                            }
-                            break;
-
-                        // Vous pouvez ajouter ici les cas pour "B" (Fou), "Q" (Dame) et "K" (Roi)
-                        default:
-                            break;
-                    }
-                }
-            }
-            return moves;
-        }
-
-        public List<Move> GetPossibleMovesForColor(string color, bool includeSpecial = false)
-        {
-            var moves = new List<Move>();
-
-            for (int i = 0; i < _cases.Length; i++)
-            {
-                string piece = _cases[i];
-                // On considère qu'une case est occupée par une pièce si elle n'est pas "__"
-                // et qu'elle se termine par "|color".
-                if (piece != null && !piece.Equals("__") && piece.EndsWith("|" + color))
-                {
-                    string pieceType = piece.Split('|')[0];
-                    int row = i / 8;
-                    int col = i % 8;
-
-                    switch (pieceType)
-                    {
-                        case "P":
-                            // Pion
-                            if (color == "W")
-                            {
-                                // Déplacement avant
-                                int forward = i - 8;
-                                if (_cases[forward] == null)
-                                    continue;
-                                if (forward >= 0 && _cases[forward].Equals("__"))
-                                {
-                                    moves.Add(new Move { FromIndex = i, ToIndex = forward });
-                                    // Double déplacement initial (si le pion est sur la 7ème rangée, row == 6)
-                                    if (row == 6)
-                                    {
-                                        int forward2 = i - 16;
-                                        if (_cases[forward2] == null)
-                                            continue;
-                                        if (_cases[i - 8].Equals("__") && _cases[forward2].Equals("__"))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = forward2 });
-                                    }
-                                }
-                                // Captures diagonales
-                                if (row - 1 >= 0 && col - 1 >= 0)
-                                {
-                                    int diagLeft = i - 8 - 1;
-                                    if (_cases[diagLeft] == null)
-                                        continue;
-                                    if (!_cases[diagLeft].Equals("__") && !_cases[diagLeft].EndsWith("|W"))
-                                        moves.Add(new Move { FromIndex = i, ToIndex = diagLeft });
-                                }
-                                if (row - 1 >= 0 && col + 1 < 8)
-                                {
-                                    int diagRight = i - 8 + 1;
-                                    if (_cases[diagRight] == null)
-                                        continue;
-                                    if (!_cases[diagRight].Equals("__") && !_cases[diagRight].EndsWith("|W"))
-                                        moves.Add(new Move { FromIndex = i, ToIndex = diagRight });
-                                }
-                            }
-                            else // Pour les noirs
-                            {
-                                int forward = i + 8;
-                                if (_cases[forward] == null)
-                                    continue;
-                                if (forward < 64 && _cases[forward].Equals("__"))
-                                {
-                                    moves.Add(new Move { FromIndex = i, ToIndex = forward });
-                                    // Double déplacement initial (pour les noirs sur la 2ème rangée, row == 1)
-                                    if (row == 1)
-                                    {
-                                        int forward2 = i + 16;
-                                        if (_cases[forward2] == null)
-                                            continue;
-                                        if (_cases[i + 8].Equals("__") && _cases[forward2].Equals("__"))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = forward2 });
-                                    }
-                                }
-                                // Captures diagonales
-                                if (row + 1 < 8 && col - 1 >= 0)
-                                {
-                                    int diagLeft = i + 8 - 1;
-                                    if (_cases[diagLeft] == null)
-                                        continue;
-                                    if (!_cases[diagLeft].Equals("__") && !_cases[diagLeft].EndsWith("|B"))
-                                        moves.Add(new Move { FromIndex = i, ToIndex = diagLeft });
-                                }
-                                if (row + 1 < 8 && col + 1 < 8)
-                                {
-                                    int diagRight = i + 8 + 1;
-                                    if (_cases[diagRight] == null)
-                                        continue;
-                                    if (!_cases[diagRight].Equals("__") && !_cases[diagRight].EndsWith("|B"))
-                                        moves.Add(new Move { FromIndex = i, ToIndex = diagRight });
-                                }
-                            }
-                            break;
-
-                        case "N":
-                            // Cavalier : 8 mouvements possibles
-                            int[] knightMovesRow = { -2, -1, 1, 2, 2, 1, -1, -2 };
-                            int[] knightMovesCol = { 1, 2, 2, 1, -1, -2, -2, -1 };
-                            for (int j = 0; j < 8; j++)
-                            {
-                                int newRow = row + knightMovesRow[j];
-                                int newCol = col + knightMovesCol[j];
-                                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8)
-                                {
-                                    int newIndex = newRow * 8 + newCol;
-                                    // La case est vide ou contient une pièce ennemie
-                                    if (_cases[newIndex].Equals("__") || !_cases[newIndex].EndsWith("|" + color))
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                }
-                            }
-                            break;
-
-                        case "B":
-                            // Fou : déplacements diagonaux
-                            int[] diagRow = { -1, -1, 1, 1 };
-                            int[] diagCol = { -1, 1, 1, -1 };
-                            for (int d = 0; d < 4; d++)
-                            {
-                                int newRow = row;
-                                int newCol = col;
-                                while (true)
-                                {
-                                    newRow += diagRow[d];
-                                    newCol += diagCol[d];
-                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
-                                        break;
-                                    int newIndex = newRow * 8 + newCol;
-                                    if (_cases[newIndex] == null)
-                                        continue;
-                                    if (_cases[newIndex].Equals("__"))
-                                    {
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                    }
-                                    else
-                                    {
-                                        if (!_cases[newIndex].EndsWith("|" + color))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-
-                        case "R":
-                            // Tour : déplacements verticaux et horizontaux
-                            int[] straightRow = { -1, 1, 0, 0 };
-                            int[] straightCol = { 0, 0, -1, 1 };
-                            for (int d = 0; d < 4; d++)
-                            {
-                                int newRow = row;
-                                int newCol = col;
-                                while (true)
-                                {
-                                    newRow += straightRow[d];
-                                    newCol += straightCol[d];
-                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
-                                        break;
-                                    int newIndex = newRow * 8 + newCol;
-                                    if (_cases[newIndex].Equals("__"))
-                                    {
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                    }
-                                    else
-                                    {
-                                        if (!_cases[newIndex].EndsWith("|" + color))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-
-                        case "Q":
-                            // Dame : combinaison du fou et de la tour.
-                            // On déclare ici les tableaux pour les déplacements diagonaux et droits.
-                            int[] qDiagRow = { -1, -1, 1, 1 };
-                            int[] qDiagCol = { -1, 1, 1, -1 };
-                            int[] qStraightRow = { -1, 1, 0, 0 };
-                            int[] qStraightCol = { 0, 0, -1, 1 };
-
-                            // Diagonaux
-                            for (int d = 0; d < 4; d++)
-                            {
-                                int newRow = row;
-                                int newCol = col;
-                                while (true)
-                                {
-                                    newRow += qDiagRow[d];
-                                    newCol += qDiagCol[d];
-                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
-                                        break;
-                                    int newIndex = newRow * 8 + newCol;
-                                    if (_cases[newIndex] == null)
-                                        continue;
-                                    if (_cases[newIndex].Equals("__"))
-                                    {
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                    }
-                                    else
-                                    {
-                                        if (!_cases[newIndex].EndsWith("|" + color))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                        break;
-                                    }
-                                }
-                            }
-                            // Verticaux et horizontaux
-                            for (int d = 0; d < 4; d++)
-                            {
-                                int newRow = row;
-                                int newCol = col;
-                                while (true)
-                                {
-                                    newRow += qStraightRow[d];
-                                    newCol += qStraightCol[d];
-                                    if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8)
-                                        break;
-                                    int newIndex = newRow * 8 + newCol;
-                                    if (_cases[newIndex] == null)
-                                        continue;
-                                    if (_cases[newIndex].Equals("__"))
-                                    {
-                                        moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                    }
-                                    else
-                                    {
-                                        if (!_cases[newIndex].EndsWith("|" + color))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-
-                        case "K":
-                            // Roi : déplacement d'un pas dans toutes les directions
-                            for (int dr = -1; dr <= 1; dr++)
-                            {
-                                for (int dc = -1; dc <= 1; dc++)
-                                {
-                                    if (dr == 0 && dc == 0)
-                                        continue;
-                                    int newRow = row + dr;
-                                    int newCol = col + dc;
-                                    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8)
-                                    {
-                                        int newIndex = newRow * 8 + newCol;
-                                        if (_cases[newIndex] == null)
-                                            continue;
-                                        if (_cases[newIndex].Equals("__") || !_cases[newIndex].EndsWith("|" + color))
-                                            moves.Add(new Move { FromIndex = i, ToIndex = newIndex });
-                                    }
-                                }
-                            }
-                            // Le roque n'est pas implémenté ici.
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            }
-            return moves;
-        }
-
-
-        // Fonction d'évaluation simplifiée : compte les pièces de chaque camp
-        public int CalculateBoardCEScore(string cpuColor, string opponentColor)
-        {
-            int score = 0;
+            // Implement proper Zobrist hashing here!
+            // Example placeholder (BAD HASH):
+            long hash = 0;
             for (int i = 0; i < _cases.Length; i++)
             {
                 if (_cases[i] != null)
                 {
-                    if (_cases[i].Contains("|" + cpuColor))
-                        score += 1;
-                    else if (_cases[i].Contains("|" + opponentColor))
-                        score -= 1;
+                    hash ^= (long)_cases[i].GetHashCode() << (i % 16);
                 }
             }
-            return score;
-        }
-
-        // Méthodes simplifiées pour la vérification d'échec et fin de partie
-        public bool IsKingInCheck(string color) => false;
-        public bool IsGameOver() => false;
-
-        // Méthode fictive pour vérifier si une case est menacée (toujours false ici)
-        public bool TargetIndexIsMenaced(int index, string color) => false;
-
-        // Retourne une valeur (dummy) pour une pièce
-        public int GetPieceValue(string piece) => 1;
-    }
-
-    // --- Interface du moteur d'échecs ---
-    //public interface IChessEngine : IDisposable
-    //{
-    //    string GetName();
-    //    string GetShortName();
-    //    NodeCE GetBestModeCE(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2);
-    //}
-
-    // --- Classe utilitaire ---
-    public static class Utils
-    {
-        public static string GetPositionFromIndex(int index)
-        {
-            if (index < 0 || index > 63)
-                return null;
-
-            char file = (char)('a' + index % 8); // 'a' à 'h'
-            int rank = 8 - index / 8; // '8' à '1'
-
-            return $"{file}{rank}";
-        }
-
-        public static void WritelineAsync(string message)
-        {
-            Console.WriteLine(message);
-            Debug.WriteLine(message);
-        }
-
-        public static string ExtractUppercaseLettersAndDigits(string input)
-        {
-            return new string(input.Where(char.IsUpper).ToArray());
-        }
-    }
-
-    // --- Moteur d'échecs inspiré de Stockfish (version corrigée) ---
-    public class ChessEngine3SS : IChessEngine
-    {
-        private static readonly ObjectPool<BoardCE> _boardPool = new ObjectPool<BoardCE>(() => new BoardCE());
-
-        // Table de transposition qui stocke (score, profondeur, type d'entrée)
-        private readonly ConcurrentDictionary<long, TranspositionEntry> _transpositionTable = new ConcurrentDictionary<long, TranspositionEntry>();
-        private struct TranspositionEntry
-        {
-            public int Score;
-            public int Depth;
-            public EntryType Flag;
-        }
-        private enum EntryType { Exact, LowerBound, UpperBound }
-
-        private int _maxSearchTimeSeconds = 300; // 5 minutes par défaut
-        private DateTime _startTime;
-        private bool _timeLimitReached = false;
-        private int _maxDepth;
-
-        // Killer moves : pour chaque profondeur, stocke les coups ayant entraîné une coupure beta
-        private readonly Dictionary<int, List<Move>> _killerMoves = new Dictionary<int, List<Move>>();
-        private readonly object _killerLock = new object();
-
-        public void Dispose() { }
-
-        public string GetName() => GetType().Name;
-        public string GetShortName() => Utils.ExtractUppercaseLettersAndDigits(GetName());
-
-        public NodeCE GetBestModeCECustum(string colore, BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2)
-        {
-            _maxSearchTimeSeconds = maxReflectionTimeInMinute * 60;
-            _startTime = DateTime.UtcNow;
-            _timeLimitReached = false;
-            _maxDepth = depthLevel;
-            var cpuColor = colore.First().ToString();
-            var bestNode = IterativeDeepeningSearch(boardChess, cpuColor);
-            return bestNode;
-        }
-
-        private NodeCE IterativeDeepeningSearch(BoardCE board, string cpuColor)
-        {
-            NodeCE bestNode = null;
-            List<NodeCE> allNodes = new List<NodeCE>();
-            int previousScore = 0;
-            int aspirationWindow = 50;
-            for (int depth = 1; depth <= _maxDepth; depth++)
-            {
-                if (_timeLimitReached)
-                    break;
-
-                int alpha = previousScore - aspirationWindow;
-                int beta = previousScore + aspirationWindow;
-                int score = 0;
-                NodeCE currentBestNode = null;
-                var moves = board.GetPossibleMovesForColor(cpuColor, true);
-                moves = OrderMoves(moves, board, cpuColor);
-                foreach (var move in moves)
-                {
-                    if (_timeLimitReached)
-                        break;
-
-                    var clonedBoard = SafeCloneAndMove(board, move);
-                    if (clonedBoard == null)
-                        continue;
-
-                    score = -AlphaBeta(clonedBoard, depth - 1, -beta, -alpha, false, cpuColor);
-                    if (_timeLimitReached)
-                        break;
-
-                    if (score <= alpha || score >= beta)
-                    {
-                        score = -AlphaBeta(clonedBoard, depth - 1, int.MinValue, int.MaxValue, false, cpuColor);
-                    }
-                    if (score > alpha)
-                    {
-                        alpha = score;
-                        currentBestNode = new NodeCE(clonedBoard, move, score, depth, DateTime.UtcNow - _startTime);
-                    }
-                }
-                if (!_timeLimitReached && currentBestNode != null)
-                {
-                    bestNode = currentBestNode;
-                    previousScore = alpha;
-                    Utils.WritelineAsync($"Depth {depth} complétée, meilleur score: {previousScore}");
-                    Utils.WritelineAsync($"{currentBestNode}");
-                    allNodes.Add(currentBestNode);
-                }
-            }
-            if (bestNode != null)
-            {
-                bestNode.ReflectionTime = DateTime.UtcNow - _startTime;
-                bestNode.AllNodeCEList = allNodes;
-            }
-             
-            Utils.WritelineAsync($"bestNode : {bestNode}");
-            return bestNode;
-        }
-
-        private NodeCE IterativeDeepeningSearchParallelSlow(BoardCE board, string cpuColor)
-        {
-            NodeCE bestNode = null;
-            int previousScore = 0;
-            int aspirationWindow = 50;
-            List<NodeCE> allNodes = new List<NodeCE>();
-
-            // Pour chaque profondeur d'itération jusqu'à _maxDepth
-            for (int depth = 1; depth <= _maxDepth; depth++)
-            {
-                if (_timeLimitReached)
-                    break;
-
-                int alphaBase = previousScore - aspirationWindow;
-                int betaBase = previousScore + aspirationWindow;
-                // Une collection thread-safe pour accumuler les nœuds calculés à cette profondeur
-                ConcurrentBag<NodeCE> currentDepthNodes = new ConcurrentBag<NodeCE>();
-
-                var moves = board.GetPossibleMovesForColor(cpuColor, true);
-                moves = OrderMoves(moves, board, cpuColor);
-
-                // Paralléliser l'évaluation de chaque coup à la racine
-                Parallel.ForEach(moves, move =>
-                {
-                    if (_timeLimitReached)
-                        return;
-                    var clonedBoard = SafeCloneAndMove(board, move);
-                    if (clonedBoard == null)
-                        return;
-
-                    int score = -AlphaBeta(clonedBoard, depth - 1, -betaBase, -alphaBase, false, cpuColor);
-                    if (_timeLimitReached)
-                        return;
-
-                    // Si le score est en dehors de la fenêtre d'aspiration, refaire la recherche avec des bornes larges
-                    if (score <= alphaBase || score >= betaBase)
-                    {
-                        score = -AlphaBeta(clonedBoard, depth - 1, int.MinValue, int.MaxValue, false, cpuColor);
-                    }
-                    // Créer un nœud pour ce coup
-                    var node = new NodeCE(clonedBoard, move, score, depth, DateTime.UtcNow - _startTime);
-                    currentDepthNodes.Add(node);
-                });
-
-                // Sélectionner le meilleur nœud parmi ceux calculés pour cette profondeur
-                NodeCE currentBest = currentDepthNodes.OrderByDescending(n => n.Weight).FirstOrDefault();
-                if (currentBest != null)
-                {
-                    bestNode = currentBest;
-                    previousScore = currentBest.Weight;
-                    allNodes.Add(currentBest);
-                    Utils.WritelineAsync($"Depth {depth} complétée, meilleur score: {previousScore}");
-                    Utils.WritelineAsync($"{currentBest}");
-                }
-            }
-
-            if (bestNode != null)
-            {
-                bestNode.ReflectionTime = DateTime.UtcNow - _startTime;
-                bestNode.AllNodeCEList = allNodes;
-            }
-            Utils.WritelineAsync($"bestNode : {bestNode}");
-            return bestNode;
-        }
-
-
-        private int AlphaBeta(BoardCE board, int depth, int alpha, int beta, bool maximizingPlayer, string cpuColor)
-        {
-            if (_timeLimitReached || TimeExceeded())
-            {
-                _timeLimitReached = true;
-                return board.CalculateBoardCEScore(cpuColor, board.GetOpponentColor(cpuColor));
-            }
-
-            var opponentColor = board.GetOpponentColor(cpuColor);
-            long hash = ComputeBoardHash(board, depth, cpuColor);
-            if (_transpositionTable.TryGetValue(hash, out var entry) && entry.Depth >= depth)
-            {
-                if (entry.Flag == EntryType.Exact)
-                    return entry.Score;
-                if (entry.Flag == EntryType.LowerBound)
-                    alpha = Math.Max(alpha, entry.Score);
-                else if (entry.Flag == EntryType.UpperBound)
-                    beta = Math.Min(beta, entry.Score);
-                if (alpha >= beta)
-                    return entry.Score;
-            }
-
-            if (depth == 0 || board.IsGameOver())
-            {
-                int eval = QuiescenceSearch(board, alpha, beta, cpuColor);
-                _transpositionTable[hash] = new TranspositionEntry { Score = eval, Depth = depth, Flag = EntryType.Exact };
-                return eval;
-            }
-
-            if (depth >= 3 && !board.IsKingInCheck(cpuColor))
-            {
-                var nullMoveBoard = SafeClone(board);
-                if (nullMoveBoard != null)
-                {
-                    int R = 2;
-                    int nullScore = -AlphaBeta(nullMoveBoard, depth - 1 - R, -beta, -beta + 1, false, cpuColor);
-                    if (nullScore >= beta)
-                        return nullScore;
-                }
-            }
-
-            int bestValue = int.MinValue;
-            var moves = board.GetPossibleMovesForColor(maximizingPlayer ? cpuColor : opponentColor);
-            moves = OrderMoves(moves, board, maximizingPlayer ? cpuColor : opponentColor);
-            foreach (var move in moves)
-            {
-                var clonedBoard = SafeCloneAndMove(board, move);
-                if (clonedBoard == null)
-                    continue;
-                int value = -AlphaBeta(clonedBoard, depth - 1, -beta, -alpha, !maximizingPlayer, cpuColor);
-                if (value > bestValue)
-                {
-                    bestValue = value;
-                    if (!IsCaptureMove(move, board))
-                    {
-                        lock (_killerLock)
-                        {
-                            if (!_killerMoves.ContainsKey(depth))
-                                _killerMoves[depth] = new List<Move>();
-                            _killerMoves[depth].Add(move);
-                        }
-                    }
-                }
-                alpha = Math.Max(alpha, bestValue);
-                if (alpha >= beta)
-                    break;
-            }
-
-            EntryType flag = EntryType.Exact;
-            if (bestValue <= alpha)
-                flag = EntryType.UpperBound;
-            else if (bestValue >= beta)
-                flag = EntryType.LowerBound;
-            _transpositionTable[hash] = new TranspositionEntry { Score = bestValue, Depth = depth, Flag = flag };
-
-            return bestValue;
-        }
-
-        private int QuiescenceSearchOLD(BoardCE board, int alpha, int beta, string cpuColor)
-        {
-            int standPat = board.CalculateBoardCEScore(cpuColor, board.GetOpponentColor(cpuColor));
-            if (standPat >= beta)
-                return beta;
-            if (alpha < standPat)
-                alpha = standPat;
-
-            var captureMoves = board.GetPossibleMovesForColor(cpuColor)
-                .Where(m => IsValidIndex(m.ToIndex, board) && board._cases[m.ToIndex] != null)
-                .ToList();
-            captureMoves = OrderMoves(captureMoves, board, cpuColor);
-
-            foreach (var move in captureMoves)
-            {
-                var clonedBoard = SafeCloneAndMove(board, move);
-                if (clonedBoard == null)
-                    continue;
-                int score = -QuiescenceSearch(clonedBoard, -beta, -alpha, cpuColor);
-                if (score >= beta)
-                    return beta;
-                if (score > alpha)
-                    alpha = score;
-            }
-            return alpha;
-        }
-        private int QuiescenceSearch(BoardCE board, int alpha, int beta, string cpuColor, int quiescenceDepth = 0)
-        {
-            // Limite pour éviter une récursion infinie en phase de quiétude
-            if (quiescenceDepth > _maxDepth)
-                return board.CalculateBoardCEScore(cpuColor, board.GetOpponentColor(cpuColor));
-
-            int standPat = board.CalculateBoardCEScore(cpuColor, board.GetOpponentColor(cpuColor));
-            if (standPat >= beta)
-                return beta;
-            if (alpha < standPat)
-                alpha = standPat;
-
-            var captureMoves = board.GetPossibleMovesForColor(cpuColor)
-                .Where(m => IsValidIndex(m.ToIndex, board) && board._cases[m.ToIndex] != null)
-                .ToList();
-            captureMoves = OrderMoves(captureMoves, board, cpuColor);
-
-            foreach (var move in captureMoves)
-            {
-                var clonedBoard = SafeCloneAndMove(board, move);
-                if (clonedBoard == null)
-                    continue;
-                int score = -QuiescenceSearch(clonedBoard, -beta, -alpha, cpuColor, quiescenceDepth + 1);
-                if (score >= beta)
-                    return beta;
-                if (score > alpha)
-                    alpha = score;
-            }
-            return alpha;
-        }
-
-
-        private bool TimeExceeded() => (DateTime.UtcNow - _startTime).TotalSeconds > _maxSearchTimeSeconds;
-
-        private List<Move> OrderMoves(List<Move> moves, BoardCE board, string color)
-        {
-            var killer = new HashSet<Move>();
-            lock (_killerLock)
-            {
-                foreach (var kvp in _killerMoves)
-                {
-                    foreach (var km in kvp.Value)
-                        killer.Add(km);
-                }
-            }
-            return moves.OrderByDescending(move =>
-            {
-                int score = 0;
-                if (killer.Contains(move))
-                    score += 1000;
-                if (IsValidIndex(move.ToIndex, board) && board._cases[move.ToIndex] != null)
-                    score += board.GetPieceValue(board._cases[move.ToIndex]) * 10;
-                return score;
-            }).ToList();
-        }
-
-        private bool IsValidIndex(int index, BoardCE board) => board._cases != null && index >= 0 && index < board._cases.Length;
-
-        private bool IsCaptureMove(Move move, BoardCE board) => IsValidIndex(move.ToIndex, board) && board._cases[move.ToIndex] != null;
-
-        private BoardCE SafeClone(BoardCE board)
-        {
-            try
-            {
-                var clone = board.Clone();
-                if (clone == null || clone._cases == null)
-                    return null;
-                return clone;
-            }
-            catch (Exception ex)
-            {
-                Utils.WritelineAsync("Erreur lors du clonage: " + ex.Message);
-                return null;
-            }
-        }
-
-        private BoardCE SafeCloneAndMove(BoardCE board, Move move)
-        {
-            try
-            {
-                var clone = board.CloneAndMove(move);
-                if (clone == null || clone._cases == null)
-                    return null;
-                return clone;
-            }
-            catch (Exception ex)
-            {
-                Utils.WritelineAsync("Erreur lors du clonage et déplacement: " + ex.Message);
-                return null;
-            }
-        }
-
-        private long ComputeBoardHash(BoardCE board, int depth, string color)
-        {
-            long hash = 0;
-            if (board._cases != null)
-            {
-                for (int i = 0; i < board._cases.Length; i++)
-                {
-                    if (board._cases[i] != null)
-                        hash ^= (long)board._cases[i].GetHashCode() << (i % 16);
-                }
-            }
-            hash ^= depth << 24;
-            hash ^= color.GetHashCode() << 32;
+            // Include castling rights, en passant target, side to move in hash
             return hash;
         }
-
-        public ChessEngine.NodeCE GetBestModeCE(string colore, ChessEngine.BoardCE boardChess, int depthLevel = 6, int maxReflectionTimeInMinute = 2*10)
+        public virtual List<Move> GetPossibleMovesForColor(string color, bool includeQuietMoves = true) { /* ... */ return new List<Move>(); }
+        public virtual List<Move> GetNoisyMovesForColor(string color)
         {
-           
-            
-            string opponentColor = boardChess.GetOpponentColor(colore);
-
-            Utils.WritelineAsync($"{GetName()}");
-            Utils.WritelineAsync($"DepthLevel :  {depthLevel}");
-            Utils.WritelineAsync($"MAX_SEARCH_TIME_S :  {maxReflectionTimeInMinute}");
-            Utils.WritelineAsync($"cpuColor :  {colore}");
-            Utils.WritelineAsync($"opponentColor :  {opponentColor}");
-
-
-            var boardCustum = new BoardCE(boardChess._cases);
-            var bestNodeTemp = GetBestModeCECustum(colore, boardCustum, depthLevel, maxReflectionTimeInMinute);
-            //public NodeCE(BoardCE boardCE, Move move, int weight, int level, TimeSpan reflectionTime= new TimeSpan())
-
-            var bestNode = new ChessEngine.NodeCE(boardChess, bestNodeTemp.Move,depthLevel, bestNodeTemp.Weight, bestNodeTemp.ReflectionTime);
-            return bestNode;
-            //throw new NotImplementedException();
+            // Return only captures and promotions
+            return GetPossibleMovesForColor(color, true).Where(m => m.IsCaptureOrPromotion(this)).ToList();
         }
+        public virtual BoardCE CloneAndMove(Move move) { /* ... */ return new BoardCE(); }
+        public virtual BoardCE CloneAndMove(int fromIndex, int toIndex)
+        { // Keep overload if used elsewhere
+            var piece = _cases[fromIndex];
+            if (piece == null) throw new ArgumentException("No piece at source index");
+            return CloneAndMove(new Move(fromIndex, toIndex, piece));
+        }
+        public virtual int CalculateBoardCEScore(string myColor, string opponentColor) { /* ... VERY IMPORTANT! */ return 0; }
+        public virtual bool IsGameOver() { /* ... */ return false; }
+        public virtual bool IsKingInCheck(string color) { /* ... */ return false; }
+        public virtual string GetOpponentColor(string color) => color == "W" ? "B" : "W";
+        public virtual int GetPieceValue(string piece) { /* ... Value including position? */ return GetPieceBaseValue(piece); } // Old method?
+        public virtual int GetPieceBaseValue(string piece)
+        {
+            if (piece == null) return 0;
+            switch (piece[0])
+            { // Assumes "P|W", "N|B" format
+                case 'P': return 100;
+                case 'N': return 300;
+                case 'B': return 320; // Slight bonus for bishops often used
+                case 'R': return 500;
+                case 'Q': return 900;
+                case 'K': return 20000; // King value for eval purposes (not checkmate)
+                default: return 0;
+            }
+        }
+        public virtual bool IsMoveLegal(Move move, string color)
+        {
+            // Basic check: piece exists and belongs to player, destination is valid
+            if (move == null || move.FromIndex < 0 || move.FromIndex > 63 || move.ToIndex < 0 || move.ToIndex > 63) return false;
+            var piece = _cases[move.FromIndex];
+            if (piece == null || !piece.EndsWith($"|{color}")) return false;
+            // IMPORTANT: This needs full legality check (doesn't leave king in check, etc.)
+            // For now, we rely on GetPossibleMovesForColor generating only legal moves.
+            // If TT can have stale moves, this check becomes crucial.
+            return GetPossibleMovesForColor(color, true).Any(legalMove => legalMove.Equals(move));
+        }
+
+        public virtual bool TargetIndexIsMenaced(int targetIndex, string attackingColor) { /* ... Check if targetIndex is attacked by attackingColor */ return false; } // From old code
+
     }
 }
